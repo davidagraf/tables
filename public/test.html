@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>My First Grid</title>
+ 
+<link rel="stylesheet" type="text/css" media="screen" href="../third/jquery.jqGrid/css/ui.jqgrid.css" />
+ 
+<style type="text/css">
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 75%;
+}
+</style>
+ 
+
+<script src="../third/jquery-ui/development-bundle/jquery-1.5.1.js" type="text/javascript"></script> 
+<script src="../third/jquery.jqGrid/js/jquery.jqGrid.src.js" type="text/javascript"></script>
+ 
+</head>
+<body>
+<table id="list19"></table>
+<script>
+jQuery("#list19").jqGrid({
+    url: '/public/data/test.xml',
+  datatype: "xml",
+    colNames:["Author","Title", "Price", "Published Date"],
+    colModel:[
+      {name:"Author",index:"Author", width:120, xmlmap:"ItemAttributes>Author"},
+      {name:"Title",index:"Title", width:180,xmlmap:"ItemAttributes>Title"},
+      {name:"Price",index:"Manufacturer", width:100, align:"right",xmlmap:"ItemAttributes>Price", sorttype:"float"},
+      {name:"DatePub",index:"ProductGroup", width:130,xmlmap:"ItemAttributes>DatePub",sorttype:"date"}
+    ],
+  height:250,
+    rowNum:10,
+    rowList:[10,20,30],
+    viewrecords: true,
+  loadonce: true,
+  xmlReader: {
+      root : "Items",
+      row: "Item",
+      repeatitems: false,
+      id: "ASIN"
+  },
+  caption: "XML Mapping example"
+});
+</script>
+</body>
+</html>
