@@ -43,7 +43,8 @@ $(function() {
         ],
         relations : [
           {
-            software : 'computer_software'
+            name : 'software',
+            title : 'Software'
           }
         ]
     },
@@ -81,7 +82,8 @@ $(function() {
       ],
       relations : [
         {
-          computer : 'computer_software'
+          name : 'computer',
+          title : 'Computers'
         }
       ]
     }

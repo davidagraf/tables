@@ -30,6 +30,9 @@ function Viewer(resources) {
     resourceToShow.fields.forEach(function(field){
       rowString += '<td class="' + field.name + '">' + rowData[field.name] + '</td>';
     });
+    resourceToShow.relations.forEach(function(relation){
+      rowString += '<td></td>';
+    });
     rowString += '<td><button class="in-table-button button-delete-row" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash"></span></button></td>';
     rowString += '<td><button class="in-table-button button-edit-row" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil"></span></button></td>';
     rowString += '</tr>';
@@ -44,7 +47,7 @@ function Viewer(resources) {
   
   function showTableError(text) {
     $msgBoxTable
-      .text(aText)
+      .text(text)
       .addClass("ui-state-error");
     setTimeout(function() {
       $msgBoxTable.removeClass("ui-state-error", 1500);
@@ -272,17 +275,14 @@ function Viewer(resources) {
     
     // adding table columns
     resourceToShow.fields.forEach(function(field){
-      jQuery("thead tr", $table).append($('<th>' + field.title + '</th>'));
+      $("thead tr", $table).append($('<th>' + field.title + '</th>'));
     });
     // adding relations
-    $.each(resourceToShow.relations, function(key, value) {
-      console.log(key);
-    });
     resourceToShow.relations.forEach(function(relation) {
-      console.log(relation);
+      $("thead tr", $table).append($('<th>' + relation.title + '</th>'));
     });
     // for delete and edit button
-    jQuery("thead tr", $table).append($('<th></th><th></th>'));
+    $("thead tr", $table).append($('<th></th><th></th>'));
     
     initInputForm();
     
