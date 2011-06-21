@@ -4,6 +4,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/mysql_connect.ph
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/mysql_query.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/command_snippets.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/json.php';
+include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/restfulquery.php';
 
 class Handler {
   var $resources = array();
@@ -92,7 +93,11 @@ class Handler {
   	  }
   	}
   	else if ($this->pathCompsCount > 1) {
-  	  $where[] = $this->firstResource["name"] . ".id=" . $this->pathComps[1];
+  	  $restfulQuery = new RestfulQuery();
+  	  if (!$restfulQuery->init($this->pathComps[1], $this->firstResource)) {
+  	    return;
+  	  }
+  	  $restfulQuery->generateSQLSnippets($from, $where, $this->firstResource);
   	}
   	
   	$query =    "SELECT "
