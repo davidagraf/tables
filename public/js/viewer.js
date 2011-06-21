@@ -50,13 +50,13 @@ function Viewer(resources) {
       $row.append($('<td class="' + field.name + '">' + rowData[field.name] + '</td>'));
     });
     resourceToShow.relations.forEach(function(relation){
-      var $button = generateTableBtn(relation.name, 'ui-icon-link', 'btn-show-relation');
+      var $button = generateTableBtn(relation.name, 'ui-icon-extlink', 'btn-show-relation');
       $button.data("relation", relation.name);
       var $td = $('<td></td>');
       $td.append($button);
       $row.append($td);
     });
-    [["remove", "ui-icon-trash","btn-delete-row"], ["edit", "ui-icon-pencil", "btn-edit-row"]].forEach(function(item) {
+    [["remove", "ui-icon-trash","btn-delete-row"], ["edit", "ui-icon-wrench", "btn-edit-row"]].forEach(function(item) {
       var $td = $('<td></td>');
       $td.append(generateTableBtn(item[0], item[1], item[2]));
       $row.append($td);
