@@ -1,5 +1,5 @@
 /**
- * 
+ * Table viewer
  */
 
 function Viewer(resources) {  
