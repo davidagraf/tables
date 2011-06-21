@@ -24,23 +24,45 @@ function Viewer(resources) {
   var validator = null;
   
   // private functions
+  function generateTableBtn(icon, additionalClass) {
+    var str = '<button class="'
+             +           additionalClass
+             +         ' in-table-button'
+             +         ' ui-button'
+             +         ' ui-widget'
+             +         ' ui-state-default'
+             +         ' ui-corner-all'
+             +         ' ui-button-text-only"'
+             +       ' title=".' + icon + '"'
+             +       ' role="button"'
+             +       ' aria-disabled="false">'
+             +   '<span class="ui-button-text">'
+             +     '<span class="ui-icon ' + icon + '">'
+             +     '</span>'
+             +   '</span>'
+             +   '</button>';
+    return $(str);
+  }
+  
   function generateTableRow(rowData) {
-    var rowString =
-      '<tr id="' + rowData.id + '">';
+    var $row = $('<tr id="' + rowData.id + '"></tr>');;
     resourceToShow.fields.forEach(function(field){
-      rowString += '<td class="' + field.name + '">' + rowData[field.name] + '</td>';
+      $row.append($('<td class="' + field.name + '">' + rowData[field.name] + '</td>'));
     });
     resourceToShow.relations.forEach(function(relation){
-      rowString += '<td></td>';
+      var $button = generateTableBtn('ui-icon-link', 'btn-show-relation');
+      $button.data("relation", relation.name);
+      var $td = $('<td></td>');
+      $td.append($button);
+      $row.append($td);
     });
-    rowString += '<td><button class="in-table-button button-delete-row" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash"></span></button></td>';
-    rowString += '<td><button class="in-table-button button-edit-row" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil"></span></button></td>';
-    rowString += '</tr>';
-    
-    var $row = $(rowString);
-    
-    jQuery("button.button-delete-row", $row).button().click(deleteRow);
-    jQuery("button.button-edit-row", $row).button().click(editRow);
+    [["ui-icon-trash","btn-delete-row"], ["ui-icon-pencil", "btn-edit-row"]].forEach(function(item) {
+      var $td = $('<td></td>');
+      $td.append(generateTableBtn(item[0], item[1]));
+      $row.append($td);
+    });
+    //$row.append('<td><button class="in-table-button btn-delete-row" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash"></span></button></td>');
+    //$row.append('<td><button class="in-table-button btn-edit-row" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil"></span></button></td>');
     
     return $row;
   }
@@ -63,14 +85,13 @@ function Viewer(resources) {
     }, 500);
   }
   
-  function deleteRow(event) {
-    var row = $(this).parent().parent();
-    var id = row.attr("id");
+  function deleteRow($row) {
+    var id = $row.attr("id");
     $.ajax({
       type: "DELETE",
       url: "/" + resourceToShow.name + "/" + id,
       success: function (data, textStatus, xhr) {
-        row.remove();
+        $row.remove();
       },
       error: function (xhr, textStatus, errorThrown) {
         showFormError(xhr.status + " " + errorThrown);
@@ -168,7 +189,7 @@ function Viewer(resources) {
     
     jQuery("input", $fieldsetAdd).keypress(function(event) {
       if (event.which == 13 && !event.altKey && !event.ctrlKey && !event.shiftKey && !event.metaKey) {
-        addOrReplaceResource();
+        addOrUpdateResource();
       }
     });
   }
@@ -202,14 +223,13 @@ function Viewer(resources) {
     }
   };
   
-  function editRow(button) {
-    var row = $(this).parent().parent();
+  function editRow($row) {
     resourceToShow.fields.forEach(function(field){
       var name = field.name;
-      $formInputs[name].val(jQuery("td."+name, row).html());
+      $formInputs[name].val(jQuery("td."+name, $row).html());
     });
     
-    idToUpdate = row.attr("id");
+    idToUpdate = $row.attr("id");
     $divAdd.dialog("open");
   };
 
@@ -248,6 +268,23 @@ function Viewer(resources) {
       idToUpdate = -1;
       $divAdd.dialog("open");
     });
+  
+  $table.delegate(".btn-delete-row", "click", function() {
+    var $row = $(this).parent().parent();
+    deleteRow($row);
+  });
+  
+  $table.delegate(".btn-edit-row", "click", function() {
+    var $row = $(this).parent().parent();
+    editRow($row);
+  });
+  
+  $table.delegate(".btn-show-relation", "click", function() {
+    var relation = $(this).data("relation");
+    var $row = $(this).parent().parent();
+    var resourceUri = "/" + resourceToShow.name + "/" + $row.attr("id") + "/" + relation;
+    window.location.hash = resourceUri;
+  });
   
   // public functions
   this.init = function(uri) {    
