@@ -1,5 +1,6 @@
 /**
  * Table viewer
+ * comment from david
  */
 
 function Viewer(resources) {  
