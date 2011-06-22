@@ -12,6 +12,7 @@ class RestfulQuery {
   }
   
   function init($string, $resource) {
+    $this->queries = array();
     $this->resource = $resource;
     $queryStrs = explode(",", $string);
     foreach($queryStrs as $queryStr) {
@@ -44,23 +45,41 @@ class RestfulQuery {
     return true;
   }
   
-  function generateSQLSnippets(array &$from, array &$where) {
+  function generateSQLSnippets(&$sql) {
     foreach($this->queries as $query) {
       $key = $query["key"];
       $sqlop = $query["sqlop"];
       $value = $query["value"];
       
       if ($key === "id") {
-        $where[] = $this->resource["name"] . "." . $key . $sqlop . $value;
+        $sql =  "SELECT " . $this->resource["name"] . ".*"
+             . " FROM (" . $sql . ") AS " . $this->resource["name"]
+             . " WHERE " . $this->resource["name"] . ".id=" . $value;
       }
       elseif (array_key_exists($key, $this->resource["relations"])) {
         $relation = $this->resource["relations"][$key];
-        $from[] = $relation;
-        $where[] = $relation . "." . $key . "=" . $value;
-  	    $where[] = $relation . "." . $this->resource["name"] . $sqlop . $this->resource["name"] . ".id";
+        if ($sqlop === "=") {
+          $sql =  "SELECT " . $this->resource["name"] . ".*"
+                . " FROM (" . $sql . ") AS " . $this->resource["name"]
+                . " JOIN " . $relation . " ON " . $relation . "." . $this->resource["name"] . "=" . $this->resource["name"] . ".id"
+                . " WHERE " . $relation . "." . $key . "=" . $value;
+          
+        }
+        // $sqlop ==== "<>"
+        else {
+          $sql =  "SELECT " . $this->resource["name"] . ".*"
+               . " FROM (" . $sql . ") AS " . $this->resource["name"]
+               . " WHERE NOT EXISTS (" 
+               .   " SELECT * FROM " . $relation
+               .   " WHERE " . $relation . "." . $this->resource["name"] . "=" . $this->resource["name"] . ".id"
+               .     " AND " . $relation . "." . $key . "=" . $value
+               . " )";
+        }
       } 
       else {
-        $where[] = $this->resource["name"]. "." . $key . $sqlop . "'" . $value . "'";
+        $sql =  "SELECT " . $this->resource["name"] . ".*"
+             . " FROM (" . $sql . ") AS " . $this->resource["name"]
+             . " WHERE " . $this->resource["name"] . "." . $key . $sqlop . "'" . $value . "'";
       }
     }
   }

@@ -26,4 +26,13 @@ function create_assigns_for_update($json, &$assigns) {
   
   $assigns = implode(',', $assignsArray);
 }
+
+function generate_joins_string($joins) {
+  $str = "";
+  foreach($joins as $key => $value) {
+    $str .= " JOIN " . $key . " ON " . $value;
+  }
+  return $str;
+}
+
 ?>
