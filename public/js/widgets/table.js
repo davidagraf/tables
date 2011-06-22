@@ -7,6 +7,7 @@ function Table(datasource) {
 	this.enableEditRow = false;
 	this.enableDeleteRow = false;
 	this.enableShowRelations = false;
+	var $this = this;
 	
 	// init header
 	this.append($('<thead />'));
@@ -14,11 +15,11 @@ function Table(datasource) {
 	
 	// adding table columns
 	datasource.resource.fields.forEach(function(field){
-      $("thead tr", this).append($('<th>' + field.title + '</th>'));
+      $("thead tr", $this).append($('<th>' + field.title + '</th>'));
     });
     // adding relations
 	datasource.resource.relations.forEach(function(relation) {
-      $("thead tr", this).append($('<th>' + relation.title + '</th>'));
+      $("thead tr", $this).append($('<th>' + relation.title + '</th>'));
     });
     // for delete and edit button
     $("thead tr", this).append($('<th></th><th></th>'));
