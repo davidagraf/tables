@@ -15,67 +15,63 @@ function TableDataSource(resourceUrl, resource) {
 	 * Gets the complete data from the server
 	 */
 	this.getRows = function() {
-		if (isUpdating)
-			return;
-		isUpdating = true;
+		var $this = this;
 		$.ajax( {
 			url : resourceUrl,
 			dataType : 'json',
-			success : function(data, textStatus, xHr) {
-				this.onSuccess(data, TableAction.GET);
-				isUpdating = false;
+			success : function(data, textStatus, xhr) {
+			  $this.onSuccess(data, TableAction.GET);
 			},
-			error : onError
+			error : this.onError
 		});
 	};
 
 	this.deleteRow = function($row) {
 		var id = $row.attr("id");
+		var $this = this;
 		$.ajax( {
 			type : "DELETE",
 			url : "/" + resourceToShow.name + "/" + id,
 			success : function(data, textStatus, xhr) {
-				this.onSuccess($row, TableAction.DELETE);
+			  $this.onSuccess($row, TableAction.DELETE);
 			},
-			error : onError
+			error : this.onError
 		});
 	};
 
-	this.addRow = function(jsonToSend) {
-		 $.ajax({
-		        type: "POST",
-		        url: url,
-		        data: $.toJSON(jsonToSend),
-		        contentType: "application/json; charset=utf-8",
-		        dataType: "json",
-		        success: function (data, textStatus, xhr) {
-		          addOrReplaceRows((isReplace ? url : xhr.getResponseHeader("Location")), isReplace);
-		          
-		        },
-		        error: onError
-		      });
-	};
-	
-	this.updateRow = function(jsonToSend) {
-		 $.ajax({
-			   type: "POST",
-		        url: url,
-		        data: $.toJSON(jsonToSend),
-		        contentType: "application/json; charset=utf-8",
-		        dataType: "json",
-		        success: function (data, textStatus, xhr) {
-		          addOrReplaceRows((isReplace ? url : xhr.getResponseHeader("Location")), isReplace);
-		          $divAdd.dialog("close");
-		        },
-		        error: function (xhr, textStatus, errorThrown) {
-		          showFormError(xhr.status + " " + errorThrown);
-		        }
-		      });
-	};
+//	this.addRow = function(jsonToSend) {
+//		var $this = this;
+//		 $.ajax({
+//		        type: "POST",
+//		        url: url,
+//		        data: $.toJSON(jsonToSend),
+//		        contentType: "application/json; charset=utf-8",
+//		        dataType: "json",
+//		        success: function (data, textStatus, xhr) {
+//			      $this.addOrReplaceRows((isReplace ? url : xhr.getResponseHeader("Location")), isReplace);
+//		        },
+//		        error: this.onError
+//		      });
+//	};
+//	
+//	this.updateRow = function(jsonToSend) {
+//		 $this = this;
+//		 $.ajax({
+//			   type: "POST",
+//		        url: url,
+//		        data: $.toJSON(jsonToSend),
+//		        contentType: "application/json; charset=utf-8",
+//		        dataType: "json",
+//		        success: function (data, textStatus, xhr) {
+//			 $this.addOrReplaceRows((isReplace ? url : xhr.getResponseHeader("Location")), isReplace);
+//		          $divAdd.dialog("close");
+//		        },
+//		        error: this.onError
+//		      });
+//	};
 
 	this.onSuccess = function(data, action) {
-		console.log('data updated from ' + resourceUrl + ' [action=' + action
-				+ ']');
+		console.log('data updated from ' + resourceUrl + ' [action=' + action + ']');
 	};
 
 	this.onError = function(xhr, textStatus, errorThrown) {

@@ -16,7 +16,7 @@ function IndexView() {
 
 	// items
 	var $table;
-	
+
 	// resources
 	var tableDataSource;
 
@@ -36,8 +36,8 @@ function IndexView() {
 		addOrReplaceRows(resourceUri);
 	}
 
-	function initInputForm() {
-		$.each(resourceToShow.fields, function(index, value) {
+	function initInputForm(resource) {
+		$.each(resource.fields, function(index, value) {
 			var $label = $('<label for="' + value.name + '">' + value.title
 					+ '</label>');
 			var $input;
@@ -116,9 +116,9 @@ function IndexView() {
 			}
 			$divAdd.dialog("close");
 
-			var isReplace = idToUpdate >= 0;
-			var url = "/" + resourceToShow.name
-					+ (isReplace ? "/" + idToUpdate : "");
+			// var isReplace = idToUpdate >= 0;
+			// var url = "/" + resourceToShow.name
+			// + (isReplace ? "/" + idToUpdate : "");
 
 		}
 	}
@@ -165,12 +165,12 @@ function IndexView() {
 		if (uri.pathComps.length % 2 == 0) {
 			resourceName = uri.pathComps[uri.pathComps.length - 2];
 		}
-		
+
 		var resource = globalResources[resourceName];
-		if(!resource) {
+		if (!resource) {
 			return false;
 		}
-		
+
 		tableDataSource = new TableDataSource(uri.path, resource);
 
 		// show buttons
@@ -184,7 +184,7 @@ function IndexView() {
 		tableDataSource.getRows();
 		resourceUri = uri.path;
 
-		initInputForm();
+		initInputForm(resource);
 
 		// highlight state
 		$("#nav-tabs a[href=#" + newHash.replace(/\//g, "\\/") + "]").addClass(
