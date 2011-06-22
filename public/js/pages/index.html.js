@@ -32,7 +32,7 @@ function IndexView() {
 	}
 
 	function reloadTable() {
-		jQuery("tbody", $table).empty();
+		
 		addOrReplaceRows(resourceUri);
 	}
 
@@ -204,10 +204,12 @@ function IndexView() {
 		$msgBoxForm.text("");
 		$fieldsetAdd.empty();
 		$("#nav-tabs a").removeClass("ui-state-active");
-
+		if($table) $table.clean();
+		
 		// emtpy vars
 		resourceUri = null;
 		$formInputs = {};
 		validator = null;
+		$table = null;
 	};
 }
