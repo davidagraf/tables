@@ -8,6 +8,21 @@ function Table(datasource) {
 	this.enableDeleteRow = false;
 	this.enableShowRelations = false;
 	
+	// init header
+	this.append($('<thead />'));
+	$('thead', this).append($('<tr class="ui-widget-header" />'));
+	
+	// adding table columns
+	datasource.resource.fields.forEach(function(field){
+      $("thead tr", this).append($('<th>' + field.title + '</th>'));
+    });
+    // adding relations
+	datasource.resource.relations.forEach(function(relation) {
+      $("thead tr", this).append($('<th>' + relation.title + '</th>'));
+    });
+    // for delete and edit button
+    $("thead tr", this).append($('<th></th><th></th>'));
+	
 	this.delegate(".btn-delete-row", "click", function() {
 		var $row = $(this).parent().parent();
 	    this.onDeleteRow($row);
@@ -86,19 +101,10 @@ function Table(datasource) {
 	};
 
 	// public functions / events
-	
-	// "event" fired when a row is deleted 
-	this.onDeleteRow = function(row) {
-	};
-	
-	// "event" fired when a row is edited 
-	this.onEditRow = function(row) {
-	};
-	
 	// "event" fired when a relation should be shown 
-	this.onShowResource = function(row, relation) {
+	this.onShowRelation = function(row, relation) {
 	};	
 }
 
 // base type is $(table)
-Table.prototype = $('<table />');
+Table.prototype = $('<table class="ui-widget ui-widget-content" />');

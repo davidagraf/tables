@@ -1,7 +1,7 @@
-function TableDataSource(resourceUrl) {
+function TableDataSource(resourceUrl, resource) {
 	// fields
-	var resourceUrl = resourceUrl;
 	var isUpdating = false;
+	this.resource = resource;
 
 	TableAction = {
 		GET : 'GET',
@@ -14,7 +14,7 @@ function TableDataSource(resourceUrl) {
 	/**
 	 * Gets the complete data from the server
 	 */
-	this.get = function() {
+	this.getRows = function() {
 		if (isUpdating)
 			return;
 		isUpdating = true;
@@ -41,14 +41,36 @@ function TableDataSource(resourceUrl) {
 		});
 	};
 
-	this.editRow = function($row) {
-		resourceToShow.fields.forEach(function(field) {
-			var name = field.name;
-			$formInputs[name].val($("td." + name, $row).html());
-		});
-
-		idToUpdate = $row.attr("id");
-		$divAdd.dialog("open");
+	this.addRow = function(jsonToSend) {
+		 $.ajax({
+		        type: "POST",
+		        url: url,
+		        data: $.toJSON(jsonToSend),
+		        contentType: "application/json; charset=utf-8",
+		        dataType: "json",
+		        success: function (data, textStatus, xhr) {
+		          addOrReplaceRows((isReplace ? url : xhr.getResponseHeader("Location")), isReplace);
+		          
+		        },
+		        error: onError
+		      });
+	};
+	
+	this.updateRow = function(jsonToSend) {
+		 $.ajax({
+			   type: "POST",
+		        url: url,
+		        data: $.toJSON(jsonToSend),
+		        contentType: "application/json; charset=utf-8",
+		        dataType: "json",
+		        success: function (data, textStatus, xhr) {
+		          addOrReplaceRows((isReplace ? url : xhr.getResponseHeader("Location")), isReplace);
+		          $divAdd.dialog("close");
+		        },
+		        error: function (xhr, textStatus, errorThrown) {
+		          showFormError(xhr.status + " " + errorThrown);
+		        }
+		      });
 	};
 
 	this.onSuccess = function(data, action) {

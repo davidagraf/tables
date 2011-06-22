@@ -4,7 +4,7 @@
 $(function() {
 	// initialize code behind for current page
 	var pageType = currentPageType();
-	var view = createView(pageType, globalResources);
+	var view = createInstance(pageType);
 	
 	// handle hash changed (while page context does not change!)
 	$(window).bind(

@@ -63,10 +63,3 @@ function createInstance(type)
     eval(initCmd);
     return obj;
 }
-
-function createView(type, resources)
-{
-    var initCmd = 'var obj = new ' + type + '(resources);';
-    eval(initCmd);
-    return obj;
-}
