@@ -1,5 +1,7 @@
 /**
- * 
+ * Table viewer
+ * comment from david=
+ * Another comment
  */
 
 function Viewer(resources) {  
@@ -24,7 +26,7 @@ function Viewer(resources) {
   var validator = null;
   
   // private functions
-  function generateTableBtn(icon, additionalClass) {
+  function generateTableBtn(title, icon, additionalClass) {
     var str = '<button class="'
              +           additionalClass
              +         ' in-table-button'
@@ -33,7 +35,7 @@ function Viewer(resources) {
              +         ' ui-state-default'
              +         ' ui-corner-all'
              +         ' ui-button-text-only"'
-             +       ' title=".' + icon + '"'
+             +       ' title="' + title + '"'
              +       ' role="button"'
              +       ' aria-disabled="false">'
              +   '<span class="ui-button-text">'
@@ -50,19 +52,17 @@ function Viewer(resources) {
       $row.append($('<td class="' + field.name + '">' + rowData[field.name] + '</td>'));
     });
     resourceToShow.relations.forEach(function(relation){
-      var $button = generateTableBtn('ui-icon-link', 'btn-show-relation');
+      var $button = generateTableBtn(relation.name, 'ui-icon-extlink', 'btn-show-relation');
       $button.data("relation", relation.name);
       var $td = $('<td></td>');
       $td.append($button);
       $row.append($td);
     });
-    [["ui-icon-trash","btn-delete-row"], ["ui-icon-pencil", "btn-edit-row"]].forEach(function(item) {
+    [["remove", "ui-icon-trash","btn-delete-row"], ["edit", "ui-icon-wrench", "btn-edit-row"]].forEach(function(item) {
       var $td = $('<td></td>');
-      $td.append(generateTableBtn(item[0], item[1]));
+      $td.append(generateTableBtn(item[0], item[1], item[2]));
       $row.append($td);
     });
-    //$row.append('<td><button class="in-table-button btn-delete-row" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash"></span></button></td>');
-    //$row.append('<td><button class="in-table-button btn-edit-row" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil"></span></button></td>');
     
     return $row;
   }

@@ -4,6 +4,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/mysql_connect.ph
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/mysql_query.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/command_snippets.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/json.php';
+include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/restfulquery.php';
 
 class Handler {
   var $resources = array();
@@ -27,7 +28,7 @@ class Handler {
     echo "Resource '" . $this->uri->getRequestUri() . "' not found or not allowed.";
   }
   
-  private function init() {
+  private function initLevels() {
     if ($this->pathCompsCount > 4) {
   	  $this->resourceNotFound();
   	  return;
@@ -63,45 +64,52 @@ class Handler {
   private function get() {
     header('Content-type: application/json');
     
-  	// compute SELECT
-  	$resourceToPrint = ($this->secondResource ? $this->secondResource : $this->firstResource);
-  	$select = $resourceToPrint["fields"];
-  	$select[] = "id";
-    function addPrefix(&$item, $key, $prefix) {
-      $item = "$prefix$item";
+    $expectsQuery = false;
+    $successorResource = null;
+    
+    $restfulQuery = new RestfulQuery();
+    
+    $sql = null;
+    
+    foreach($this->pathComps as $comp) {
+      if ($expectsQuery) {
+  	    if (!$restfulQuery->init($comp, $successorResource)) {
+  	      return;
+  	    }
+  	    $restfulQuery->generateSQLSnippets($sql);
+      }
+      else {
+        // get resource
+        if (!array_key_exists($comp, $this->resources)) {
+            $this->resourceNotFound();
+            return;
+          }
+        $currentResource = $this->resources[$comp];
+        if (is_null($successorResource)) {
+          $froms[$comp] = $comp;
+          $sql = "SELECT * FROM ". $currentResource["name"];
+        }
+        else {
+          // get relation
+          if (!array_key_exists($successorResource["name"], $currentResource["relations"])) {
+            $this->resourceNotFound();
+            echo " Relation missing.";
+            return;
+          }
+          $relation = $currentResource["relations"][$successorResource["name"]];
+          
+          $sql =  "SELECT " . $currentResource["name"] . ".*"
+               . " FROM (" . $sql . ") AS " . $successorResource["name"]
+               . " JOIN " . $relation . " ON " . $relation . "." . $successorResource["name"] . "=" . $successorResource["name"] . ".id"
+               . " JOIN " . $currentResource["name"] . " ON " . $currentResource["name"] . ".id=" . $relation . "." . $currentResource["name"];
+        }
+        $successorResource = $currentResource;
+      }  
+      
+      $expectsQuery ^= true;
     }
-  	array_walk($select, 'addPrefix', $resourceToPrint["name"] . ".");
-  	
-  	// compute FROM
-  	$from = array();
-  	if ($this->secondResource) {
-  	  $from[] = $this->secondResource["name"];
-  	  $from[] = $this->relation;
-  	}
-  	else {
-  	  $from[] = $this->firstResource["name"];
-  	}
-  	
-  	// compute WHERE
-  	$where = array();
-  	if ($this->secondResource) {
-  	  $where[] = $this->relation . "." . $this->firstResource["name"] . "=" . $this->pathComps[1];
-  	  $where[] = $this->relation . "." . $this->secondResource["name"] . "=" . $this->secondResource["name"] . ".id";
-  	  if ($this->pathCompsCount > 3) {
-  	    $where[] = $this->secondResource["name"] . ".id=" . $this->pathComps[3];
-  	  }
-  	}
-  	else if ($this->pathCompsCount > 1) {
-  	  $where[] = $this->firstResource["name"] . ".id=" . $this->pathComps[1];
-  	}
-  	
-  	$query =    "SELECT "
-  	         .     implode(",", $select)
-  				   . " FROM "
-  					 .     implode(",",$from)
-  					 .   (count($where) > 0 ? " WHERE " . implode(" AND ", $where) : "");
   
-  	if (execute_mysql_query($query, $result)) {
+  	if (execute_mysql_query($sql, $result)) {
     	$arr = array();
     	
     	while ($row = mysql_fetch_assoc($result)) {
@@ -202,14 +210,16 @@ class Handler {
   }
   
   function invoke() {
-    if (!$this->init()) {
+    // Currently, GET is a special case because it can handle infinite uris and not two levels only.
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+      $this->get();
       return;
     }
     
-    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-      $this->get();
+    if (!$this->initLevels()) {
+      return;
     }
-    elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $this->post();
     }
     elseif ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
