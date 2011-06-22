@@ -1,13 +1,10 @@
 /**
- * Table viewer
- * comment from david=
- * Another comment
+ * Creates a code behind type for {@link index.html}
+ * @param resources see {@link resources.js}
+ * @returns {IndexView}
  */
-
-function Viewer(resources) {  
+function IndexView(resources) {  
   // dom elements
-  var $msgBoxTable = $(".table-msg-box");
-  var $msgBoxForm = $(".form-msg-box");
   var $divButtons = $("#div-btns");
   var $table = $("#table-list");
   var $btnReload = $("#btn-reload");
@@ -25,102 +22,14 @@ function Viewer(resources) {
   var $formInputs = {};
   var validator = null;
   
-  // private functions
-  function generateTableBtn(title, icon, additionalClass) {
-    var str = '<button class="'
-             +           additionalClass
-             +         ' in-table-button'
-             +         ' ui-button'
-             +         ' ui-widget'
-             +         ' ui-state-default'
-             +         ' ui-corner-all'
-             +         ' ui-button-text-only"'
-             +       ' title="' + title + '"'
-             +       ' role="button"'
-             +       ' aria-disabled="false">'
-             +   '<span class="ui-button-text">'
-             +     '<span class="ui-icon ' + icon + '">'
-             +     '</span>'
-             +   '</span>'
-             +   '</button>';
-    return $(str);
-  }
   
-  function generateTableRow(rowData) {
-    var $row = $('<tr id="' + rowData.id + '"></tr>');;
-    resourceToShow.fields.forEach(function(field){
-      $row.append($('<td class="' + field.name + '">' + rowData[field.name] + '</td>'));
-    });
-    resourceToShow.relations.forEach(function(relation){
-      var $button = generateTableBtn(relation.name, 'ui-icon-extlink', 'btn-show-relation');
-      $button.data("relation", relation.name);
-      var $td = $('<td></td>');
-      $td.append($button);
-      $row.append($td);
-    });
-    [["remove", "ui-icon-trash","btn-delete-row"], ["edit", "ui-icon-wrench", "btn-edit-row"]].forEach(function(item) {
-      var $td = $('<td></td>');
-      $td.append(generateTableBtn(item[0], item[1], item[2]));
-      $row.append($td);
-    });
-    
-    return $row;
-  }
+  // private functions 
+ 
   
-  function showTableError(text) {
-    $msgBoxTable
-      .text(text)
-      .addClass("ui-state-error");
-    setTimeout(function() {
-      $msgBoxTable.removeClass("ui-state-error", 1500);
-    }, 500);
-  }
   
-  function showFormError(text) {
-    $msgBoxForm
-      .text(text)
-      .addClass("ui-state-error");
-    setTimeout(function() {
-      $msgBoxForm.removeClass("ui-state-error", 1500);
-    }, 500);
-  }
-  
-  function deleteRow($row) {
-    var id = $row.attr("id");
-    $.ajax({
-      type: "DELETE",
-      url: "/" + resourceToShow.name + "/" + id,
-      success: function (data, textStatus, xhr) {
-        $row.remove();
-      },
-      error: function (xhr, textStatus, errorThrown) {
-        showFormError(xhr.status + " " + errorThrown);
-      }
-    });
-  }
-  
-  function addOrReplaceRows(resourceUrl, replaceRow) {    
-    $.ajax({
-      url: resourceUrl,
-      dataType: 'json',
-      success: function(data, textStatus, xHr) {
-        var tableStr;
-        data.forEach(function(rowData){
-          var $row = generateTableRow(rowData);
-          var $tbody = jQuery("tbody", $table);
-          var $rowToReplace = {};
-          if (replaceRow && ($rowToReplace = jQuery("#"+rowData.id, $tbody)).length == 1) {
-            $rowToReplace.replaceWith($row);
-          }
-          else {
-            $tbody.append($row);
-          }
-        });
-      },
-      error: function (xhr, textStatus, errorThrown) {
-        showTableError(xhr.status + " " + errorThrown);
-      }
-    });
+  function showRelation(resourceUri)
+  {
+    window.location.hash = resourceUri;		
   }
   
   function reloadTable() {
@@ -187,7 +96,7 @@ function Viewer(resources) {
       this.lastElement = null;
     };
     
-    jQuery("input", $fieldsetAdd).keypress(function(event) {
+    $("input", $fieldsetAdd).keypress(function(event) {
       if (event.which == 13 && !event.altKey && !event.ctrlKey && !event.shiftKey && !event.metaKey) {
         addOrUpdateResource();
       }
@@ -222,17 +131,13 @@ function Viewer(resources) {
       });
     }
   };
-  
-  function editRow($row) {
-    resourceToShow.fields.forEach(function(field){
-      var name = field.name;
-      $formInputs[name].val(jQuery("td."+name, $row).html());
-    });
-    
-    idToUpdate = $row.attr("id");
-    $divAdd.dialog("open");
-  };
 
+  // initializes the debug div
+  function initDebug() {
+	var $table = $(new Table());
+	$table.appendTo("#debug");
+  };
+  
   // events
   $btnReload
     .button()
@@ -269,44 +174,23 @@ function Viewer(resources) {
       $divAdd.dialog("open");
     });
   
-  $table.delegate(".btn-delete-row", "click", function() {
-    var $row = $(this).parent().parent();
-    deleteRow($row);
-  });
-  
-  $table.delegate(".btn-edit-row", "click", function() {
-    var $row = $(this).parent().parent();
-    editRow($row);
-  });
-  
-  $table.delegate(".btn-show-relation", "click", function() {
-    var relation = $(this).data("relation");
-    var $row = $(this).parent().parent();
-    var resourceUri = "/" + resourceToShow.name + "/" + $row.attr("id") + "/" + relation;
-    window.location.hash = resourceUri;
-  });
   
   // public functions
-  this.init = function(uri) {    
-    // init vars
-    switch(uri.pathComps.length) {
-    case 4:
-    case 3:
-      resourceToShow = resources[uri.pathComps[2]];
-      break;
-    case 2:
-    case 1:
-      resourceToShow = resources[uri.pathComps[0]];
-      break;
-    default:
-    }
+  /**
+   * Initializes this page
+   */
+  this.init = function(uri) {
+	// init vars	
+	var pos = (uri.pathComps.length - 1) / 2;
+	resourceToShow = resources[uri.pathComps[pos]];
     
     if (!resourceToShow) {
       return false;
     }
+    
     resourceUri = uri.path;
     
-    // show btns
+    // show buttons
     $btnAdd.removeClass('hidden');
     $btnReload.removeClass('hidden');
     
@@ -320,24 +204,35 @@ function Viewer(resources) {
     });
     // for delete and edit button
     $("thead tr", $table).append($('<th></th><th></th>'));
-    
+       
     initInputForm();
     
     // show content
     addOrReplaceRows(resourceUri);
+
+    // highlight state
+	$("#nav-tabs a[href=#" + newHash.replace(/\//g, "\\/") + "]").addClass("ui-state-active");
+	
+    // init DEBUG area
+    initDebug();
     
     return true;
   };
   
+  /**
+   * Cleans this page
+   */
   this.clean = function() {
     // empty dom
     $btnAdd.addClass('hidden');
     $btnReload.addClass('hidden');
-    jQuery("thead tr", $table).empty();
-    jQuery("tbody", $table).empty();
+    $("thead tr", $table).empty();
+    $("tbody", $table).empty();
     $msgBoxTable.text("");
     $msgBoxForm.text("");
     $fieldsetAdd.empty();
+    $("#debug").empty();
+	$("#nav-tabs a").removeClass("ui-state-active");
     
     // emtpy vars
     resourceToShow = null;
@@ -347,24 +242,4 @@ function Viewer(resources) {
   };
 }
 
-$(function() {
-  var viewer = new Viewer(armyResources);
-  
-  $(window).bind('hashchange', function() {
-    newHash = window.location.hash.substring(1);
-    
-    viewer.clean();
-    
-    if (newHash) {
-      var uri = parseUri(newHash);
-      if (!viewer.init(uri)) {
-        // something is wrong, do something
-      }
-    }
-    
-    $("#nav-tabs a").removeClass("ui-state-active");
-    $("#nav-tabs a[href=#" + newHash.replace(/\//g, "\\/") + "]").addClass("ui-state-active");
-  });
-  
-  $(window).trigger('hashchange');
-});
+

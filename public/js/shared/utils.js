@@ -48,3 +48,25 @@ parseUri.options = {
       loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
   }
 };
+
+function currentPageType() {
+    var file_name = window.location.pathname;
+    file_name = file_name.substring(file_name.lastIndexOf('/') + 1);
+    file_name = file_name.substring(0, file_name.lastIndexOf('.'));
+    var type = file_name.substring(0, 1).toUpperCase() + file_name.substring(1) + 'View';
+    return type;
+}
+
+function createInstance(type)
+{
+    var initCmd = 'var obj = new ' + type + '();';
+    eval(initCmd);
+    return obj;
+}
+
+function createView(type, resources)
+{
+    var initCmd = 'var obj = new ' + type + '(resources);';
+    eval(initCmd);
+    return obj;
+}
