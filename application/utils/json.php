@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * Parses JSON to a php array.
+ * @param array $json
+ */
 function readJSONBody(&$json) {
   $jsonString = file_get_contents('php://input');
   $json = json_decode($jsonString);
