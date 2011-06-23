@@ -1,9 +1,9 @@
 <?php
-class ArmyUri {
+class UriParser {
   var $pathComps = array();
   var $queryComps = array();
 	
-  function ArmyUri(){
+  function UriParser(){
     $uri  = parse_url($_SERVER['REQUEST_URI']);
     
     $path = $uri['path'];

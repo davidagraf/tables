@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * All available resources
+ */
+
 $resources = array(
   "computer" => array(
     "name" => "computer",

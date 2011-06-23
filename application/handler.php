@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Request Handler
+ */
+
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/mysql_connect.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/mysql_query.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/command_snippets.php';
@@ -7,15 +11,33 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/json.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/restfulquery.php';
 
 class Handler {
+  // Resources from resources.php
   var $resources = array();
+  
+  // Request uri
   var $uri;
+  // Path components of the uri. E.g. /aaa/bbb/ccc => array("aaa","bbb","ccc")
   var $pathComps;
+  // Amount of paht components
   var $pathCompsCount;
   
+  /**
+   * Following parameters are helper parameter for the GET, POST and DELETE request.
+   */
+  // Resource (from resource.php) which corresponds to the first path component. E.g. computer if $uri === '/computer/1/software'
   var $firstResource = null;
+  // Resource (from resource.php) which corresponds to the third path component. E.g. software if $uri === '/computer/1/software'
   var $secondResource = null;
+  // Relation between first and second resource. E.g. computer_software
   var $relation = null;
   
+  /**
+   * Constructor
+   * @param array $resources
+   * @param UriParser $uri
+   * 
+   * Sets the variables needed to handle all http requests.
+   */
   function Handler($resources, $uri) {
     $this->resources = $resources;
     $this->uri = $uri;
@@ -23,11 +45,17 @@ class Handler {
     $this->pathCompsCount = count($this->pathComps);
   }
   
+  /**
+   * Error if something goes wrong.
+   */
   private function resourceNotFound() {
     header('HTTP/1.1 404 Not Found');
     echo "Resource '" . $this->uri->getRequestUri() . "' not found or not allowed.";
   }
   
+  /**
+   * Init $firstResource, $secondResource and $relation.
+   */
   private function initLevels() {
     if ($this->pathCompsCount > 4) {
   	  $this->resourceNotFound();
@@ -61,6 +89,9 @@ class Handler {
     return true;
   }
   
+  /**
+   * Responds a possibly filtered resource.
+   */
   private function get() {
     header('Content-type: application/json');
     
@@ -122,6 +153,9 @@ class Handler {
   	}
   }
   
+  /**
+   * Creates or updates a resource or a relation.
+   */
   private function post() {
   	switch($this->pathCompsCount) {
   	  case 1:
@@ -184,6 +218,9 @@ class Handler {
   	}
   }
   
+  /**
+   * Deletes a resource or a relation.
+   */
   private function delete() {
     if ($this->pathCompsCount == 1 || $this->pathCompsCount == 3) {
       header('HTTP/1.1 403 Forbidden');
@@ -209,6 +246,9 @@ class Handler {
     }
   }
   
+  /**
+   * Function invoked by the dispatcher. Figures out if GET, POST, or DELETE request.
+   */
   function invoke() {
     // Currently, GET is a special case because it can handle infinite uris and not two levels only.
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
