@@ -6,8 +6,6 @@
  * @returns {Table}
  */
 function Table(datasource) {
-	this.enableEditRow = false;
-	this.enableDeleteRow = false;
 	this.enableShowRelations = false;
 	var $this = this;
 
@@ -49,44 +47,40 @@ function Table(datasource) {
 
 		switch (action) {
 		case TableAction.GET:
-			// update rows
+			// update all rows
+			$('tbody', $this).empty();
 			data.forEach(function(rowData) {
-				$('tbody', $this).empty();
 				addTableRow(rowData);
 			});
 			break;
+		case TableAction.ADD:
+			var tableStr;
+			data.forEach(function(rowData) {
+						var $row = generateTableRow(rowData);
+						var $tbody = $("tbody", $table);
+						var $rowToReplace = {};
+						if (replaceRow
+								&& ($rowToReplace = $("#" + rowData.id, $tbody)).length == 1) {
+							$rowToReplace.replaceWith($row);
+						} else {
+							$tbody.append($row);
+						}
+					});
+			break;
 		}
-
 	}
 
-	/**
-	 * Handles data updates
-	 * 
-	 * @param data
-	 */
-	function onTableDataUpdated(data) {
-		var tableStr;
-		data
-				.forEach(function(rowData) {
-					var $row = generateTableRow(rowData);
-					var $tbody = $("tbody", $table);
-					var $rowToReplace = {};
-					if (replaceRow
-							&& ($rowToReplace = $("#" + rowData.id, $tbody)).length == 1) {
-						$rowToReplace.replaceWith($row);
-					} else {
-						$tbody.append($row);
-					}
-				});
-	}
+	// set default buttons edit & delete
+	var rowButtons = [ DefaultTableButtons.EditButton,
+			DefaultTableButtons.DeleteButton ];
 
 	/**
-	 * Adds a row
+	 * Creates and adds a row to the table body
 	 * 
 	 * @param rowData
 	 */
 	function addTableRow(rowData) {
-		var $row = $('<tr id="' + rowData.id + '" style="nowrap"></tr>');
+		var $row = $('<tr id="' + rowData.id + '"></tr>');
 		datasource.resource.fields.forEach(function(field) {
 			$row.append($('<td class="' + field.name + '">'
 					+ rowData[field.name] + '</td>'));
@@ -94,8 +88,9 @@ function Table(datasource) {
 
 		datasource.resource.relations.forEach(function(relation) {
 			if ($this.enableShowRelations) {
-				var $button = addTableButton(relation.name, 'ui-icon-extlink',
-						'btn-show-relation');
+				var $button = addTableButton($row, new TableButton(
+						relation.name, 'btn-show-relation',
+						TableButtonIcon.Link));
 				$button.data("relation", relation.name);
 			} else {
 				$row.append($('<td class="' + relation.name + '">'
@@ -103,13 +98,9 @@ function Table(datasource) {
 			}
 		});
 
-		if (this.enableEditRow) {
-			addTableButton($row, "edit", "ui-icon-wrench", "btn-edit-row");
-		}
-
-		if (this.enableDeleteRow) {
-			addTableButton($row, "remove", "ui-icon-trash", "btn-delete-row");
-		}
+		rowButtons.forEach(function(tablebutton) {
+			addTableButton($row, tablebutton);
+		});
 
 		$('tbody', $this).append($row);
 	}
@@ -118,30 +109,33 @@ function Table(datasource) {
 	 * Creates a table button and appends it as a new cell to the given row
 	 * 
 	 * @param $row
-	 * @param title
-	 * @param icon
-	 * @param additionalClass
+	 * @param tableButton
 	 */
-	function addTableButton($row, title, icon, additionalClass) {
+	function addTableButton($row, tableButton) {
 		var $td = $('<td></td>');
-		var buttonHtml = '<button class="' + additionalClass
-				+ ' in-table-button' + ' ui-button' + ' ui-widget'
-				+ ' ui-state-default' + ' ui-corner-all'
-				+ ' ui-button-text-only"' + ' title="' + title + '"'
-				+ ' role="button"' + ' aria-disabled="false">'
-				+ '<span class="ui-button-text">' + '<span class="ui-icon '
-				+ icon + '">' + '</span>' + '</span>' + '</button>';
-		$button = $(buttonHtml);
+		$button = tableButton.createNew();
 		$td.append($button);
 		$row.append($td);
 		return $button;
 	}
-
+	
 	// public functions / events
-	// "event" fired when a relation should be shown
+	/**
+	 * Appends the given table buttons to each row
+	 */
+	this.appendTableButton = function(tablebutton) {
+		rowButtons.push(tablebutton);
+	};
+	
+	/**
+	 * "event" fired when a relation should be shown
+	 */
 	this.onShowRelation = function(row, relation) {
 	};
 
+	/**
+	 * Cleans the table contents
+	 */
 	this.clean = function() {
 		$('thead tr', $this).empty();
 		$('tbody', $this).empty();
