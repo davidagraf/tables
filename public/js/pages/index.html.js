@@ -26,9 +26,25 @@ function IndexView() {
 	var validator = null;
 
 	// private functions
-	function showRelation(row, relation) {
+	function onShowRelationHandler(row, relation) {
 		// TODO
 		// window.location.hash = resourceUri;
+	}
+
+	function onRowButtonClickedHandler($row, button) {
+		switch (button) {
+		case DefaultTableButtons.EditButton:
+			tableDataSource.resource.fields.forEach(function(field) {
+				var name = field.name;
+				$formInputs[name].val(jQuery("td." + name, $row).html());
+			});
+			idToUpdate = $row.attr("id");
+			$divAdd.dialog("open");
+			break;
+		case DefaultTableButtons.DeleteButton:
+			tableDataSource.deleteRow($row.attr('id'));
+			break;
+		}
 	}
 
 	function reloadTable() {
@@ -119,8 +135,15 @@ function IndexView() {
 			} else {
 				tableDataSource.addRow(jsonToSend);
 			}
+		}
+	}
 
+	function onDataSourceChangedHandler(eventtype, data, action) {
+		switch (action) {
+		case TableAction.UPDATE:
+		case TableAction.ADD:
 			$divAdd.dialog("close");
+			break;
 		}
 	}
 
@@ -173,14 +196,18 @@ function IndexView() {
 		}
 
 		tableDataSource = new TableDataSource(uri.path, resource);
+		tableDataSource.registerOnSuccess(onDataSourceChangedHandler);
 
 		// show buttons
 		$btnAdd.removeClass('hidden');
 		$btnReload.removeClass('hidden');
 
 		// init table
-		tableWrapper = new TableWrapper(tableDataSource);
-		tableWrapper.onShowRelation = showRelation;
+		tableWrapper = new TableWrapper(tableDataSource, [
+				DefaultTableButtons.EditButton,
+				DefaultTableButtons.DeleteButton ]);
+		tableWrapper.onShowRelation = onShowRelationHandler;
+		tableWrapper.onRowButtonClicked = onRowButtonClickedHandler;
 		$('#div-data-table').append(tableWrapper.$table);
 		tableDataSource.getRows();
 		resourceUri = uri.path;
@@ -206,7 +233,6 @@ function IndexView() {
 		$fieldsetAdd.empty();
 		$("#nav-tabs a").removeClass("ui-state-active");
 		if (tableWrapper) {
-			// tableWrapper.clean();
 			tableWrapper.$table.remove();
 		}
 

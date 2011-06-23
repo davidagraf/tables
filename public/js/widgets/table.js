@@ -8,7 +8,7 @@
  * @returns {TableWrapper}
  */
 function TableWrapper(datasource, rowButtons) {
-	var $this = $(this);
+	var _this = this;
 	this.enableShowRelations = false;
 
 	// initialize
@@ -28,9 +28,9 @@ function TableWrapper(datasource, rowButtons) {
 	// init row buttons
 	if (rowButtons) {
 		rowButtons.forEach(function(tablebutton) {
-			$table.delegate(tablebutton.nameclass, "click", function() {
+			$table.delegate('.' + tablebutton.nameclass, "click", function() {
 				var $row = $(this).parent().parent();
-				$this.onRowButtonClicked($row, tablebutton);
+				_this.onRowButtonClicked($row, tablebutton);
 			});
 			$("thead tr", $table).append($('<th></th>'));
 		});
@@ -94,7 +94,7 @@ function TableWrapper(datasource, rowButtons) {
 		});
 
 		datasource.resource.relations.forEach(function(relation) {
-			if ($this.enableShowRelations) {
+			if (_this.enableShowRelations) {
 				var $button = addTableButton($row, new TableButton(
 						relation.name, 'btn-show-relation',
 						TableButtonIcon.Link));
@@ -150,8 +150,8 @@ function TableWrapper(datasource, rowButtons) {
 
 	// public functions / events
 	this.reload = function() {
-		cleanRows();
-		tableDataSource.getRows();
+		this.cleanRows();
+		datasource.getRows();
 	};
 
 	/**
