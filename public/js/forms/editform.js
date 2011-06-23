@@ -4,6 +4,17 @@ function EditForm(datasource, idToUpdate, inputValues) {
 	
   var _this = this;
   
+  // initialize
+  var $form = $('<form></form>');
+  var $fieldset = $('<fieldset></fieldset>');
+  
+  $form.append($fieldset);
+  _this.$divForm.append($form);
+  
+  // helper variables
+  var $formInputs = {};
+  var validator = null;
+  
   function onDataSourceChangedHandler(eventtype, data, action) {
     switch (action) {
     case TableAction.UPDATE:
@@ -15,14 +26,14 @@ function EditForm(datasource, idToUpdate, inputValues) {
   datasource.registerOnSuccess(onDataSourceChangedHandler);
   
   function addOrUpdateResource() {
-    $.each(_this.$formInputs, function(key, value) {
+    $.each($formInputs, function(key, value) {
       value.removeClass("ui-state-error");
     });
 
-    if (_this.validator.form()) {
+    if (validator.form()) {
       var jsonToSend = {};
-      for (key in _this.$formInputs) {
-        jsonToSend[key] = _this.$formInputs[key].val();
+      for (key in $formInputs) {
+        jsonToSend[key] = $formInputs[key].val();
       }
 
       if (idToUpdate >= 0) {
@@ -81,22 +92,22 @@ function EditForm(datasource, idToUpdate, inputValues) {
       break;
     }
 
-    _this.$formInputs[value.name] = $input;
-    _this.$fieldset.append($label);
-    _this.$fieldset.append($input);
+    $formInputs[value.name] = $input;
+    $fieldset.append($label);
+    $fieldset.append($input);
   });
-  _this.validator = _this.$form.validate( {
+  validator = $form.validate( {
     errorClass : "validation-error"
   });
   // overwrite this function because resetting lastElement is missing in
   // the library
-  _this.validator.originalResetForm = _this.validator.resetForm;
-  _this.validator.resetForm = function() {
+  validator.originalResetForm = validator.resetForm;
+  validator.resetForm = function() {
     this.originalResetForm();
     this.lastElement = null;
   };
 
-  _this.$fieldset.delegate("input", "keypress",
+  $fieldset.delegate("input", "keypress",
     function(event) {
       if (event.which == 13 && !event.altKey && !event.ctrlKey
           && !event.shiftKey && !event.metaKey) {
@@ -116,13 +127,13 @@ function EditForm(datasource, idToUpdate, inputValues) {
       }
     },
     open : function() {
-      $.each(_this.$formInputs, function(key, value) {
+      $.each($formInputs, function(key, value) {
         if (idToUpdate < 0) {
           value.val("");
         }
         value.removeClass("ui-state-error");
       });
-      _this.validator.resetForm();
+      validator.resetForm();
     }
   });
   

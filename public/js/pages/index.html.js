@@ -10,7 +10,6 @@ function IndexView() {
 	var $divButtons = $("#div-btns");
 	var $btnReload = $("#btn-reload");
 	var $btnAdd = $("#btn-add");
-	var $divAdd = $("#div-add");
 
 	// items
 	var tableWrapper;
@@ -20,9 +19,8 @@ function IndexView() {
 	var datasource;
 
 	// private functions
-	function onShowRelationHandler(row, relation) {
+	function onShowRelationHandler($row, relation) {
 		// TODO
-		// window.location.hash = resourceUri;
 	}
 	
 	function editRow(idToUpdate, valuesToUpdate) {
@@ -86,6 +84,7 @@ function IndexView() {
 				DefaultTableButtons.DeleteButton ]);
 		tableWrapper.onShowRelation = onShowRelationHandler;
 		tableWrapper.onRowButtonClicked = onRowButtonClickedHandler;
+		tableWrapper.enableShowRelations = true;
 		$('#div-data-table').append(tableWrapper.$table);
 		datasource.getRows();
 		resourceUri = uri.path;
