@@ -1,3 +1,10 @@
+/**
+ * Create dialog to edit a row.
+ * @param datasource
+ * @param idToUpdate
+ * @param inputValues
+ * @returns {EditForm}
+ */
 function EditForm(datasource, idToUpdate, inputValues) {
 	this.base = FormPrototype;
 	this.base(datasource, "Add / Update");

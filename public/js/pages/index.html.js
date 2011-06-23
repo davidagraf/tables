@@ -14,13 +14,18 @@ function IndexView() {
 	// items
 	var tableWrapper;
 	var editForm;
+	var relationsForm;
 
 	// resources
 	var datasource;
 
 	// private functions
-	function onShowRelationHandler($row, relation) {
-		// TODO
+	function onShowRelationHandler($row, id, relation) {
+	  if (relationsForm) {
+	    relationsForm.$divForm.remove();
+	  }
+	  relationsForm = new RelationsForm(datasource, id, relation);
+	  $('div-form').append(relationsForm.$divForm);
 	}
 	
 	function editRow(idToUpdate, valuesToUpdate) {
@@ -108,6 +113,9 @@ function IndexView() {
 		if (editForm) {
 		  editForm.$divForm.remove();
 		}
+		if (relationsForm) {
+		  relationsForm.$divForm.remove();
+    }
 		$("#nav-tabs a").removeClass("ui-state-active");
 		if (tableWrapper) {
 			tableWrapper.$table.remove();
@@ -117,6 +125,7 @@ function IndexView() {
 		resourceUri = null;
 		tableWrapper = null;
 		editForm = null;
+		relationsFrom = null;
 		datasource = null;
 	};
 }

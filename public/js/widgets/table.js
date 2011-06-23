@@ -39,8 +39,8 @@ function TableWrapper(datasource, rowButtons) {
 	$table.delegate(".btn-show-relation", "click", function() {
 		var relation = $(this).data("relation");
 		var $row = $(this).parent().parent();
-		this
-				.onShowResource(datasource.resource.name, $row.attr("id"),
+		_this
+				.onShowRelation(datasource.resource.name, $row.attr("id"),
 						relation);
 	});
 
