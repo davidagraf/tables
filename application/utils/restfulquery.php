@@ -1,16 +1,29 @@
 <?php
-
+/**
+ * Parses a path component query (e.g. 'software!=1' in /computer/software!=1).
+ */
 class RestfulQuery {
   var $queries = array();
   var $resource = array();
   
   function RestfulQuery() {}
   
+  /**
+   * Error if something goes wrong.
+   * @param String $queryStr
+   */
   private function printError($queryStr) {
     header('HTTP/1.1 400 Bad Request');
     echo "URI component query '" . $queryStr . "' not supported.";
   }
   
+  /**
+   * 
+   * Parses path component query and initializes helper variables.
+   * 
+   * @param string $string query
+   * @param resource $resource resource on which the query (filter) is executed.
+   */
   function init($string, $resource) {
     $this->queries = array();
     $this->resource = $resource;
@@ -45,6 +58,11 @@ class RestfulQuery {
     return true;
   }
   
+  /**
+   * SQL snipped generation.
+   * @param string $sql The sql nipped that generates the data which need to be filtered.
+   * 										It is wrapped into the newly generated sql.
+   */
   function generateSQLSnippets(&$sql) {
     foreach($this->queries as $query) {
       $key = $query["key"];

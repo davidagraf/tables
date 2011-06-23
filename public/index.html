@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <title>Army Inventary System</title>
 
 <!--[if lt IE 9]>
@@ -9,6 +8,9 @@
 <![endif]-->
 
 <link rel="stylesheet" href="../third/jquery-ui-1.8.13.custom/development-bundle/themes/base/jquery.ui.all.css"></link>
+<link rel="stylesheet" type="text/css" href="css/army.css"></link>
+
+<!-- jQuery -->
 <script type="text/javascript" src="../third/jquery-ui-1.8.13.custom/development-bundle/jquery-1.5.1.js"></script>
 <script src="../third/jquery-ui-1.8.13.custom/development-bundle/jquery-1.5.1.js"></script> 
 <script src="../third/jquery-ui-1.8.13.custom/development-bundle/external/jquery.bgiframe-2.1.2.js"></script> 
@@ -23,19 +25,23 @@
 <script src="../third/jquery-ui-1.8.13.custom/development-bundle/ui/jquery.ui.datepicker.js"></script> 
 <script src="../third/jquery-ui-1.8.13.custom/development-bundle/ui/jquery.effects.core.js"></script>
 
-<script type="text/javascript" src="js/jquery.json-2.2.js"></script>
-
+<!-- other third party -->
 <script type="text/javascript" src="../third/jquery-validation-1.8.1/jquery.validate.js"></script>
 <script type="text/javascript" src="../third/jquery-validation-1.8.1/additional-methods.js"></script>
 
-<script type="text/javascript" src="js/jquery.maskedinput-1.3.js"></script>
-
-<link rel="stylesheet" type="text/css" href="css/army.css"></link>
-
+<!-- tables JS -->
+<script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/resources.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript" src="js/form-input-rules.js"></script>
-<script type="text/javascript" src="js/viewer.js"></script>
+<script type="text/javascript" src="js/shared/jquery.json-2.2.js"></script>
+<script type="text/javascript" src="js/shared/jquery.maskedinput-1.3.js"></script>
+<script type="text/javascript" src="js/shared/utils.js"></script>
+<script type="text/javascript" src="js/shared/tabledatasource.js"></script>
+<script type="text/javascript" src="js/shared/errorhandling.js"></script>
+<script type="text/javascript" src="js/shared/form-input-rules.js"></script>
+<script type="text/javascript" src="js/pages/index.html.js"></script>
+<script type="text/javascript" src="js/widgets/table.js"></script>
+<script type="text/javascript" src="js/widgets/tablebutton.js"></script>
+
 </head>
 <body>
   <nav id="nav-tabs">
@@ -56,13 +62,7 @@
 	    <button id="btn-reload" class="hidden">Reload</button>
 	  </div>
 	  <p class="table-msg-box"></p>
-	  <table  id="table-list" class="ui-widget ui-widget-content">
-	    <thead>
-	      <tr class="ui-widget-header "></tr>
-	    </thead>
-	    <tbody>
-	    </tbody>
-	  </table>
+	  <div id="div-data-table"></div>
 	  </div>
   </div>
 </body>
