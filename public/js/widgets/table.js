@@ -5,35 +5,38 @@
  *            data source bound to this table, {@link TableDataSource}
  * @param rowButtons :
  *            rows to be appended
- * @returns {Table}
+ * @returns {TableWrapper}
  */
-function Table(datasource, rowButtons) {
+function TableWrapper(datasource, rowButtons) {
+	var $this = $(this);
 	this.enableShowRelations = false;
-	var $this = this;
 
-	// init header
+	// initialize
+	var $table = $('<table class="ui-widget ui-widget-content"><thead><tr class="ui-widget-header" /></thead><tbody /></table>');
+	this.__defineGetter__("$table", function() { return $table; });
+	
 	// adding table columns
 	datasource.resource.fields.forEach(function(field) {
-		$("thead tr", $this).append($('<th>' + field.title + '</th>'));
+		$("thead tr", $table).append($('<th>' + field.title + '</th>'));
 	});
 	// adding relations
 	datasource.resource.relations.forEach(function(relation) {
-		$("thead tr", $this).append($('<th>' + relation.title + '</th>'));
+		$("thead tr", $table).append($('<th>' + relation.title + '</th>'));
 	});
 	datasource.registerOnSuccess(onDataSourceChangedHandler);
 
 	// init row buttons
 	if (rowButtons) {
 		rowButtons.forEach(function(tablebutton) {
-			this.delegate(tablebutton.nameclass, "click", function() {
+			$table.delegate(tablebutton.nameclass, "click", function() {
 				var $row = $(this).parent().parent();
 				$this.onRowButtonClicked($row, tablebutton);
 			});
-			$("thead tr", $this).append($('<th></th>'));
+			$("thead tr", $table).append($('<th></th>'));
 		});
 	}
 
-	this.delegate(".btn-show-relation", "click", function() {
+	$table.delegate(".btn-show-relation", "click", function() {
 		var relation = $(this).data("relation");
 		var $row = $(this).parent().parent();
 		this
@@ -43,7 +46,9 @@ function Table(datasource, rowButtons) {
 
 	// private functions
 	function onDataSourceChangedHandler(eventtype, data, action) {
-		console.log('Table: table handles data source changed [' + action + ']');
+		console
+				.log('Table: table handles data source changed [' + action
+						+ ']');
 
 		switch (action) {
 		case TableAction.GET:
@@ -66,7 +71,7 @@ function Table(datasource, rowButtons) {
 			break;
 		case TableAction.DELETE:
 			// note: data = rowId
-			$('#' + data, $this).remove();
+			$('#' + data, $table).remove();
 			break;
 		}
 	}
@@ -106,7 +111,7 @@ function Table(datasource, rowButtons) {
 			});
 		}
 
-		$tbody = $('tbody', $this);
+		$tbody = $('tbody', $table);
 		if (!options) {
 			$tbody.append($row);
 		} else if (options.replaceRowId) {
@@ -165,7 +170,7 @@ function Table(datasource, rowButtons) {
 	 * Cleans the table rows and the header
 	 */
 	this.clean = function() {
-		$('thead tr', $this).empty();
+		$('thead tr', $table).empty();
 		this.cleanRows();
 	};
 
@@ -173,11 +178,6 @@ function Table(datasource, rowButtons) {
 	 * Cleans the table rows
 	 */
 	this.cleanRows = function() {
-		$('tbody', $this).empty();
+		$('tbody', $table).empty();
 	};
 }
-
-// base type is $(table)
-Table.prototype = $('<table class="ui-widget ui-widget-content">'
-		+ '<thead><tr class="ui-widget-header" /></thead><tbody />'
-		+ '</table>');

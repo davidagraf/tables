@@ -15,7 +15,7 @@ function IndexView() {
 	var $fieldsetAdd = $("#fieldset-add");
 
 	// items
-	var $table;
+	var tableWrapper;
 
 	// resources
 	var tableDataSource;
@@ -32,7 +32,7 @@ function IndexView() {
 	}
 
 	function reloadTable() {
-		$table.reload();
+		tableWrapper.reload();
 	}
 
 	function initInputForm(resource) {
@@ -119,7 +119,7 @@ function IndexView() {
 			} else {
 				tableDataSource.addRow(jsonToSend);
 			}
-			
+
 			$divAdd.dialog("close");
 		}
 	}
@@ -179,9 +179,9 @@ function IndexView() {
 		$btnReload.removeClass('hidden');
 
 		// init table
-		$table = new Table(tableDataSource);
-		$table.onShowRelation = showRelation;
-		$('#div-data-table').append($table);
+		tableWrapper = new TableWrapper(tableDataSource);
+		tableWrapper.onShowRelation = showRelation;
+		$('#div-data-table').append(tableWrapper.$table);
 		tableDataSource.getRows();
 		resourceUri = uri.path;
 
@@ -205,13 +205,16 @@ function IndexView() {
 		$msgBoxForm.text("");
 		$fieldsetAdd.empty();
 		$("#nav-tabs a").removeClass("ui-state-active");
-		if ($table)
-			$table.clean();
+		if (tableWrapper) {
+			// tableWrapper.clean();
+			tableWrapper.$table.remove();
+		}
 
 		// emtpy vars
 		resourceUri = null;
 		$formInputs = {};
 		validator = null;
-		$table = null;
+		tableWrapper = null;
+		tableDataSource = null;
 	};
 }
