@@ -29,6 +29,10 @@ function TableDataSource(resourceUrl, resource) {
 		return '/' + resource.name + (rowId ? '/' + rowId : '');
 	}
 	
+	function getRelationUrl(rowId, targetResource, targetRowId) {
+	  return '/' + resource.name + '/' + rowId + '/' + targetResource.name + '/' + targetRowId;
+	}
+	
 	function onSuccess(data, action) {
 		console.log('TableDataSource: data updated for "' + resource.name + '" [action=' + action + ']');
 		$this.trigger(EVENT_ON_SUCCESS, [data, action]);
@@ -97,6 +101,40 @@ function TableDataSource(resourceUrl, resource) {
 			},
 			error : onError
 		});
+	};
+	
+	/**
+	 * Adds a relation source->target to a relation table.
+	 * @param sourceId : id of source (resource of the source is saved in this object) 
+	 * @param targetResource : resource of the target
+	 * @param targetId : id of the target
+	 */
+	this.addRelation = function(sourceId, targetResource, targetId) {
+	  $.ajax( {
+	    type : "POST",
+	    url : getRelationUrl(sourceId, targetResource, targetId),
+	    success : function(data, textStatus, xhr) {
+	      onSuccess(sourceId, TableAction.ADD);
+	    },
+	    error : onError
+	  });
+	};
+	
+	/**
+   * Removes a relation source->target from a relation table.
+   * @param sourceId : id of source (resource of the source is saved in this object) 
+   * @param targetResource : resource of the target
+   * @param targetId : id of the target
+   */
+	this.removeRelation = function(sourceId, targetResource, targetId) {
+	   $.ajax( {
+	      type : "DELETE",
+	      url : getRelationUrl(sourceId, targetResource, targetId),
+	      success : function(data, textStatus, xhr) {
+	        onSuccess(sourceId, TableAction.DELETE);
+	      },
+	      error : onError
+	    });
 	};
 
 	/**

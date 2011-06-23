@@ -25,11 +25,17 @@ var TableButtonIcon = {
 	Edit : "ui-icon-wrench",
 	Delete : "ui-icon-trash",
 	Link : "ui-icon-extlink",
-	Generic : "ui-icon-extlink"
+	Generic : "ui-icon-extlink",
+	ArrowDown : "ui-icon-arrow-1-s",
+	ArrowUp : "ui-icon-arrow-1-n"
 };
 
 var DefaultTableButtons = {
 	EditButton : new TableButton("edit", "btn-edit-row", TableButtonIcon.Edit),
 	DeleteButton : new TableButton("delete", "btn-delete-row",
-			TableButtonIcon.Delete)
+			TableButtonIcon.Delete),
+  RemoveFromRelationButton : new TableButton("remove", "btn-remove-from-relation", 
+      TableButtonIcon.ArrowDown),
+  AddToRelationButton : new TableButton("add", "btn-add-to-relation",
+      TableButtonIcon.ArrowUp)
 };
