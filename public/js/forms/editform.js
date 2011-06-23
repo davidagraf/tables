@@ -1,4 +1,4 @@
-function EditForm(datasource, idToUpdate) {
+function EditForm(datasource, idToUpdate, inputValues) {
 	this.base = FormPrototype;
 	this.base(datasource, "Add / Update");
 	
@@ -32,7 +32,7 @@ function EditForm(datasource, idToUpdate) {
       }
     }
   }
-  
+
   $.each(datasource.resource.fields, function(index, value) {
     var $label = $('<label for="' + value.name + '">' 
                  +   value.title
@@ -55,6 +55,10 @@ function EditForm(datasource, idToUpdate) {
       $input = $('<input type="text" class="text ' + value.type
           + '" />');
       break;
+    }
+    
+    if (idToUpdate >= 0) {
+      $input.val(inputValues[value.name]); 
     }
 
     $input.addClass("ui-widget-content ui-corner-all");

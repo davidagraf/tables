@@ -180,4 +180,17 @@ function TableWrapper(datasource, rowButtons) {
 	this.cleanRows = function() {
 		$('tbody', $table).empty();
 	};
+	
+	/**
+	 * Returns values of a table row.
+	 * @id Row id
+	 */
+	this.rowValues = function($row) {
+	  $values = {};
+    datasource.resource.fields.forEach(function(field) {
+      var name = field.name;
+      $values[name] = jQuery("td." + name, $row).html();
+    });
+    return $values;
+	};
 }

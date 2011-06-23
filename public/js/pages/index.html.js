@@ -24,16 +24,20 @@ function IndexView() {
 		// TODO
 		// window.location.hash = resourceUri;
 	}
+	
+	function editRow(idToUpdate, valuesToUpdate) {
+   if (editForm) {
+      editForm.$divForm.remove();
+    }
+    editForm = new EditForm(datasource, idToUpdate, valuesToUpdate);
+    $('div-form').append(editForm.$divForm);
+	}
 
 	function onRowButtonClickedHandler($row, button) {
 		switch (button) {
 		case DefaultTableButtons.EditButton:
-			datasource.resource.fields.forEach(function(field) {
-				var name = field.name;
-				_this.$formInputs[name].val(jQuery("td." + name, $row).html());
-			});
-			idToUpdate = $row.attr("id");
-			$divAdd.dialog("open");
+		  valuesToUpdate = tableWrapper.rowValues($row);
+			editRow($row.attr("id"), valuesToUpdate);
 			break;
 		case DefaultTableButtons.DeleteButton:
 			datasource.deleteRow($row.attr('id'));
@@ -51,11 +55,7 @@ function IndexView() {
 	});
 
 	$btnAdd.button().click(function() {
-	  if (editForm) {
-	    editForm.$divForm.remove();
-	  }
-	  editForm = new EditForm(datasource, -1);
-	  $('div-form').append(editForm.$divForm);
+	   editRow(-1);
 	});
 
 	// public functions
