@@ -11,19 +11,13 @@ function IndexView() {
 	var $btnReload = $("#btn-reload");
 	var $btnAdd = $("#btn-add");
 	var $divAdd = $("#div-add");
-	var $formAdd = $("#form-add");
-	var $fieldsetAdd = $("#fieldset-add");
 
 	// items
 	var tableWrapper;
+	var editForm;
 
 	// resources
-	var tableDataSource;
-
-	// helper vars
-	var idToUpdate = -1;
-	var $formInputs = {};
-	var validator = null;
+	var datasource;
 
 	// private functions
 	function onShowRelationHandler(row, relation) {
@@ -34,15 +28,15 @@ function IndexView() {
 	function onRowButtonClickedHandler($row, button) {
 		switch (button) {
 		case DefaultTableButtons.EditButton:
-			tableDataSource.resource.fields.forEach(function(field) {
+			datasource.resource.fields.forEach(function(field) {
 				var name = field.name;
-				$formInputs[name].val(jQuery("td." + name, $row).html());
+				_this.$formInputs[name].val(jQuery("td." + name, $row).html());
 			});
 			idToUpdate = $row.attr("id");
 			$divAdd.dialog("open");
 			break;
 		case DefaultTableButtons.DeleteButton:
-			tableDataSource.deleteRow($row.attr('id'));
+			datasource.deleteRow($row.attr('id'));
 			break;
 		}
 	}
@@ -51,132 +45,17 @@ function IndexView() {
 		tableWrapper.reload();
 	}
 
-	function initInputForm(resource) {
-		$.each(resource.fields, function(index, value) {
-			var $label = $('<label for="' + value.name + '">' + value.title
-					+ '</label>');
-			var $input;
-
-			switch (value.type) {
-			case undefined:
-			case "text":
-				$input = $('<input type="text" class="text" />');
-				break;
-			case "date":
-				$input = $('<input type="text" class="text dateISO8601" />');
-				$input.mask("9999-99-99");
-				break;
-			case "textarea":
-				$input = $('<textarea class="textarea" />');
-				break;
-			default:
-				$input = $('<input type="text" class="text ' + value.type
-						+ '" />');
-				break;
-			}
-
-			$input.addClass("ui-widget-content ui-corner-all");
-			$input.attr("id", value.name);
-			$input.attr("name", value.name);
-
-			switch (value.type) {
-			case "date":
-				$input.datepicker( {
-					// hack to disable validation when datepicker is open
-					beforeShow : function() {
-						$(this).removeClass("dateISO8601");
-					},
-					onClose : function() {
-						$(this).addClass("dateISO8601");
-						$(this).valid();
-					}
-				});
-				$input.datepicker("option", "dateFormat", "yy-mm-dd");
-				break;
-			}
-
-			$formInputs[value.name] = $input;
-			$fieldsetAdd.append($label);
-			$fieldsetAdd.append($input);
-		});
-		validator = $formAdd.validate( {
-			errorClass : "validation-error"
-		});
-		// overwrite this function because resetting lastElement is missing in
-		// the library
-		validator.originalResetForm = validator.resetForm;
-		validator.resetForm = function() {
-			this.originalResetForm();
-			this.lastElement = null;
-		};
-
-		$("input", $fieldsetAdd).keypress(
-				function(event) {
-					if (event.which == 13 && !event.altKey && !event.ctrlKey
-							&& !event.shiftKey && !event.metaKey) {
-						addOrUpdateResource();
-					}
-				});
-	}
-
-	function addOrUpdateResource() {
-		$.each($formInputs, function(key, value) {
-			value.removeClass("ui-state-error");
-		});
-
-		if (validator.form()) {
-			var jsonToSend = {};
-			for (key in $formInputs) {
-				jsonToSend[key] = $formInputs[key].val();
-			}
-
-			if (idToUpdate >= 0) {
-				tableDataSource.updateRow(idToUpdate, jsonToSend);
-			} else {
-				tableDataSource.addRow(jsonToSend);
-			}
-		}
-	}
-
-	function onDataSourceChangedHandler(eventtype, data, action) {
-		switch (action) {
-		case TableAction.UPDATE:
-		case TableAction.ADD:
-			$divAdd.dialog("close");
-			break;
-		}
-	}
-
 	// events
 	$btnReload.button().click(function() {
 		reloadTable();
 	});
 
-	$divAdd.dialog( {
-		autoOpen : false,
-		height : 550,
-		width : 500,
-		modal : true,
-		buttons : {
-			OK : addOrUpdateResource,
-			Cancel : function() {
-				$(this).dialog("close");
-			}
-		},
-		open : function() {
-			$.each($formInputs, function(key, value) {
-				if (idToUpdate < 0) {
-					value.val("");
-				}
-				value.removeClass("ui-state-error");
-			});
-			validator.resetForm();
-		}
-	});
-
 	$btnAdd.button().click(function() {
-		idToUpdate = -1;
-		$divAdd.dialog("open");
+	  if (editForm) {
+	    editForm.$divForm.remove();
+	  }
+	  editForm = new EditForm(datasource, -1);
+	  $('div-form').append(editForm.$divForm);
 	});
 
 	// public functions
@@ -195,24 +74,21 @@ function IndexView() {
 			return false;
 		}
 
-		tableDataSource = new TableDataSource(uri.path, resource);
-		tableDataSource.registerOnSuccess(onDataSourceChangedHandler);
+		datasource = new TableDataSource(uri.path, resource);
 
 		// show buttons
 		$btnAdd.removeClass('hidden');
 		$btnReload.removeClass('hidden');
 
 		// init table
-		tableWrapper = new TableWrapper(tableDataSource, [
+		tableWrapper = new TableWrapper(datasource, [
 				DefaultTableButtons.EditButton,
 				DefaultTableButtons.DeleteButton ]);
 		tableWrapper.onShowRelation = onShowRelationHandler;
 		tableWrapper.onRowButtonClicked = onRowButtonClickedHandler;
 		$('#div-data-table').append(tableWrapper.$table);
-		tableDataSource.getRows();
+		datasource.getRows();
 		resourceUri = uri.path;
-
-		initInputForm(resource);
 
 		// highlight state
 		$("#nav-tabs a[href=#" + newHash.replace(/\//g, "\\/") + "]").addClass(
@@ -230,7 +106,9 @@ function IndexView() {
 		$btnReload.addClass('hidden');
 		$msgBoxTable.text("");
 		$msgBoxForm.text("");
-		$fieldsetAdd.empty();
+		if (editForm) {
+		  editForm.$divForm.remove();
+		}
 		$("#nav-tabs a").removeClass("ui-state-active");
 		if (tableWrapper) {
 			tableWrapper.$table.remove();
@@ -238,9 +116,8 @@ function IndexView() {
 
 		// emtpy vars
 		resourceUri = null;
-		$formInputs = {};
-		validator = null;
 		tableWrapper = null;
-		tableDataSource = null;
+		editForm = null;
+		datasource = null;
 	};
 }
