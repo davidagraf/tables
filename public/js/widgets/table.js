@@ -55,17 +55,18 @@ function Table(datasource) {
 			break;
 		case TableAction.ADD:
 			var tableStr;
-			data.forEach(function(rowData) {
-						var $row = generateTableRow(rowData);
-						var $tbody = $("tbody", $table);
-						var $rowToReplace = {};
-						if (replaceRow
-								&& ($rowToReplace = $("#" + rowData.id, $tbody)).length == 1) {
-							$rowToReplace.replaceWith($row);
-						} else {
-							$tbody.append($row);
-						}
-					});
+//			data
+//					.forEach(function(rowData) {
+//						var $row = generateTableRow(rowData);
+//						var $tbody = $("tbody", $table);
+//						var $rowToReplace = {};
+//						if (replaceRow
+//								&& ($rowToReplace = $("#" + rowData.id, $tbody)).length == 1) {
+//							$rowToReplace.replaceWith($row);
+//						} else {
+//							$tbody.append($row);
+//						}
+//					});
 			break;
 		}
 	}
@@ -78,8 +79,13 @@ function Table(datasource) {
 	 * Creates and adds a row to the table body
 	 * 
 	 * @param rowData
+	 * @param options
+	 *            defining how and where the given row should be inserted
+	 *            available options are (mutually excluding): insertAfterRowId
+	 *            (given row should be inserted after this row) / replaceRowId
+	 *            (row to be replaced)
 	 */
-	function addTableRow(rowData) {
+	function addTableRow(rowData, options) {
 		var $row = $('<tr id="' + rowData.id + '"></tr>');
 		datasource.resource.fields.forEach(function(field) {
 			$row.append($('<td class="' + field.name + '">'
@@ -102,7 +108,22 @@ function Table(datasource) {
 			addTableButton($row, tablebutton);
 		});
 
-		$('tbody', $this).append($row);
+		$tbody = $('tbody', $this);
+		if (!options) {
+			$tbody.append($row);
+		} else if (options.replaceRowId) {
+			var $rowToReplace = $("#" + options.replaceRowId, $tbody);
+			if ($rowToReplace.length == 1) {
+				$rowToReplace.replaceWith($row);
+			}
+		} else if (options.insertAfterRowId) {
+			var $anchorRow = $("#" + options.insertAfterRowId, $tbody);
+			if ($anchorRow) {
+				$row.insertAfter($anchorRow);
+			}
+		}
+
+		return $row;
 	}
 
 	/**
@@ -118,7 +139,7 @@ function Table(datasource) {
 		$row.append($td);
 		return $button;
 	}
-	
+
 	// public functions / events
 	/**
 	 * Appends the given table buttons to each row
@@ -126,7 +147,7 @@ function Table(datasource) {
 	this.appendTableButton = function(tablebutton) {
 		rowButtons.push(tablebutton);
 	};
-	
+
 	/**
 	 * "event" fired when a relation should be shown
 	 */
