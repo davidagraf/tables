@@ -32,8 +32,7 @@ function IndexView() {
 	}
 
 	function reloadTable() {
-		
-		addOrReplaceRows(resourceUri);
+		$table.reload();
 	}
 
 	function initInputForm(resource) {
@@ -114,12 +113,14 @@ function IndexView() {
 			for (key in $formInputs) {
 				jsonToSend[key] = $formInputs[key].val();
 			}
+
+			if (idToUpdate >= 0) {
+				tableDataSource.updateRow(idToUpdate, jsonToSend);
+			} else {
+				tableDataSource.addRow(jsonToSend);
+			}
+			
 			$divAdd.dialog("close");
-
-			// var isReplace = idToUpdate >= 0;
-			// var url = "/" + resourceToShow.name
-			// + (isReplace ? "/" + idToUpdate : "");
-
 		}
 	}
 
@@ -204,8 +205,9 @@ function IndexView() {
 		$msgBoxForm.text("");
 		$fieldsetAdd.empty();
 		$("#nav-tabs a").removeClass("ui-state-active");
-		if($table) $table.clean();
-		
+		if ($table)
+			$table.clean();
+
 		// emtpy vars
 		resourceUri = null;
 		$formInputs = {};

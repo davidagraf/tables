@@ -3,9 +3,11 @@
  * 
  * @param databinding :
  *            data source bound to this table, {@link TableDataSource}
+ * @param rowButtons :
+ *            rows to be appended
  * @returns {Table}
  */
-function Table(datasource) {
+function Table(datasource, rowButtons) {
 	this.enableShowRelations = false;
 	var $this = this;
 
@@ -18,62 +20,56 @@ function Table(datasource) {
 	datasource.resource.relations.forEach(function(relation) {
 		$("thead tr", $this).append($('<th>' + relation.title + '</th>'));
 	});
-	// for delete and edit button
-	$("thead tr", $this).append($('<th></th><th></th>'));
+	datasource.registerOnSuccess(onDataSourceChangedHandler);
 
-	datasource.onSuccess = onDataSourceChangedHandler;
-
-	this.delegate(".btn-delete-row", "click", function() {
-		var $row = $(this).parent().parent();
-		this.onDeleteRow($row);
-	});
-
-	this.delegate(".btn-edit-row", "click", function() {
-		var $row = $(this).parent().parent();
-		this.onEditRow($row);
-	});
+	// init row buttons
+	if (rowButtons) {
+		rowButtons.forEach(function(tablebutton) {
+			this.delegate(tablebutton.nameclass, "click", function() {
+				var $row = $(this).parent().parent();
+				$this.onRowButtonClicked($row, tablebutton);
+			});
+			$("thead tr", $this).append($('<th></th>'));
+		});
+	}
 
 	this.delegate(".btn-show-relation", "click", function() {
 		var relation = $(this).data("relation");
 		var $row = $(this).parent().parent();
-		var resourceUri = "/" + resourceToShow.name + "/" + $row.attr("id")
-				+ "/" + relation;
-		this.onShowResource(resourceUri);
+		this
+				.onShowResource(datasource.resource.name, $row.attr("id"),
+						relation);
 	});
 
 	// private functions
-	function onDataSourceChangedHandler(data, action) {
-		console.log('table handles data source changed [' + action + ']');
+	function onDataSourceChangedHandler(eventtype, data, action) {
+		console.log('Table: table handles data source changed [' + action + ']');
 
 		switch (action) {
 		case TableAction.GET:
 			// update all rows
-			$('tbody', $this).empty();
 			data.forEach(function(rowData) {
 				addTableRow(rowData);
 			});
 			break;
 		case TableAction.ADD:
-			var tableStr;
-//			data
-//					.forEach(function(rowData) {
-//						var $row = generateTableRow(rowData);
-//						var $tbody = $("tbody", $table);
-//						var $rowToReplace = {};
-//						if (replaceRow
-//								&& ($rowToReplace = $("#" + rowData.id, $tbody)).length == 1) {
-//							$rowToReplace.replaceWith($row);
-//						} else {
-//							$tbody.append($row);
-//						}
-//					});
+			data.forEach(function(rowData) {
+				addTableRow(rowData);
+			});
+			break;
+		case TableAction.UPDATE:
+			data.forEach(function(rowData) {
+				addTableRow(rowData, {
+					replaceRowId : rowData.id
+				});
+			});
+			break;
+		case TableAction.DELETE:
+			// note: data = rowId
+			$('#' + data, $this).remove();
 			break;
 		}
 	}
-
-	// set default buttons edit & delete
-	var rowButtons = [ DefaultTableButtons.EditButton,
-			DefaultTableButtons.DeleteButton ];
 
 	/**
 	 * Creates and adds a row to the table body
@@ -104,9 +100,11 @@ function Table(datasource) {
 			}
 		});
 
-		rowButtons.forEach(function(tablebutton) {
-			addTableButton($row, tablebutton);
-		});
+		if (rowButtons) {
+			rowButtons.forEach(function(tablebutton) {
+				addTableButton($row, tablebutton);
+			});
+		}
 
 		$tbody = $('tbody', $this);
 		if (!options) {
@@ -115,11 +113,16 @@ function Table(datasource) {
 			var $rowToReplace = $("#" + options.replaceRowId, $tbody);
 			if ($rowToReplace.length == 1) {
 				$rowToReplace.replaceWith($row);
+			} else {
+				$tbody.append($row);
 			}
+
 		} else if (options.insertAfterRowId) {
 			var $anchorRow = $("#" + options.insertAfterRowId, $tbody);
 			if ($anchorRow) {
 				$row.insertAfter($anchorRow);
+			} else {
+				$tbody.append($row);
 			}
 		}
 
@@ -141,24 +144,35 @@ function Table(datasource) {
 	}
 
 	// public functions / events
-	/**
-	 * Appends the given table buttons to each row
-	 */
-	this.appendTableButton = function(tablebutton) {
-		rowButtons.push(tablebutton);
+	this.reload = function() {
+		cleanRows();
+		tableDataSource.getRows();
 	};
 
 	/**
 	 * "event" fired when a relation should be shown
 	 */
-	this.onShowRelation = function(row, relation) {
+	this.onShowRelation = function(fromResource, fromResourceId, toResource) {
 	};
 
 	/**
-	 * Cleans the table contents
+	 * "event" fired when a row button is clicked
+	 */
+	this.onRowButtonClicked = function(row, button) {
+	};
+
+	/**
+	 * Cleans the table rows and the header
 	 */
 	this.clean = function() {
 		$('thead tr', $this).empty();
+		this.cleanRows();
+	};
+
+	/**
+	 * Cleans the table rows
+	 */
+	this.cleanRows = function() {
 		$('tbody', $this).empty();
 	};
 }

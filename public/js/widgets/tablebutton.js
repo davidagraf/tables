@@ -8,6 +8,7 @@
  * @returns {TableButton} of type $('<button />')
  */
 function TableButton(title, nameclass, icon) {
+	var nameclass = nameclass;
 	this.createNew = function() {
 		var buttonHtml = '<button class="' + nameclass + ' in-table-button'
 				+ ' ui-button' + ' ui-widget' + ' ui-state-default'

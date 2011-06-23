@@ -1,7 +1,10 @@
 function TableDataSource(resourceUrl, resource) {
 	// fields
+	var $this = $(this);
 	var isUpdating = false;
 	this.resource = resource;
+	EVENT_ON_SUCCESS = "onsuccess";
+	EVENT_ON_ERROR = "onerror";
 
 	TableAction = {
 		GET : 'GET',
@@ -12,12 +15,11 @@ function TableDataSource(resourceUrl, resource) {
 
 	// private methods
 	function getRowData(rowUrl, tableaction) {
-		var $this = this;
 		$.ajax( {
 			url : rowUrl,
 			dataType : 'json',
 			success : function(data, textStatus, xhr) {
-				$this.onSuccess(data, tableaction);
+				onSuccess(data, tableaction);
 			},
 			error : this.onError
 		});
@@ -26,37 +28,45 @@ function TableDataSource(resourceUrl, resource) {
 	function getRowUrl(rowId) {
 		return '/' + resource.name + (rowId ? '/' + rowId : '');
 	}
+	
+	function onSuccess(data, action) {
+		console.log('TableDataSource: data updated for "' + resource.name + '" [action=' + action + ']');
+		$this.trigger(EVENT_ON_SUCCESS, [data, action]);
+	}
+
+	function onError(xhr, textStatus, errorThrown) {
+		console.log('TableDataSource: error on data update for "' + resource.name + '" [action=' + action + ']');
+		console.log('ERROR: ' + textStatus);
+		$this.trigger(EVENT_ON_ERROR, [xhr, textStatus, errorThrown]);
+	}
 
 	// public methods
 	/**
 	 * Gets the complete data from the server
 	 */
 	this.getRows = function() {
-		var $this = this;
 		$.ajax( {
 			url : resourceUrl,
 			dataType : 'json',
 			success : function(data, textStatus, xhr) {
-				$this.onSuccess(data, TableAction.GET);
+				onSuccess(data, TableAction.GET);
 			},
-			error : this.onError
+			error : onError
 		});
 	};
 
 	this.deleteRow = function(rowId) {
-		var $this = this;
 		$.ajax( {
 			type : "DELETE",
 			url : getRowUrl(rowId),
 			success : function(data, textStatus, xhr) {
-				$this.onSuccess(rowId, TableAction.DELETE);
+				onSuccess(rowId, TableAction.DELETE);
 			},
-			error : this.onError
+			error : onError
 		});
 	};
 
 	this.addRow = function(rowData) {
-		var $this = this;
 		$.ajax( {
 			type : "POST",
 			url : getRowUrl(),
@@ -66,12 +76,16 @@ function TableDataSource(resourceUrl, resource) {
 			success : function(data, textStatus, xhr) {
 				getRowData(xhr.getResponseHeader("Location"), TableAction.ADD);
 			},
-			error : this.onError
+			error : onError
 		});
 	};
 
+	/**
+	 * Updates the row with the given id
+	 *  @param rowId : row to be updated
+	 *  @param rowData: data
+	 */
 	this.updateRow = function(rowId, rowData) {
-		$this = this;
 		$.ajax( {
 			type : "POST",
 			url : getRowUrl(rowId),
@@ -81,15 +95,21 @@ function TableDataSource(resourceUrl, resource) {
 			success : function(data, textStatus, xhr) {
 				getRowData(getRowUrl(rowId), TableAction.UPDATE);
 			},
-			error : this.onError
+			error : onError
 		});
 	};
 
-	this.onSuccess = function(data, action) {
-		console.log('data updated from ' + resourceUrl + ' [action=' + action
-				+ ']');
+	/**
+	 * Registers the given handler for the onSuccess event
+	 */
+	this.registerOnSuccess = function(handler) {
+		$(this).bind(EVENT_ON_SUCCESS, handler);
 	};
-
-	this.onError = function(xhr, textStatus, errorThrown) {
+	
+	/**
+	 * Registers the given handler for the onError event
+	 */
+	this.registerOnError = function(handler) {
+		$(this).bind(EVENT_ON_ERROR, handler);
 	};
 }
