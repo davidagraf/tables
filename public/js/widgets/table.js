@@ -10,15 +10,36 @@
 function TableWrapper(datasource, rowButtons) {
 	var _this = this;
 	this.enableShowRelations = false;
+	this.enableSorting = true;
 
 	// initialize
-	var $table = $('<table class="ui-widget ui-widget-content"><thead><tr class="ui-widget-header" /></thead><tbody /></table>');
-	this.__defineGetter__("$table", function() { return $table; });
-	
-	// adding table columns
-	datasource.resource.fields.forEach(function(field) {
-		$("thead tr", $table).append($('<th>' + field.title + '</th>'));
+	var $table = $('<table class="tui"><thead><tr /></thead><tbody /></table>');
+	this.__defineGetter__("$table", function() {
+		return $table;
 	});
+
+//	$table.tablesorter( {
+//		debug : false,
+//		sortList : [ [ 0, 0 ] ],
+//		widgets : [ 'zebra' ]
+//	}).tablesorterPager( {
+//		container : $("#pagerOne"),
+//		positionFixed : false
+//	}).tablesorterFilter( {
+//		filterContainer : $("#filterBoxOne"),
+//		filterClearContainer : $("#filterClearOne"),
+//		filterColumns : [ 0, 1, 2, 3, 4, 5, 6 ],
+//		filterCaseSensitive : false
+//	});
+
+	// adding table columns
+	var i = 1;
+	datasource.resource.fields.forEach(function(field) {
+		$th = $('<th>' + field.title + '</th>');
+		$("thead tr", $table).append($th);
+		i = i + 1;
+	});
+
 	// adding relations
 	datasource.resource.relations.forEach(function(relation) {
 		$("thead tr", $table).append($('<th>' + relation.title + '</th>'));
@@ -39,9 +60,8 @@ function TableWrapper(datasource, rowButtons) {
 	$table.delegate(".btn-show-relation", "click", function() {
 		var relation = $(this).data("relation");
 		var $row = $(this).parent().parent();
-		_this
-				.onShowRelation(datasource.resource.name, $row.attr("id"),
-						relation);
+		_this.onShowRelation(datasource.resource.name, $row.attr("id"),
+				relation);
 	});
 
 	// private functions
@@ -182,17 +202,18 @@ function TableWrapper(datasource, rowButtons) {
 	this.cleanRows = function() {
 		$('tbody', $table).empty();
 	};
-	
+
 	/**
 	 * Returns values of a table row.
+	 * 
 	 * @id Row id
 	 */
 	this.rowValues = function($row) {
-	  $values = {};
-    datasource.resource.fields.forEach(function(field) {
-      var name = field.name;
-      $values[name] = jQuery("td." + name, $row).html();
-    });
-    return $values;
+		$values = {};
+		datasource.resource.fields.forEach(function(field) {
+			var name = field.name;
+			$values[name] = jQuery("td." + name, $row).html();
+		});
+		return $values;
 	};
 }

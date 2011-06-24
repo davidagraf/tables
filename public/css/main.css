@@ -31,10 +31,10 @@ h1 {
 	margin: .6em 0;
 }
 
-.tables-table {
+/* .tables-table {
 	width: 350px;
 	margin: 0px 0;
-}
+} 
 
 .tables-table table {
 	margin: 1em 0;
@@ -48,6 +48,7 @@ h1 {
 	text-align: left;
 }
 
+*/
 .ui-dialog .ui-state-error {
 	padding: .3em;
 }
@@ -87,24 +88,39 @@ img {
 .ui-div-content {
 	border-width: 1px;
 	margin: 16px;
-	margin-top: -8px;
+	margin-top: -9px;
 	border-style: solid;
 	border-color: #ababab;
 	padding: 10px;
 }
 
+a {
+	color: #111111;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #111111;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #004276;
+	text-decoration: none;
+}
+
+a:active {
+	color: #cc0000;
+	text-decoration: none;
+}
+
 a.ui-mainmenu-link {
 	font-size: 12pt;
-	font-family: Segoe UI, Verdana, sans-serif;
 	margin: 5px 20px;
-	color: #1f1f1f;
-	text-decoration: none;
 }
 
 a.ui-mainmenu-link-active {
 	font-size: 14pt;
-	font-family: Segoe UI, Verdana, sans-serif;
 	margin: 5px 20px;
-	color: #fe0003;
-	text-decoration: none;
+	color: #cc0000;
 }
