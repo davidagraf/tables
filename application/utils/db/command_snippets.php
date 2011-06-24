@@ -35,4 +35,15 @@ function generate_joins_string($joins) {
   return $str;
 }
 
+function generate_relation_table($firstResourceName, $secondResourceName) {
+  $relationTable;
+  if (strcmp($firstResourceName, $secondResourceName) < 0) {
+    $relationTable = $firstResourceName . "_" . $secondResourceName;  
+  }
+  else {
+    $relationTable = $secondResourceName . "_" . $firstResourceName;
+  }
+  return $relationTable;
+}
+
 ?>

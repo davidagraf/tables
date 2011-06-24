@@ -1,10 +1,12 @@
 <?php
+include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/db/command_snippets.php';
+
 /**
  * Parses a path component query (e.g. 'software!=1' in /computer/software!=1).
  */
 class RestfulQuery {
-  var $queries = array();
-  var $resource = array();
+  private $queries = array();
+  private $resource = array();
   
   function RestfulQuery() {}
   
@@ -75,12 +77,12 @@ class RestfulQuery {
              . " WHERE " . $this->resource["name"] . ".id=" . $value;
       }
       elseif (array_key_exists($key, $this->resource["relations"])) {
-        $relation = $this->resource["relations"][$key];
+        $relationTable = generate_relation_table($this->resource["name"], $key);
         if ($sqlop === "=") {
           $sql =  "SELECT " . $this->resource["name"] . ".*"
                 . " FROM (" . $sql . ") AS " . $this->resource["name"]
-                . " JOIN " . $relation . " ON " . $relation . "." . $this->resource["name"] . "=" . $this->resource["name"] . ".id"
-                . " WHERE " . $relation . "." . $key . "=" . $value;
+                . " JOIN " . $relationTable . " ON " . $relationTable . "." . $this->resource["name"] . "=" . $this->resource["name"] . ".id"
+                . " WHERE " . $relationTable . "." . $key . "=" . $value;
           
         }
         // $sqlop ==== "<>"
@@ -88,9 +90,9 @@ class RestfulQuery {
           $sql =  "SELECT " . $this->resource["name"] . ".*"
                . " FROM (" . $sql . ") AS " . $this->resource["name"]
                . " WHERE NOT EXISTS (" 
-               .   " SELECT * FROM " . $relation
-               .   " WHERE " . $relation . "." . $this->resource["name"] . "=" . $this->resource["name"] . ".id"
-               .     " AND " . $relation . "." . $key . "=" . $value
+               .   " SELECT * FROM " . $relationTable
+               .   " WHERE " . $relationTable . "." . $this->resource["name"] . "=" . $this->resource["name"] . ".id"
+               .     " AND " . $relationTable . "." . $key . "=" . $value
                . " )";
         }
       } 

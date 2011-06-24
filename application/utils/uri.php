@@ -1,7 +1,7 @@
 <?php
 class UriParser {
-  var $pathComps = array();
-  var $queryComps = array();
+  private $pathComps = array();
+  private $queryComps = array();
 	
   function UriParser(){
     $uri  = parse_url($_SERVER['REQUEST_URI']);

@@ -12,24 +12,24 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/application/utils/restfulquery.php';
 
 class Handler {
   // Resources from resources.php
-  var $resources = array();
+  private $resources = array();
   
   // Request uri
-  var $uri;
+  private $uri;
   // Path components of the uri. E.g. /aaa/bbb/ccc => array("aaa","bbb","ccc")
-  var $pathComps;
+  private $pathComps;
   // Amount of paht components
-  var $pathCompsCount;
+  private $pathCompsCount;
   
   /**
    * Following parameters are helper parameter for the GET, POST and DELETE request.
    */
   // Resource (from resource.php) which corresponds to the first path component. E.g. computer if $uri === '/computer/1/software'
-  var $firstResource = null;
+  private $firstResource = null;
   // Resource (from resource.php) which corresponds to the third path component. E.g. software if $uri === '/computer/1/software'
-  var $secondResource = null;
+  private $secondResource = null;
   // Relation between first and second resource. E.g. computer_software
-  var $relation = null;
+  private $relationTable = null;
   
   /**
    * Constructor
@@ -54,7 +54,7 @@ class Handler {
   }
   
   /**
-   * Init $firstResource, $secondResource and $relation.
+   * Init $firstResource, $secondResource and $relationTable.
    */
   private function initLevels() {
     if ($this->pathCompsCount > 4) {
@@ -69,7 +69,7 @@ class Handler {
     $this->firstResource = $this->resources[$this->pathComps[0]];
   	
     $this->secondResource = null;
-    $this->relation = null;
+    $this->relationTable = null;
     if ($this->pathCompsCount > 2) {
       if (!array_key_exists($this->pathComps[2], $this->resources)) {
         $this->resourceNotFound();
@@ -83,7 +83,7 @@ class Handler {
         echo " Relation missing.";
         return false;
       }
-      $this->relation = $this->secondResource["relations"][$this->pathComps[0]];
+      $this->relationTable = generate_relation_table($this->pathComps[0], $this->pathComps[2]);
     }
     
     return true;
@@ -127,12 +127,12 @@ class Handler {
             echo " Relation missing.";
             return;
           }
-          $relation = $currentResource["relations"][$successorResource["name"]];
+          $relationTable = generate_relation_table($currentResource["name"], $successorResource["name"]);
           
           $sql =  "SELECT " . $currentResource["name"] . ".*"
                . " FROM (" . $sql . ") AS " . $successorResource["name"]
-               . " JOIN " . $relation . " ON " . $relation . "." . $successorResource["name"] . "=" . $successorResource["name"] . ".id"
-               . " JOIN " . $currentResource["name"] . " ON " . $currentResource["name"] . ".id=" . $relation . "." . $currentResource["name"];
+               . " JOIN " . $relationTable . " ON " . $relationTable . "." . $successorResource["name"] . "=" . $successorResource["name"] . ".id"
+               . " JOIN " . $currentResource["name"] . " ON " . $currentResource["name"] . ".id=" . $relationTable . "." . $currentResource["name"];
         }
         $successorResource = $currentResource;
       }  
@@ -196,19 +196,19 @@ class Handler {
         //     select *
         //     from computer_software
         //     where computer_software.computer=103 AND computer_software.software=1)
-  	    $query = "INSERT INTO " . $this->relation 
+  	    $query = "INSERT INTO " . $this->relationTable 
   	           . "  (" . $this->firstResource["name"] . "," . $this->secondResource["name"] . ")"
   	           . "  SELECT " . $this->pathComps[1] . "," . $this->pathComps[3] 
   	           . "    FROM DUAL WHERE NOT EXISTS("
   	           . "      SELECT *"
-  	           . "      FROM " . $this->relation
+  	           . "      FROM " . $this->relationTable
   	           . "      WHERE " . $this->firstResource["name"] . "=" . $this->pathComps[1]
   	           . "        AND " . $this->secondResource["name"] . "=" . $this->pathComps[3]
   	           . ")";
   	    if (execute_mysql_query($query, $result)) {
   	      if (mysql_insert_id() == 0) {
   	        header('HTTP/1.1 400 Bad Request');
-  	        echo "No duplicate entries allowed in relation ". $this->relation . ".";
+  	        echo "No duplicate entries allowed in relation ". $this->relationTable . ".";
   	      }
   	      else {
             header('HTTP/1.1 204 No Content');
@@ -236,7 +236,7 @@ class Handler {
       }
     }
     else {
-      $query = "DELETE FROM " . $this->relation 
+      $query = "DELETE FROM " . $this->relationTable 
       			 . " WHERE " . $this->firstResource["name"] . "=" . $this->pathComps[1]
       			 . "   AND " . $this->secondResource["name"] . "=" . $this->pathComps[3];
   
