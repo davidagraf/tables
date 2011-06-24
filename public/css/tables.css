@@ -87,9 +87,9 @@ img {
 .ui-div-content {
 	border-width: 1px;
 	margin: 16px;
-	margin-top: -9px;
+	margin-top: -8px;
 	border-style: solid;
-	border-color: #a78e79;
+	border-color: #ababab;
 	padding: 10px;
 }
 
@@ -105,6 +105,6 @@ a.ui-mainmenu-link-active {
 	font-size: 14pt;
 	font-family: Segoe UI, Verdana, sans-serif;
 	margin: 5px 20px;
-	color: #6d4320;
+	color: #fe0003;
 	text-decoration: none;
 }
