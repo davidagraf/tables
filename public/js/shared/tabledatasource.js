@@ -49,14 +49,18 @@ function TableDataSource(resourceUrl, resource) {
 	 * Gets the complete data from the server
 	 */
 	this.getRows = function() {
-		$.ajax( {
-			url : resourceUrl,
-			dataType : 'json',
-			success : function(data, textStatus, xhr) {
-				onSuccess(data, TableAction.GET);
-			},
-			error : onError
-		});
+		this.getRowsByUrl(resourceUrl);
+	};
+	
+	this.getRowsByUrl = function(passedResourceUrl) {
+	  $.ajax( {
+      url : passedResourceUrl,
+      dataType : 'json',
+      success : function(data, textStatus, xhr) {
+        onSuccess(data, TableAction.GET);
+      },
+      error : onError
+    });
 	};
 
 	this.deleteRow = function(rowId) {
@@ -114,7 +118,7 @@ function TableDataSource(resourceUrl, resource) {
 	    type : "POST",
 	    url : getRelationUrl(sourceId, targetResource, targetId),
 	    success : function(data, textStatus, xhr) {
-	      onSuccess(sourceId, TableAction.ADD);
+	      onSuccess(sourceId, TableAction.DELETE);
 	    },
 	    error : onError
 	  });
