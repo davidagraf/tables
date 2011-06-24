@@ -51,8 +51,8 @@ function EditForm(datasource, idToUpdate, inputValues) {
     }
   }
 
-  $.each(datasource.resource.fields, function(index, value) {
-    var $label = $('<label for="' + value.name + '">' 
+  $.each(datasource.resource.fields, function(key, value) {
+    var $label = $('<label for="' + key + '">' 
                  +   value.title
                  + '</label>');
     var $input;
@@ -76,12 +76,12 @@ function EditForm(datasource, idToUpdate, inputValues) {
     }
     
     if (idToUpdate >= 0) {
-      $input.val(inputValues[value.name]); 
+      $input.val(inputValues[key]); 
     }
 
     $input.addClass("ui-widget-content ui-corner-all");
-    $input.attr("id", value.name);
-    $input.attr("name", value.name);
+    $input.attr("id", key);
+    $input.attr("name", key);
 
     switch (value.type) {
     case "date":
@@ -99,7 +99,7 @@ function EditForm(datasource, idToUpdate, inputValues) {
       break;
     }
 
-    $formInputs[value.name] = $input;
+    $formInputs[key] = $input;
     $fieldset.append($label);
     $fieldset.append($input);
   });

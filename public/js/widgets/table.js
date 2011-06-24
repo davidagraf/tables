@@ -16,12 +16,12 @@ function TableWrapper(datasource, rowButtons) {
 	this.__defineGetter__("$table", function() { return $table; });
 	
 	// adding table columns
-	datasource.resource.fields.forEach(function(field) {
-		$("thead tr", $table).append($('<th>' + field.title + '</th>'));
+	$.each(datasource.resource.fields, function(key, field) {
+	  $("thead tr", $table).append($('<th>' + field.title + '</th>'));
 	});
 	// adding relations
-	datasource.resource.relations.forEach(function(relation) {
-		$("thead tr", $table).append($('<th>' + relation.title + '</th>'));
+	$.each(datasource.resource.relations, function(key, relation) {
+	  $("thead tr", $table).append($('<th>' + relation.title + '</th>'));
 	});
 	datasource.registerOnSuccess(onDataSourceChangedHandler);
 
@@ -90,21 +90,21 @@ function TableWrapper(datasource, rowButtons) {
 	 */
 	function addTableRow(rowData, options) {
 		var $row = $('<tr id="' + rowData.id + '"></tr>');
-		datasource.resource.fields.forEach(function(field) {
-			$row.append($('<td class="' + field.name + '">'
-					+ rowData[field.name] + '</td>'));
+		$.each(datasource.resource.fields, function(key, field) {
+		  $row.append($('<td class="' + key + '">'
+          + rowData[key] + '</td>'));
 		});
 
-		datasource.resource.relations.forEach(function(relation) {
-			if (_this.enableShowRelations) {
-				var $button = addTableButton($row, new TableButton(
-						relation.name, 'btn-show-relation',
-						TableButtonIcon.Link));
-				$button.data("relation", relation.name);
-			} else {
-				$row.append($('<td class="' + relation.name + '">'
-						+ relation.title + '</td>'));
-			}
+		$.each(datasource.resource.relations, function(key, relation) {
+     if (_this.enableShowRelations) {
+        var $button = addTableButton($row, new TableButton(
+            key, 'btn-show-relation',
+            TableButtonIcon.Link));
+        $button.data("relation", key);
+      } else {
+        $row.append($('<td class="' + key + '">'
+            + relation.title + '</td>'));
+      }	  
 		});
 
 		if (rowButtons) {
@@ -189,9 +189,8 @@ function TableWrapper(datasource, rowButtons) {
 	 */
 	this.rowValues = function($row) {
 	  $values = {};
-    datasource.resource.fields.forEach(function(field) {
-      var name = field.name;
-      $values[name] = jQuery("td." + name, $row).html();
+    $.each(datasource.resource.fields, function(key, field) {
+      $values[key] = jQuery("td." + key, $row).html();
     });
     return $values;
 	};
