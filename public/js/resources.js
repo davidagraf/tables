@@ -1,68 +1,17 @@
 /**
  * Resources configuration
+ * Needs to be imported in the html page first to set globalResources before doing anything.
  */
-var globalResources = {
-	computer : {
-		name : 'computer',
-		title : 'Computers',
-		fields : [ {
-			name : 'asset_tag',
-			title : 'Asset Tag'
-		}, {
-			name : 'type',
-			title : 'Type'
-		}, {
-			name : 'brand',
-			title : 'Brand'
-		}, {
-			name : 'model',
-			title : 'Model'
-		}, {
-			name : 'status',
-			title : 'Status'
-		}, {
-			name : 'name',
-			title : 'Name'
-		}, {
-			name : 'serial1',
-			title : 'Serial 1'
-		}, {
-			name : 'serial2',
-			title : 'Serial 2'
-		} ],
-		relations : [ {
-			name : 'software',
-			title : 'Software'
-		} ]
-	},
-	software : {
-		name : 'software',
-		title : 'Software',
-		fields : [ {
-			name : 'name',
-			title : 'Name'
-		}, {
-			name : 'version',
-			title : 'Version',
-			type : 'version'
-		}, {
-			name : 'distributor',
-			title : 'Distributor'
-		}, {
-			name : 'license',
-			title : 'License'
-		}, {
-			name : 'expiration',
-			title : 'Expiration Date',
-			type : 'date'
-		}, {
-			name : 'comments',
-			title : 'Comments',
-			type : 'textarea'
-		} ],
-		relations : [ {
-			name : 'computer',
-			title : 'Computers'
-		} ]
-	}
-};
+var globalResources = {};
+
+$.ajax( {
+  url : "/public/data/resources.json",
+  dataType : 'json',
+  async : false,
+  success : function(data, textStatus, xhr) {
+    globalResources = data;
+  },
+  error : function(xhr, textStatus, errorThrown) {
+    console.log("Reading resources json file didnt work: " + textStatus);
+  }
+});

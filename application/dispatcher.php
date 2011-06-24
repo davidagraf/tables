@@ -12,7 +12,7 @@ include_once 'handler.php';
 $uri = new UriParser();
 
 // Executes handler to produce the response.
-$handler = new Handler($resources, $uri);
+$handler = new Handler(Resources::singleton()->resources(), $uri);
 $handler->invoke();
 
 ?>
