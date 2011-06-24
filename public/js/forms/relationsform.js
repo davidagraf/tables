@@ -5,13 +5,13 @@ function RelationsForm(datasource, id, relation) {
   var _this = this;
   
   function onRelationRemovedHandler(eventtype, data, action) {
-    if (action == TableAction.DELETE) {
+    if (action == TableAction.DELETE_RELATION) {
       outRelationDatasource.getRowsByUrl("/" + relation + "/" + data);
     }
   }
   
   function onRelationAddedHandler(eventtype, data, action) {
-    if (action == TableAction.DELETE) {
+    if (action == TableAction.ADD_RELATION) {
       inRelationDatasource.getRowsByUrl("/" + relation + "/" + data);
     }
   }

@@ -70,6 +70,8 @@ function TableWrapper(datasource, rowButtons) {
 			});
 			break;
 		case TableAction.DELETE:
+		case TableAction.DELETE_RELATION:
+		case TableAction.ADD_RELATION:
 			// note: data = rowId
 			$('#' + data, $table).remove();
 			break;

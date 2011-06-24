@@ -10,7 +10,9 @@ function TableDataSource(resourceUrl, resource) {
 		GET : 'GET',
 		ADD : 'ADD',
 		UPDATE : 'UPDATE',
-		DELETE : 'DELETE'
+		DELETE : 'DELETE',
+		ADD_RELATION: 'ADD_RELATION',
+		DELETE_RELATION: 'DELETE_RELATION'
 	};
 
 	// private methods
@@ -118,7 +120,7 @@ function TableDataSource(resourceUrl, resource) {
 	    type : "POST",
 	    url : getRelationUrl(sourceId, targetResource, targetId),
 	    success : function(data, textStatus, xhr) {
-	      onSuccess(sourceId, TableAction.DELETE);
+	      onSuccess(sourceId, TableAction.ADD_RELATION);
 	    },
 	    error : onError
 	  });
@@ -135,7 +137,7 @@ function TableDataSource(resourceUrl, resource) {
 	      type : "DELETE",
 	      url : getRelationUrl(sourceId, targetResource, targetId),
 	      success : function(data, textStatus, xhr) {
-	        onSuccess(sourceId, TableAction.DELETE);
+	        onSuccess(sourceId, TableAction.DELETE_RELATION);
 	      },
 	      error : onError
 	    });
