@@ -25,15 +25,13 @@ function IndexView() {
 	    relationsForm.$divForm.remove();
 	  }
 	  relationsForm = new RelationsForm(datasource, id, relation);
-	  $('div-form').append(relationsForm.$divForm);
 	}
 	
 	function editRow(idToUpdate, valuesToUpdate) {
-   if (editForm) {
-      editForm.$divForm.remove();
-    }
-    editForm = new EditForm(datasource, idToUpdate, valuesToUpdate);
-    $('div-form').append(editForm.$divForm);
+      if (editForm) {
+        editForm.$divForm.remove();
+      }
+      editForm = new EditForm(datasource, idToUpdate, valuesToUpdate);
 	}
 
 	function onRowButtonClickedHandler($row, button) {

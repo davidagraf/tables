@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Army Inventary System</title>
+<title>Army Inventory System</title>
 
 <!--[if lt IE 9]>
 <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 
 <link rel="stylesheet" href="../third/jquery-ui-1.8.13.custom/development-bundle/themes/base/jquery.ui.all.css"></link>
-<link rel="stylesheet" type="text/css" href="css/army.css"></link>
+<link rel="stylesheet" type="text/css" href="css/tables.css"></link>
 
 <!-- jQuery -->
 <script type="text/javascript" src="../third/jquery-ui-1.8.13.custom/development-bundle/jquery-1.5.1.js"></script>
@@ -47,20 +47,46 @@
 
 </head>
 <body>
-  <nav id="nav-tabs">
-    <a href="#/computer" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Computer</span></a>
-    <a href="#/software" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Software</span></a>
-  </nav>
-  <div class="ui-widget-content ui-corner-all">
-    <div id="div-form"></div>
-	  <div id="div-table" class="ui-widget">
-	  <div id="div-btns">
-	    <button id="btn-add" class="hidden">Add</button>
-	    <button id="btn-reload" class="hidden">Reload</button>
-	  </div>
-	  <p class="table-msg-box"></p>
-	  <div id="div-data-table" class="tables-table"></div>
-	  </div>
+  <!-- Header -->
+  <div id="div-header" class="ui-div-header">
+	<table width="100%">
+		<tr>
+			<td style="text-align:left; vertical-align: top;"><img src="images/ais_title.png" /></td>
+			<td style="text-align:right; vertical-align: top; width: 100%"><img src="images/header_right.png" /></td>
+		</tr>
+	</table>
+</div>
+  
+  <!-- Menu -->
+	<div id="main-menu">
+	<table>
+		<tr>
+			<td><a href="home.html" class="ui-mainmenu-link">Home</a></td>
+			<td><a href="index.html" class="ui-mainmenu-link-active">Data	Management</a></td>
+			<td><a href="reporting.html" class="ui-mainmenu-link">Reporting</a></td>
+		</tr>
+		<tr>
+		<td></td>
+		<td style="text-align: center;"><img src="images/arrow_selected_tab.png" /></td>
+		<td></td>
+		</tr>
+	</table>
+</div>
+  
+  <!-- Content -->
+  <div id="div-content" class="ui-div-content ui-widget-content ui-corner-all">
+    <nav id="nav-tabs">
+      <a href="#/computer" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Computer</span></a>
+      <a href="#/software" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Software</span></a>
+    </nav>
+    <div id="div-table" class="ui-widget">
+      <div id="div-btns">
+        <button id="btn-add" class="hidden">Add</button>
+        <button id="btn-reload" class="hidden">Reload</button>
+      </div>
+      <p class="table-msg-box"></p>
+      <div id="div-data-table" class="tables-table"></div>
+    </div>  
   </div>
 </body>
 </html>
