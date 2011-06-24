@@ -1,0 +1,104 @@
+OVERVIEW
+========
+The tables app is an application to save charts of data and put relations in between the charts. Is is 100% generic.
+The schema of the saved data can be configured randomly.
+
+Software Parts:
+---------------
+Database (MYSQL) <-- SQL --> Application Server (PHP) <-- RESTfull (JSON) --> Client (Javascript/jQuery)
+
+CONFIGURATION
+=============
+- Database: Configuration is done hardcoded. Tables need to be created/deleted/extended by hand.
+- Application Server / Client: Both parts load the conigration from the file '/public/data/resources.json'. It contains the 
+  description of the charts (chart columns, naming, datatypes, etc) and the relations between each other.
+  
+  Example:
+  {
+    "computer" : {                 <--- Descripes the schema of a chart. Key is the unique identifier of the chart type ('computer').
+      "name" : "computer",         <--- Name of the chart. Redundant to the key but needed because of performance reasons.
+      "title" : "Computers",       <--- Printed title of the chart.
+      "fields" : {                 <--- Fields of the chart.
+        "asset_tag" : {            <--- Schema of one chart column. Key is identifier of the column ('asset_tag').
+          "title" : "Asset Tag"    <--- Printed column title.
+        },
+        "comments" : {
+          "title" : "Type",
+          "type"  : "textarea"     <--- Datatype. Default is text.
+        }
+      } ,
+      "relations" : {              <--- Defines the charts to which this chart can be related to.
+        "software" : {             <--- One relation. Identified by the key ('software').
+          "title" : "Software"     <--- Printed column title.
+        }
+      }
+    },
+    "software" : {
+      "name" : "software",
+      "title" : "Software",
+      "fields" : {
+        "name" : {
+          "title" : "Name"
+        },
+        "version" : {
+          "title" : "Version",
+          "type" : "version"
+        }
+      },
+      "relations" : {
+        "computer" : {
+          "title" : "Computers"
+        }
+      }
+    }
+  }
+  
+
+IMPORTANT: Database and resources.json needs to be in sync!
+
+DATA BASE
+=========
+The database has two kind of tables
+- chart tables: Save a chart 1-to-1 (column of a chart is mapped to a column in the database). Table names need to be similar
+                to the chart identifier, and table columns to the column identifier of the coniguration file. Additionally,
+                an id is saved for each column.
+                
+                Examples:
+                -------------------------------------              ------------------------------
+                | computer                          |              | software                   |
+                ------------------------------------|              -----------------------------|
+                | id | asset_tags | comments        |              | id | name       | version  |
+                |===================================|              |============================|
+                | 1  | some tag   | blabla          |              | 2  | Windows    | 7.0      |
+                -------------------------------------              ------------------------------
+                
+- relation tables: Save the relation between tables. Per convention, the name for a relation table between chart
+                   'computer' and 'software' has the name 'computer_software'. The ordering of the parts before and 
+                   after the underscore is defined by string comparison: 'computer' < 'software'.
+                   The table contain two columns with the names equal to the referenced charts to safe the referenced row ids
+                   of the corresponding charts.
+                   
+                   Example:
+                   ------------------------------
+                   | computer_software          |
+                   -----------------------------|
+                   | id | computer   | software |
+                   |============================|
+                   | 2  | 1          | 2        |
+                   ------------------------------
+
+
+Application Server
+==================
+The application provides a REST interface for the client (see http://en.wikipedia.org/wiki/Representational_State_Transfer).
+To enable the implementation of a RESTfull interface, the help of Apache's /.htacces file is needed. It redirects each request
+that doesn't target a static file (like /public/index.html) to the php file /application/dispatcher.php. The dispatcher parses
+the request URI, and executes the correct SQL statements and generates the correct response with the lop of the handler
+(/application/handler.php).
+
+The following REST API is provided:
+TODO
+
+CLIENT
+======
+TODO
