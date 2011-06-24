@@ -14,36 +14,43 @@ function TableWrapper(datasource, rowButtons) {
 
 	// initialize
 
-	var $table = $('<table class="tui"><thead><tr /></thead><tbody /></table>');
+	var $table = $('<table class="tui"><thead><tr class="header1" /><tr class="header2" /></thead><tbody /></table>');
 	this.__defineGetter__("$table", function() {
 		return $table;
 	});
 
-	// $table.tablesorter( {
-	// debug : false,
-	// sortList : [ [ 0, 0 ] ],
-	// widgets : [ 'zebra' ]
-	// }).tablesorterPager( {
-	// container : $("#pagerOne"),
-	// positionFixed : false
-	// }).tablesorterFilter( {
-	// filterContainer : $("#filterBoxOne"),
-	// filterClearContainer : $("#filterClearOne"),
-	// filterColumns : [ 0, 1, 2, 3, 4, 5, 6 ],
-	// filterCaseSensitive : false
-	// });
+	var numberOfColumns = Object.keys(datasource.resource.fields).length
+			+ Object.keys(datasource.resource.relations).length
+			+ rowButtons.length;
+
+	var filterColumns = [];
+	for ( var colIdx = 0; colIdx < Object.keys(datasource.resource.fields).length; colIdx++) {
+		filterColumns.push(colIdx);
+	}
+
+	$('.header1', $table).append(
+			$('<td colspan="1" class="tableHeader">'
+					+ datasource.resource.title + '</td>'));
+
+	$('.header1', $table)
+			.append(
+					$('<td colspan="'
+							+ (numberOfColumns - 1)
+							+ '" class="filter">'
+							+ 'Filter: <input id="filterBox" value="" style="display: inline;" maxlength="30" size="30" type="text" />'
+							+ '<img id="filterClear" src="images/cross.png" title="Hier klicken, um den Filter zu löschen." alt="Filter löschen" /></td>'));
 
 	// adding table columns
 	var i = 1;
 	$.each(datasource.resource.fields, function(key, field) {
-		$th = $('<th>' + field.title + '</th>');
-		$("thead tr", $table).append($th);
+		$th = $('<th><a title="Sortieren">' + field.title + '</a></th>');
+		$(".header2", $table).append($th);
 		i = i + 1;
 	});
 
 	// adding relations
 	$.each(datasource.resource.relations, function(key, relation) {
-		$("thead tr", $table).append($('<th>' + relation.title + '</th>'));
+		$(".header2", $table).append($('<th>' + relation.title + '</th>'));
 	});
 	datasource.registerOnSuccess(onDataSourceChangedHandler);
 
@@ -54,7 +61,7 @@ function TableWrapper(datasource, rowButtons) {
 				var $row = $(this).parent().parent();
 				_this.onRowButtonClicked($row, tablebutton);
 			});
-			$("thead tr", $table).append($('<th></th>'));
+			$(".header2", $table).append($('<th></th>'));
 		});
 	}
 
@@ -65,6 +72,23 @@ function TableWrapper(datasource, rowButtons) {
 				relation);
 	});
 
+	// footer (paging)
+	$table
+			.append($('<tfoot><tr id="pager"><td colspan="'
+					+ numberOfColumns
+					+ '">'
+					+ '<img src="images/first.png" class="first"/>'
+					+ '<img src="images/prev.png" class="prev"/>'
+					+ '<input type="text" class="pagedisplay" style="display:inline"/>'
+					+ '<img src="images/next.png" class="next"/>'
+					+ '<img src="images/last.png" class="last"/>'
+					+ '<select class="pagesize" style="display:inline">'
+					+ '<option selected="selected"  value="5">5</option>'
+					+ '<option value="10">10</option>'
+					+ '<option value="20">20</option>'
+					+ '<option  value="40">40</option></select></td>'
+					+ '</tr></tfoot>'));
+		
 	// private functions
 	function onDataSourceChangedHandler(eventtype, data, action) {
 		console
@@ -97,6 +121,28 @@ function TableWrapper(datasource, rowButtons) {
 			$('#' + data, $table).remove();
 			break;
 		}
+		
+		// init sorting / paging / filtering
+		$table.tablesorter( {
+			debug : true,
+			sortList : [[0,0]],
+			widgets : [ 'zebra' ]
+		// ,
+		// 
+		});
+//		.tablesorterPager( {
+//			container : $('#pager', $table),
+//			positionFixed : false
+//		});
+		// .tablesorterPager( {
+		// container : $('#pager', $table),
+		// positionFixed : false
+		// }).tablesorterFilter( {
+		// filterContainer : $('#filterBoxOne', $table),
+		// filterClearContainer : $('#filterClearOne', $table),
+		// filterColumns : filterColumns,
+		// filterCaseSensitive : false
+		// });
 	}
 
 	/**
