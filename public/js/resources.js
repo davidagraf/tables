@@ -5,7 +5,7 @@
 var globalResources = {};
 
 $.ajax( {
-  url : "/public/js/resources.json",
+  url : "/public/data/resources.json",
   dataType : 'json',
   async : false,
   success : function(data, textStatus, xhr) {

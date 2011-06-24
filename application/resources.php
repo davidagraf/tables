@@ -3,21 +3,6 @@
 /**
  * All available resources
  */
-/*
-$resources = array(
-  "computer" => array(
-    "name" => "computer",
-    "fields" => array("asset_tag", "type", "brand", "model", "status", "name", "serial1", "serial2"),
-    "relations" => array("software" => "computer_software")
-  ),
-  "software" => array(
-    "name" => "software",
-    "fields" => array("name", "version", "distributor", "license", "expiration", "comments"),
-    "relations" => array("computer" => "computer_software")
-  )
-);
-*/
-
 class Resources
 {
     // Hold an instance of the class
@@ -28,7 +13,7 @@ class Resources
     // A private constructor; prevents direct creation of object
     private function __construct() 
     {
-      $resources_file = file_get_contents($_SERVER["DOCUMENT_ROOT"] . '/public/js/resources.json');
+      $resources_file = file_get_contents($_SERVER["DOCUMENT_ROOT"] . '/public/data/resources.json');
       $this->resources = json_decode($resources_file, true);
     }
 
