@@ -1,6 +1,6 @@
 function RelationsForm(datasource, id, relation) {
   this.base = FormPrototype;
-  this.base(datasource, "Relation " + "'" + relation + "'");
+  this.base(datasource, "Relation '" + datasource.resource.name + " -> " + relation + "'");
   
   var _this = this;
   
@@ -24,6 +24,8 @@ function RelationsForm(datasource, id, relation) {
     outRelationDatasource.addRelation($row.attr("id"), datasource.resource, id);
   }
   
+  _this.$divForm.append("<b>In</b>");
+  
   // init table that contains the items which are related
   var inRelationDatasource = new TableDataSource("/" + relation + "/" + datasource.resource.name + "==" + id, 
                                                  globalResources[relation]);
@@ -31,7 +33,11 @@ function RelationsForm(datasource, id, relation) {
   var inRelationTable = new TableWrapper(inRelationDatasource, [DefaultTableButtons.RemoveFromRelationButton]);
   inRelationTable.onRowButtonClicked = onRemoveRelationClickedHandler;
   inRelationDatasource.getRows();
-  _this.$divForm.append(inRelationTable.$table);
+  var $inDiv = $('<div class="tables-table"></div>');
+  $inDiv.append(inRelationTable.$table);
+  _this.$divForm.append($inDiv);
+  
+  _this.$divForm.append("<b>Out</b>");
   
   // int table that contains the items wich are not related
   var outRelationDatasource = new TableDataSource("/" + relation + "/" + datasource.resource.name + "!=" + id, 
@@ -40,7 +46,9 @@ function RelationsForm(datasource, id, relation) {
   var outRelationTable = new TableWrapper(outRelationDatasource, [DefaultTableButtons.AddToRelationButton]);
   outRelationTable.onRowButtonClicked = onAddRelationClickedHandler;
   outRelationDatasource.getRows();
-  _this.$divForm.append(outRelationTable.$table);
+  var $outDiv = $('<div class="tables-table"></div>');
+  $outDiv.append(outRelationTable.$table);
+  _this.$divForm.append($outDiv);
   
   _this.$divForm.dialog( {
     autoOpen : true,
