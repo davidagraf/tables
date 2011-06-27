@@ -23,9 +23,11 @@ function TableWrapper(datasource, rowButtons) {
 			+ Object.keys(datasource.resource.relations).length
 			+ rowButtons.length;
 
-	var filterColumns = [];
-	for ( var colIdx = 0; colIdx < Object.keys(datasource.resource.fields).length; colIdx++) {
-		filterColumns.push(colIdx);
+	var sorterColumns = {};
+	for ( var colIdx = Object.keys(datasource.resource.fields).length; colIdx < numberOfColumns; colIdx++) {
+		sorterColumns[colIdx] = {
+			sorter : false
+		};
 	}
 
 	$('.header1', $table).append(
@@ -83,12 +85,58 @@ function TableWrapper(datasource, rowButtons) {
 					+ '<img src="images/next.png" class="next"/>'
 					+ '<img src="images/last.png" class="last"/>'
 					+ '<select class="pagesize" style="display:inline">'
-					+ '<option selected="selected"  value="5">5</option>'
-					+ '<option value="10">10</option>'
+					+ '<option value="5">5</option>'
+					+ '<option selected="selected" value="10">10</option>'
 					+ '<option value="20">20</option>'
 					+ '<option  value="40">40</option></select></td>'
 					+ '</tr></tfoot>'));
-		
+
+	var isTableExtensionsInitialized = false;
+
+	function initializeOrUpdateTableExtensions() {
+
+		if (isTableExtensionsInitialized) {
+			// update table sorter
+			$.trigger("appendCache");
+			$table.trigger("applyWidgets");
+			$table.trigger("update");
+		} else {
+			// init sorting / paging / filtering
+			try {
+
+				$table.tablesorter( {
+					debug : false,
+					sortList : [ [ 0, 0 ] ],
+					widgets : [ 'zebra' ],
+					widthFixed : true,
+					headers : sorterColumns
+				}).tablesorterPager( {
+					container : $("#pager", $table),
+					positionFixed : false
+				});
+				isTableExtensionsInitialized = true;
+			} catch (e) {
+				console.log('table extensions could not be initialized! ' + e)
+			}
+
+			// .tablesorterPager( {
+			// container : $('#pager', $table),
+			// positionFixed : false
+			// });
+			// .tablesorterPager( {
+			// container : $('#pager', $table),
+			// positionFixed : false
+			// }).tablesorterFilter( {
+			// filterContainer : $('#filterBoxOne', $table),
+			// filterClearContainer : $('#filterClearOne', $table),
+			// filterColumns : filterColumns,
+			// filterCaseSensitive : false
+			// });
+
+		}
+
+	}
+
 	// private functions
 	function onDataSourceChangedHandler(eventtype, data, action) {
 		console
@@ -121,28 +169,8 @@ function TableWrapper(datasource, rowButtons) {
 			$('#' + data, $table).remove();
 			break;
 		}
-		
-		// init sorting / paging / filtering
-		$table.tablesorter( {
-			debug : true,
-			sortList : [[0,0]],
-			widgets : [ 'zebra' ]
-		// ,
-		// 
-		});
-//		.tablesorterPager( {
-//			container : $('#pager', $table),
-//			positionFixed : false
-//		});
-		// .tablesorterPager( {
-		// container : $('#pager', $table),
-		// positionFixed : false
-		// }).tablesorterFilter( {
-		// filterContainer : $('#filterBoxOne', $table),
-		// filterClearContainer : $('#filterClearOne', $table),
-		// filterColumns : filterColumns,
-		// filterCaseSensitive : false
-		// });
+
+		initializeOrUpdateTableExtensions();
 	}
 
 	/**

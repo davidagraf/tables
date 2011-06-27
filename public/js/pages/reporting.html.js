@@ -1,9 +1,9 @@
 /**
- * Creates a code behind type for {@link index.html}
- *
- * @returns {IndexView}
+ * Creates a code behind type for {@link reporting.html}
+ * 
+ * @returns {ReportingView}
  */
-function IndexView() {
+function ReportingView() {
 	// public functions
 	/**
 	 * Initializes this page

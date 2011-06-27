@@ -49,7 +49,7 @@
 <script type="text/javascript" src="js/forms/relationsform.js"></script>
 
 <!-- page JS -->
-<script type="text/javascript" src="js/pages/index.html.js"></script>
+<script type="text/javascript" src="js/pages/data.html.js"></script>
 
 </head>
 <body>
@@ -67,13 +67,13 @@
 	<div id="main-menu">
 	<table>
 		<tr>
-			<td><a href="index.html" class="ui-mainmenu-link-active">Home</a></td>
-			<td><a href="data.html" class="ui-mainmenu-link">Datenverwaltung</a></td>
+			<td><a href="index.html" class="ui-mainmenu-link">Home</a></td>
+			<td><a href="data.html" class="ui-mainmenu-link-active">Datenverwaltung</a></td>
 			<td><a href="reporting.html" class="ui-mainmenu-link">Berichte</a></td>
 		</tr>
 		<tr>
-		<td style="text-align: center;"><img src="images/arrow_selected_tab.png" /></td>
 		<td></td>
+		<td style="text-align: center;"><img src="images/arrow_selected_tab.png" /></td>
 		<td></td>
 		</tr>
 	</table>
@@ -81,7 +81,18 @@
   
   <!-- Content -->
   <div id="div-content" class="ui-div-content ui-widget-content ui-corner-all">
-    <h2>Willkommen & Hilfe!</h2>
+    <nav id="nav-tabs">
+      <a href="#/computer" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Computer</span></a>
+      <a href="#/software" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Software</span></a>
+    </nav>
+    <div id="div-table" class="ui-widget">
+      <div id="div-btns">
+        <button id="btn-add" class="hidden">Add</button>
+        <button id="btn-reload" class="hidden">Reload</button>
+      </div>
+      <p class="table-msg-box"></p>
+      <div id="div-data-table" class="tables-table"></div>
+    </div>  
   </div>
 </body>
 </html>
