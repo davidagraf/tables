@@ -124,7 +124,7 @@ function EditForm(datasource, idToUpdate, inputValues, add) {
   
   _this.$divForm.dialog( {
     autoOpen : true,
-    height : 550,
+    height : 'auto',
     width : 500,
     modal : true,
     buttons : {

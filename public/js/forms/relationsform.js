@@ -84,8 +84,8 @@ function RelationsForm(datasource, id, relation) {
 
 	_this.$divForm.dialog( {
 		autoOpen : true,
-		height : 700,
-		width : 1000,
+		height : 'auto',
+		width : '90%',
 		modal : true,
 		buttons : {
 			Close : function() {
