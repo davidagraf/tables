@@ -109,15 +109,21 @@ input.tui-input,select.tui-input,textarea.tui-input,button.tui-input {
 }
 
 button.tui-button {
-	padding:0px;
+	padding: 0px;
 	margin: 2px;
 }
 
 button.tui-table-button {
-	padding:0px;
-  margin: 0px;
+	padding: 0px;
+	margin: 0px;
 }
 
 td.tui-nowrap {
 	white-space: nowrap;
+}
+
+div.tui-rel-separator {
+  text-align: center;
+  height: 48px;	
+  vertical-align: middle;
 }

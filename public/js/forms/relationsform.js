@@ -27,8 +27,6 @@ function RelationsForm(datasource, id, relation) {
 				id);
 	}
 
-	_this.$divForm.append("<b>In</b>");
-
 	// init table that contains the items which are related
 	var inRelationDatasource = new TableDataSource("/" + relation + "/"
 			+ datasource.resource.name + "==" + id, globalResources[relation]);
@@ -44,7 +42,30 @@ function RelationsForm(datasource, id, relation) {
 	$inDiv.append(inRelationTable.$table);
 	_this.$divForm.append($inDiv);
 
-	_this.$divForm.append("<b>Out</b>");
+	var editMode = false;
+	$collapseEditBtn = $('<button id="collapseEditBtn">Editieren</button>');
+	$collapseEditBtn.button( {
+		text : true
+	});
+	$collapseEditBtn.css('margin-top', '11px');
+	$collapseEditBtn.click(function() {
+		editMode = !editMode;
+		$('.ui-button-text', this).text(
+				editMode ? "Editieren beenden" : "Editieren");
+		$(this).attr(
+				'title',
+				editMode ? "Beendet den Editiermodus"
+						: "Startet den Editiermodus");
+
+		if (editMode) {
+			outRelationTable.$table.show('slow');
+		} else {
+			outRelationTable.$table.hide('slow');
+		}
+	});
+	$separatorDiv = $('<div class="tui-rel-separator" />');
+	$separatorDiv.append($collapseEditBtn);
+	_this.$divForm.append($separatorDiv);
 
 	// int table that contains the items wich are not related
 	var outRelationDatasource = new TableDataSource("/" + relation + "/"
@@ -56,6 +77,7 @@ function RelationsForm(datasource, id, relation) {
 	outRelationTable.skipRelations = true;
 	outRelationTable.onRowButtonClicked = onAddRelationClickedHandler;
 	outRelationDatasource.getRows();
+	outRelationTable.$table.hide();
 	var $outDiv = $('<div class="tables-table"></div>');
 	$outDiv.append(outRelationTable.$table);
 	_this.$divForm.append($outDiv);

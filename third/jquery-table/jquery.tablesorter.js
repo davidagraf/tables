@@ -784,8 +784,12 @@
                             return false;
                         }
                     });
+                    
+                    var isUpdating = false;
+                    
                     // apply easy methods that trigger binded events
                     $this.bind("update", function () {
+                    	if(isUpdating) return;
                         var me = this;
                         setTimeout(function () {
                             // rebuild parsers.
@@ -795,8 +799,13 @@
                             cache = buildCache(me);
                         }, 1);
                     }).bind("dynamicUpdate", function () {
+                    	if(isUpdating) return;
                         var me = this;
                         setTimeout(function () {
+                        	isUpdating = true;
+
+                        	$this.trigger("update");
+                        	
                             // rebuild parsers
                             me.config.parsers = buildParserCache(me, $headers);
                             
@@ -804,6 +813,7 @@
                             cache = buildCache(me);
                                                        
                             // sort
+                            $this.trigger("sorton");
                             // update and store the sortlist
                             var sortList = config.sortList;
                             // update header count index
@@ -814,7 +824,10 @@
                             appendToTable(me, multisort(this, sortList, cache));
                             
                             // apply widgets
+                            $this.trigger("applyWidgets");
                             applyWidget(me);
+                            
+                            isUpdating = false;
                         }, 1);
                     }).bind("updateCell", function (e, cell) {
                         var config = this.config;
@@ -824,6 +837,8 @@
                         cache.normalized[pos[0]][pos[1]] = config.parsers[pos[1]].format(
                         getElementText(config, cell), cell);
                     }).bind("sorton", function (e, list) {
+                    	if(isUpdating) return;
+                    	
                         $(this).trigger("sortStart");
                         config.sortList = list;
                         // update and store the sortlist
@@ -837,8 +852,10 @@
                     }).bind("appendCache", function () {
                         appendToTable(this, cache);
                     }).bind("applyWidgetId", function (e, id) {
+                    	if(isUpdating) return;
                         getWidgetById(id).format(this);
                     }).bind("applyWidgets", function () {
+                    	if(isUpdating) return;
                         // apply widgets
                         applyWidget(this);
                     });
