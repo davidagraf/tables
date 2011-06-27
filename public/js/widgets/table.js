@@ -19,7 +19,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	var skipRelations = false;
 
 	// initialize
-	var $table = $('<table class="tui"><thead><tr class="header1" /><tr class="header2" /><tr class="header3" /></thead><tbody /></table>');
+	var $table = $('<table class="tui"><thead><tr class="header1" /><tr class="header2" /><tr class="header3 tui-headerrow-filter" /><tr class="header4" /></thead><tbody /></table>');
 	this.__defineGetter__("$table", function() {
 		return $table;
 	});
@@ -36,7 +36,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 			$(this).css('display', skipRelations ? 'none' : 'block');
 		});
 	});
-	
+
 	this.__defineGetter__("skipRelations", function() {
 		return skipRelations;
 	});
@@ -58,25 +58,18 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		}
 	}
 
-	$titleHeader = $('<td colspan="'
-			+ numberOfColumns
-			+ '"><table style="width=100%"><tr><td class="tableHeader">'
-			+ tableTitle
-			+ '</td><td class="filter">'
-			+ 'Filter: <input id="filterBox" value="" style="display: inline;" maxlength="30" size="30" type="text" />'
-			+ '<img id="filterClear" src="images/cross.png" title="Hier klicken, um den Filter zu löschen." alt="Filter löschen" /></td></tr></table></td>');
-
 	$('.header1', $table).append(
-			$('<td colspan="' + numberOfColumns + '" class="tableHeader">'
+			$('<td colspan="' + numberOfColumns + '" class="tableHeader" style="text-align:center">'
 					+ tableTitle + '</td>'));
 
+	var firstHalf = Math.floor(numberOfColumns / 2);
 	$('.header2', $table)
 			.append(
 					'<td colspan="'
-							+ numberOfColumns
+							+ firstHalf
 							+ '"> <span style="margin-left:-2px;" id="headerButtons" class="tui-table-header-toolbar" />'
 							+ '<span style="margin-left:'
-							+ (tableHeaderButtons ? 20 : 2)
+							+ (tableHeaderButtons ? 32 : 2)
 							+ 'px">Anzahl Einträge : <span id="numberOfEntries">1232</span></span></td>');
 
 	// init header buttons
@@ -90,6 +83,12 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 			$toolbar.append($button);
 		});
 	}
+
+	var filterHtml = '<td colspan="'
+			+ (numberOfColumns - firstHalf)
+			+ '" style="text-align: right;">Filter: <input id="filterBox" value="" style="display: inline;" maxlength="30" size="30" type="text" />'
+			+ '<img id="filterClear" src="images/cross.png" title="Hier klicken, um den Filter zu löschen." alt="Filter löschen" /></td>';
+	$(".header2", $table).append($(filterHtml));
 
 	// adding table columns
 	var i = 1;

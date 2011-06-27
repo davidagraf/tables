@@ -123,7 +123,12 @@ td.tui-nowrap {
 }
 
 div.tui-rel-separator {
-  text-align: center;
-  height: 48px;	
-  vertical-align: middle;
+	text-align: center;
+	height: 48px;
+	vertical-align: middle;
+}
+
+tr.tui-headerrow-filter {
+	text-align: right;
+	margin-top: -24px;
 }
