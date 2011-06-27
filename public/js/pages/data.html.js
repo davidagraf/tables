@@ -19,23 +19,24 @@ function DataView() {
 
 	// private functions
 	function onShowRelationHandler($row, id, relation) {
-	  if (relationsForm) {
-	    relationsForm.$divForm.remove();
-	  }
-	  relationsForm = new RelationsForm(datasource, id, relation);
+		if (relationsForm) {
+			relationsForm.$divForm.remove();
+		}
+		relationsForm = new RelationsForm(datasource, id, relation);
 	}
-	
+
 	function editRow(idToUpdate, valuesToUpdate) {
-      if (editForm) {
-        editForm.$divForm.remove();
-      }
-      editForm = new EditForm(datasource, idToUpdate, valuesToUpdate);
+		if (editForm) {
+			editForm.$divForm.remove();
+		}
+		editForm = new EditForm(datasource, idToUpdate, valuesToUpdate,
+				idToUpdate == -1);
 	}
 
 	function onRowButtonClickedHandler($row, button) {
 		switch (button) {
 		case DefaultTableButtons.EditButton:
-		  valuesToUpdate = tableWrapper.rowValues($row);
+			valuesToUpdate = tableWrapper.rowValues($row);
 			editRow($row.attr("id"), valuesToUpdate);
 			break;
 		case DefaultTableButtons.DeleteButton:
@@ -44,18 +45,20 @@ function DataView() {
 		}
 	}
 
+	function onHeaderButtonClickedHandler(button) {
+		switch (button) {
+		case DefaultTableButtons.AddButton:
+			editRow(-1);
+			break;
+		case DefaultTableButtons.ReloadButton:
+			reloadTable();
+			break;
+		}
+	}
+
 	function reloadTable() {
 		tableWrapper.reload();
 	}
-
-	// events
-	$btnReload.button().click(function() {
-		reloadTable();
-	});
-
-	$btnAdd.button().click(function() {
-	   editRow(-1);
-	});
 
 	// public functions
 	/**
@@ -75,16 +78,17 @@ function DataView() {
 
 		datasource = new TableDataSource(uri.path, resource);
 
-		// show buttons
-		$btnAdd.removeClass('hidden');
-		$btnReload.removeClass('hidden');
-
 		// init table
-		tableWrapper = new TableWrapper(datasource, [
-				DefaultTableButtons.EditButton,
-				DefaultTableButtons.DeleteButton ]);
+		var rowButtons = [ DefaultTableButtons.EditButton,
+				DefaultTableButtons.DeleteButton ];
+		var headerButtons = [ DefaultTableButtons.AddButton,
+				DefaultTableButtons.ReloadButton ];
+		tableWrapper = new TableWrapper(
+				firstLetterToUpper(datasource.resource.title), datasource,
+				rowButtons, headerButtons);
 		tableWrapper.onShowRelation = onShowRelationHandler;
 		tableWrapper.onRowButtonClicked = onRowButtonClickedHandler;
+		tableWrapper.onHeaderButtonClicked = onHeaderButtonClickedHandler;
 		tableWrapper.enableShowRelations = true;
 		$('#div-data-table').append(tableWrapper.$table);
 		datasource.getRows();
@@ -102,16 +106,14 @@ function DataView() {
 	 */
 	this.clean = function() {
 		// empty dom
-		$btnAdd.addClass('hidden');
-		$btnReload.addClass('hidden');
 		$msgBoxTable.text("");
 		$msgBoxForm.text("");
 		if (editForm) {
-		  editForm.$divForm.remove();
+			editForm.$divForm.remove();
 		}
 		if (relationsForm) {
-		  relationsForm.$divForm.remove();
-    }
+			relationsForm.$divForm.remove();
+		}
 		$("#nav-tabs a").removeClass("ui-state-active");
 		if (tableWrapper) {
 			tableWrapper.$table.remove();

@@ -7,16 +7,53 @@
  *            see {@link TableButton.TableButtonIcon}
  * @returns {TableButton} of type $('<button />')
  */
-function TableButton(title, nameclass, icon) {
+function TableButton(title, nameclass, icon, tooltip) {
 	this.nameclass = nameclass;
+	this.doConfirm = false;
+	this.confirmTitle;
+	this.confirmInstructions;
+
+	if (!tooltip) {
+		tooltip = title;
+	}
+
 	this.createNew = function() {
-		var buttonHtml = '<button class="' + nameclass + ' in-table-button'
-				+ ' ui-button' + ' ui-widget' + ' ui-state-default'
-				+ ' ui-corner-all' + ' ui-button-text-only"' + ' title="'
-				+ title + '"' + ' role="button"' + ' aria-disabled="false">'
-				+ '<span class="ui-button-text">' + '<span class="ui-icon '
-				+ icon + '">' + '</span>' + '</span>' + '</button>';
-		return $(buttonHtml);
+		var buttonHtml = '<button class="' + nameclass + '" title="' + tooltip
+				+ '"' + '>' + firstLetterToUpper(title) + '</button>';
+		var $tableButton = $(buttonHtml);
+		$tableButton.button( {
+			text : true,
+			icons : {
+				primary : icon
+			}
+		});
+
+		$tableButton.addClass("tui-table-button");
+
+		return $tableButton;
+	};
+
+	this.createNewToolbarButton = function() {
+		var buttonHtml = '<button class="' + nameclass + '" id="' + nameclass
+				+ '" title="' + tooltip + '">' + firstLetterToUpper(title)
+				+ '</button>';
+		var $toolbarButton = $(buttonHtml);
+		$toolbarButton.button( {
+			text : true,
+			icons : {
+				primary : icon
+			}
+		});
+
+		$toolbarButton.addClass("tui-button");
+		return $toolbarButton;
+	};
+
+	this.confirmAction = function(title, instructions) {
+		this.doConfirm = true;
+		this.confirmTitle = title;
+		this.confirmInstructions = instructions;
+		return this;
 	};
 }
 
@@ -27,15 +64,24 @@ var TableButtonIcon = {
 	Link : "ui-icon-extlink",
 	Generic : "ui-icon-extlink",
 	ArrowDown : "ui-icon-arrow-1-s",
-	ArrowUp : "ui-icon-arrow-1-n"
+	ArrowUp : "ui-icon-arrow-1-n",
+	AddRow : "ui-icon-plus",
+	Reload : "ui-icon-refresh"
 };
 
 var DefaultTableButtons = {
-	EditButton : new TableButton("edit", "btn-edit-row", TableButtonIcon.Edit),
-	DeleteButton : new TableButton("delete", "btn-delete-row",
-			TableButtonIcon.Delete),
-  RemoveFromRelationButton : new TableButton("remove", "btn-remove-from-relation", 
-      TableButtonIcon.ArrowDown),
-  AddToRelationButton : new TableButton("add", "btn-add-to-relation",
-      TableButtonIcon.ArrowUp)
+	EditButton : new TableButton("Editieren", "btn-edit-row",
+			TableButtonIcon.Edit, "Eintrag editieren"),
+	DeleteButton : new TableButton("Löschen", "btn-delete-row",
+			TableButtonIcon.Delete, "Eintrag löschen"),
+	RemoveFromRelationButton : new TableButton("Entfernen",
+			"btn-remove-from-relation", TableButtonIcon.ArrowDown,
+			"Entfernt die Verbindung zwischen den beiden Einträgen."),
+	AddToRelationButton : new TableButton("Hinzufügen", "btn-add-to-relation",
+			TableButtonIcon.ArrowUp,
+			"Stellt eine Verbindung zwischen den beiden Einträgen her"),
+	AddButton : new TableButton("Neu", "btn-add", TableButtonIcon.AddRow,
+			"Neuen Eintrag erstellen"),
+	ReloadButton : new TableButton("Nachladen", "btn-reload",
+			TableButtonIcon.Reload, "Lädt den Inhalt der Tabelle neu")
 };

@@ -5,9 +5,9 @@
  * @param inputValues
  * @returns {EditForm}
  */
-function EditForm(datasource, idToUpdate, inputValues) {
+function EditForm(datasource, idToUpdate, inputValues, add) {
 	this.base = FormPrototype;
-	this.base(datasource, "Add / Update");
+	this.base(datasource, add ? "Neuer Eintrag" : "Editieren");
 	
   var _this = this;
   
@@ -60,17 +60,17 @@ function EditForm(datasource, idToUpdate, inputValues) {
     switch (value.type) {
     case undefined:
     case "text":
-      $input = $('<input type="text" class="text" />');
+      $input = $('<input type="text" class="text tui-input" />');
       break;
     case "date":
-      $input = $('<input type="text" class="text dateISO8601" />');
+      $input = $('<input type="text" class="text dateISO8601 tui-input" />');
       $input.mask("9999-99-99");
       break;
     case "textarea":
-      $input = $('<textarea class="textarea" />');
+      $input = $('<textarea class="textarea tui-input" />');
       break;
     default:
-      $input = $('<input type="text" class="text ' + value.type
+      $input = $('<input type="text" class="text tui-input ' + value.type
           + '" />');
       break;
     }

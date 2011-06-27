@@ -794,6 +794,28 @@
                             // rebuild the cache map
                             cache = buildCache(me);
                         }, 1);
+                    }).bind("dynamicUpdate", function () {
+                        var me = this;
+                        setTimeout(function () {
+                            // rebuild parsers
+                            me.config.parsers = buildParserCache(me, $headers);
+                            
+                            // rebuild the cache
+                            cache = buildCache(me);
+                                                       
+                            // sort
+                            // update and store the sortlist
+                            var sortList = config.sortList;
+                            // update header count index
+                            updateHeaderSortCount(me, sortList);
+                            // set css for headers
+                            setHeadersCss(me, $headers, sortList, sortCSS);
+                            // sort the table and append it to the dom
+                            appendToTable(me, multisort(this, sortList, cache));
+                            
+                            // apply widgets
+                            applyWidget(me);
+                        }, 1);
                     }).bind("updateCell", function (e, cell) {
                         var config = this.config;
                         // get position from the dom.

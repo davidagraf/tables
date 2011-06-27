@@ -1,69 +1,128 @@
 /**
  * Creates a table view
  * 
+ * @param tableTitle :
+ *            title to be displayed on top of the table (if null, the name of
+ *            the bound resource is displayed)
  * @param databinding :
  *            data source bound to this table, {@link TableDataSource}
  * @param rowButtons :
- *            rows to be appended
+ *            buttons to be appended to rows
+ * @param rowtableHeaderButtons :
+ *            buttons to be appended to rows
  * @returns {TableWrapper}
  */
-function TableWrapper(datasource, rowButtons) {
+function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	var _this = this;
 	this.enableShowRelations = false;
 	this.enableSorting = true;
+	var skipRelations = false;
 
 	// initialize
-
-	var $table = $('<table class="tui"><thead><tr class="header1" /><tr class="header2" /></thead><tbody /></table>');
+	var $table = $('<table class="tui"><thead><tr class="header1" /><tr class="header2" /><tr class="header3" /></thead><tbody /></table>');
 	this.__defineGetter__("$table", function() {
 		return $table;
 	});
 
+	// skip relations
+	this.__defineSetter__("skipRelations", function(value) {
+		if (value == skipRelations) {
+			return;
+		}
+
+		skipRelations = value;
+
+		$('.tui-relation-header', _this.$table).each(function($header) {
+			$(this).css('display', skipRelations ? 'none' : 'block');
+		});
+	});
+	
+	this.__defineGetter__("skipRelations", function() {
+		return skipRelations;
+	});
+
 	var numberOfColumns = Object.keys(datasource.resource.fields).length
-			+ Object.keys(datasource.resource.relations).length
-			+ rowButtons.length;
+			+ (_this.skipRelations ? 0 : Object
+					.keys(datasource.resource.relations).length)
+			+ (rowButtons ? 1 : 0);
 
 	var sorterColumns = {};
-	for ( var colIdx = Object.keys(datasource.resource.fields).length; colIdx < numberOfColumns; colIdx++) {
-		sorterColumns[colIdx] = {
-			sorter : false
-		};
+	var filterColumns = [];
+	for ( var colIdx = 0; colIdx < numberOfColumns; colIdx++) {
+		if (colIdx >= Object.keys(datasource.resource.fields).length) {
+			sorterColumns[colIdx] = {
+				sorter : false
+			};
+		} else {
+			filterColumns.push(colIdx);
+		}
 	}
 
-	$('.header1', $table).append(
-			$('<td colspan="1" class="tableHeader">'
-					+ datasource.resource.title + '</td>'));
+	$titleHeader = $('<td colspan="'
+			+ numberOfColumns
+			+ '"><table style="width=100%"><tr><td class="tableHeader">'
+			+ tableTitle
+			+ '</td><td class="filter">'
+			+ 'Filter: <input id="filterBox" value="" style="display: inline;" maxlength="30" size="30" type="text" />'
+			+ '<img id="filterClear" src="images/cross.png" title="Hier klicken, um den Filter zu löschen." alt="Filter löschen" /></td></tr></table></td>');
 
-	$('.header1', $table)
+	$('.header1', $table).append(
+			$('<td colspan="' + numberOfColumns + '" class="tableHeader">'
+					+ tableTitle + '</td>'));
+
+	$('.header2', $table)
 			.append(
-					$('<td colspan="'
-							+ (numberOfColumns - 1)
-							+ '" class="filter">'
-							+ 'Filter: <input id="filterBox" value="" style="display: inline;" maxlength="30" size="30" type="text" />'
-							+ '<img id="filterClear" src="images/cross.png" title="Hier klicken, um den Filter zu löschen." alt="Filter löschen" /></td>'));
+					'<td colspan="'
+							+ numberOfColumns
+							+ '"> <span style="margin-left:-2px;" id="headerButtons" class="tui-table-header-toolbar" />'
+							+ '<span style="margin-left:'
+							+ (tableHeaderButtons ? 20 : 2)
+							+ 'px">Anzahl Einträge : <span id="numberOfEntries">1232</span></span></td>');
+
+	// init header buttons
+	if (tableHeaderButtons) {
+		$toolbar = $('#headerButtons', $table);
+		tableHeaderButtons.forEach(function(tablebutton) {
+			$table.delegate('.' + tablebutton.nameclass, "click", function() {
+				_this.onHeaderButtonClicked(tablebutton);
+			});
+			var $button = tablebutton.createNewToolbarButton();
+			$toolbar.append($button);
+		});
+	}
 
 	// adding table columns
 	var i = 1;
+	var optimalWidth = Math
+			.floor(100 / Object.keys(datasource.resource.fields).length)
+			+ "%";
 	$.each(datasource.resource.fields, function(key, field) {
-		$th = $('<th><a title="Sortieren">' + field.title + '</a></th>');
-		$(".header2", $table).append($th);
+		$th = $('<th style="width:' + optimalWidth + '"><a title="Sortieren">'
+				+ field.title + '</a></th>');
+		$(".header3", $table).append($th);
 		i = i + 1;
 	});
 
 	// adding relations
-	$.each(datasource.resource.relations, function(key, relation) {
-		$(".header2", $table).append($('<th>' + relation.title + '</th>'));
-	});
+	if (!_this.skipRelations) {
+		$.each(datasource.resource.relations, function(key, relation) {
+			$(".header3", $table).append(
+					$('<th class="tui-relation-header">' + relation.title
+							+ '</th>'));
+		});
+	}
+
+	// register on data source changed handler
 	datasource.registerOnSuccess(onDataSourceChangedHandler);
 
 	// init row buttons
 	if (rowButtons) {
+		$(".header3", $table).append($('<th></th>'));
 		rowButtons.forEach(function(tablebutton) {
 			$table.delegate('.' + tablebutton.nameclass, "click", function() {
 				var $row = $(this).parent().parent();
 				_this.onRowButtonClicked($row, tablebutton);
 			});
-			$(".header2", $table).append($('<th></th>'));
 		});
 	}
 
@@ -97,9 +156,8 @@ function TableWrapper(datasource, rowButtons) {
 
 		if (isTableExtensionsInitialized) {
 			// update table sorter
-			$.trigger("appendCache");
-			$table.trigger("applyWidgets");
-			$table.trigger("update");
+			$table.trigger("dynamicUpdate");
+
 		} else {
 			// init sorting / paging / filtering
 			try {
@@ -114,26 +172,21 @@ function TableWrapper(datasource, rowButtons) {
 					container : $("#pager", $table),
 					positionFixed : false
 				});
+
 				isTableExtensionsInitialized = true;
 			} catch (e) {
-				console.log('table extensions could not be initialized! ' + e)
+				console.log('table extensions could not be initialized! ' + e);
 			}
 
-			// .tablesorterPager( {
-			// container : $('#pager', $table),
-			// positionFixed : false
-			// });
-			// .tablesorterPager( {
-			// container : $('#pager', $table),
-			// positionFixed : false
-			// }).tablesorterFilter( {
-			// filterContainer : $('#filterBoxOne', $table),
-			// filterClearContainer : $('#filterClearOne', $table),
+			// .tablesorterFilter( {
+			// filterContainer : $('#filterBox', $table),
+			// filterClearContainer : $('#filterClear', $table),
 			// filterColumns : filterColumns,
 			// filterCaseSensitive : false
 			// });
-
 		}
+
+		$('#numberOfEntries', $table).text($('tbody tr', $table).length);
 
 	}
 
@@ -191,20 +244,35 @@ function TableWrapper(datasource, rowButtons) {
 							+ '</td>'));
 				});
 
-		$.each(datasource.resource.relations, function(key, relation) {
-			if (_this.enableShowRelations) {
-				var $button = addTableButton($row, new TableButton(key,
-						'btn-show-relation', TableButtonIcon.Link));
-				$button.data("relation", key);
-			} else {
-				$row.append($('<td class="' + key + '">' + relation.title
-						+ '</td>'));
-			}
-		});
+		if (!_this.skipRelations) {
+			$.each(datasource.resource.relations, function(key, relation) {
+				$tdRelation = $('<td class="' + key + ' tui-nowrap" />');
+				$row.append($tdRelation);
+				if (_this.enableShowRelations) {
+					var $button = addTableButton($tdRelation, new TableButton(
+							firstLetterToUpper(key), 'btn-show-relation',
+							TableButtonIcon.Link, "Zeigt die zugewiesene "
+									+ firstLetterToUpper(key) + " an"));
+					$button.data("relation", key);
+				} else {
+					$tdRelation.text(relation.title);
+				}
+			});
+		}
 
 		if (rowButtons) {
+			$td = $('<td class="tui-nowrap" />');
+			$row.append($td);
+			var i = 0;
 			rowButtons.forEach(function(tablebutton) {
-				addTableButton($row, tablebutton);
+				$button = addTableButton($td, tablebutton);
+				if (i == 0) {
+					$button.css('margin-left', '25px');
+				}
+				if (i < rowButtons.length - 1) {
+					$button.css('margin-right', '10px');
+				}
+				i++;
 			});
 		}
 
@@ -234,14 +302,12 @@ function TableWrapper(datasource, rowButtons) {
 	/**
 	 * Creates a table button and appends it as a new cell to the given row
 	 * 
-	 * @param $row
+	 * @param $container
 	 * @param tableButton
 	 */
-	function addTableButton($row, tableButton) {
-		var $td = $('<td></td>');
+	function addTableButton($container, tableButton) {
 		$button = tableButton.createNew();
-		$td.append($button);
-		$row.append($td);
+		$container.append($button);
 		return $button;
 	}
 
@@ -261,6 +327,12 @@ function TableWrapper(datasource, rowButtons) {
 	 * "event" fired when a row button is clicked
 	 */
 	this.onRowButtonClicked = function(row, button) {
+	};
+
+	/**
+	 * "event" fired when a header button is clicked
+	 */
+	this.onHeaderButtonClicked = function(button) {
 	};
 
 	/**
