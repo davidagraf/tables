@@ -117,7 +117,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 
 	// init row buttons
 	if (rowButtons) {
-		$(".header3", $table).append($('<th></th>'));
+		$(".header3", $table).append($('<th />'));
 		rowButtons.forEach(function(tablebutton) {
 			$table.delegate('.' + tablebutton.nameclass, "click", function() {
 				var $row = $(this).parent().parent();

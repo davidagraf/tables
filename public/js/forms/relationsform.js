@@ -43,6 +43,7 @@ function RelationsForm(datasource, id, relation) {
 	_this.$divForm.append($inDiv);
 
 	var editMode = false;
+	inRelationTable.showActions = editMode;
 	$collapseEditBtn = $('<button id="collapseEditBtn">Editieren</button>');
 	$collapseEditBtn.button( {
 		text : true
@@ -58,10 +59,15 @@ function RelationsForm(datasource, id, relation) {
 						: "Startet den Editiermodus");
 
 		if (editMode) {
-			outRelationTable.$table.show('slow');
+			outRelationTable.$table.show();
 		} else {
-			outRelationTable.$table.hide('slow');
+			outRelationTable.$table.hide();
 		}
+		
+		inRelationTable.showActions = editMode;
+		
+		// reposition
+		_this.$divForm.dialog({ position: 'center' });
 	});
 	$separatorDiv = $('<div class="tui-rel-separator" />');
 	$separatorDiv.append($collapseEditBtn);
