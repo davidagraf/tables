@@ -59,13 +59,29 @@ img {
 	border-width: 0px;
 }
 
-.ui-div-content {
+.ui-div-outer1-content {
 	border-width: 1px;
 	margin: 16px;
 	margin-top: -9px;
 	border-style: solid;
-	border-color: #ababab;
-	padding: 10px;
+	border-color: #f0f0f0;
+	padding: 0px;
+}
+
+.ui-div-outer2-content {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #dddddd;
+  padding: 0px;
+  margin:0px;
+}
+
+.ui-div-content {
+  border-width: 1px;
+  margin: 0px;
+  border-style: solid;
+  border-color: #ababab;
+  padding: 10px;
 }
 
 a {
@@ -116,6 +132,11 @@ button.tui-button {
 button.tui-table-button {
 	padding: 0px;
 	margin: 0px;
+}
+
+button.tui-relation-button {
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 td.tui-nowrap {

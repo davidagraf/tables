@@ -49,6 +49,7 @@
 <script type="text/javascript" src="js/forms/relationsform.js"></script>
 
 <!-- page JS -->
+<script type="text/javascript" src="js/pages/pagesshared.js"></script>
 <script type="text/javascript" src="js/pages/data.html.js"></script>
 
 </head>
@@ -80,15 +81,19 @@
 </div>
   
   <!-- Content -->
-  <div id="div-content" class="ui-div-content ui-widget-content ui-corner-all">
-    <nav id="nav-tabs">
-      <a href="#/computer" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Computer</span></a>
-      <a href="#/software" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Software</span></a>
-    </nav>
-    <div id="div-table" class="ui-widget">
-      <p class="table-msg-box"></p>
-      <div id="div-data-table" class="tables-table"></div>
-    </div>  
+  <div id="div-outer1-content" class="ui-div-outer1-content">
+	  <div id="div-outer2-content" class="ui-div-outer2-content">
+		  <div id="div-content" class="ui-div-content ui-widget-content ui-corner-all">
+		    <nav id="nav-tabs">
+		      <a href="#/computer" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Computer</span></a>
+		      <a href="#/software" class="ui-helper-clearfix ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">Software</span></a>
+		    </nav>
+		    <div id="div-table" class="ui-widget">
+		      <p class="table-msg-box"></p>
+		      <div id="div-data-table" class="tables-table"></div>
+		    </div>  
+	    </div>
+	  </div>
   </div>
 </body>
 </html>

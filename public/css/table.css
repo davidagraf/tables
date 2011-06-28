@@ -105,3 +105,7 @@ table.tui .pagedisplay {
 	text-align: center;
 	vertical-align: top;
 }
+
+.tui-action-column {
+  background-color: #666666;
+}

@@ -19,7 +19,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	var skipRelations = false;
 
 	// initialize
-	var $table = $('<table class="tui"><thead><tr class="header1" /><tr class="header2" /><tr class="header3 tui-headerrow-filter" /><tr class="header4" /></thead><tbody /></table>');
+	var $table = $('<table class="tui"><thead><tr class="header1" /><tr class="header2" /><tr class="header3" /></thead><tbody /></table>');
 	this.__defineGetter__("$table", function() {
 		return $table;
 	});
@@ -59,7 +59,8 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	}
 
 	$('.header1', $table).append(
-			$('<td colspan="' + numberOfColumns + '" class="tableHeader" style="text-align:center">'
+			$('<td colspan="' + numberOfColumns
+					+ '" class="tableHeader" style="text-align:center">'
 					+ tableTitle + '</td>'));
 
 	var firstHalf = Math.floor(numberOfColumns / 2);
@@ -116,7 +117,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 
 	// init row buttons
 	if (rowButtons) {
-		$(".header3", $table).append($('<th />'));
+		$(".header3", $table).append($('<th class="tui-action-column"> </th>'));
 		rowButtons.forEach(function(tablebutton) {
 			$table.delegate('.' + tablebutton.nameclass, "click", function() {
 				var $row = $(this).parent().parent();
@@ -170,6 +171,11 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 				}).tablesorterPager( {
 					container : $("#pager", $table),
 					positionFixed : false
+				}).tablesorterFilter( {
+					filterContainer : $('#filterBox', $table),
+					filterClearContainer : $('#filterClear', $table),
+					filterColumns : filterColumns,
+					filterCaseSensitive : false
 				});
 
 				isTableExtensionsInitialized = true;
@@ -177,12 +183,6 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 				console.log('table extensions could not be initialized! ' + e);
 			}
 
-			// .tablesorterFilter( {
-			// filterContainer : $('#filterBox', $table),
-			// filterClearContainer : $('#filterClear', $table),
-			// filterColumns : filterColumns,
-			// filterCaseSensitive : false
-			// });
 		}
 
 		$('#numberOfEntries', $table).text($('tbody tr', $table).length);
@@ -245,7 +245,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 
 		if (!_this.skipRelations) {
 			$.each(datasource.resource.relations, function(key, relation) {
-				$tdRelation = $('<td class="' + key + ' tui-nowrap" />');
+				$tdRelation = $('<td class="' + key + ' tui-nowrap tui-relation-button" />');
 				$row.append($tdRelation);
 				if (_this.enableShowRelations) {
 					var $button = addTableButton($tdRelation, new TableButton(
@@ -260,16 +260,16 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		}
 
 		if (rowButtons) {
-			$td = $('<td class="tui-nowrap" />');
+			$td = $('<td class="tui-nowrap tui-action-column" />');
 			$row.append($td);
 			var i = 0;
 			rowButtons.forEach(function(tablebutton) {
 				$button = addTableButton($td, tablebutton);
 				if (i == 0) {
-					$button.css('margin-left', '25px');
+					// $button.css('margin-left', '25px');
 				}
 				if (i < rowButtons.length - 1) {
-					$button.css('margin-right', '10px');
+					$button.css('margin-right', '4px');
 				}
 				i++;
 			});

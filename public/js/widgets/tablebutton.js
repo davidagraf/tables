@@ -8,10 +8,12 @@
  * @returns {TableButton} of type $('<button />')
  */
 function TableButton(title, nameclass, icon, tooltip) {
+	var _this = this;
 	this.nameclass = nameclass;
 	this.doConfirm = false;
 	this.confirmTitle;
 	this.confirmInstructions;
+	this.showText = true;
 
 	if (!tooltip) {
 		tooltip = title;
@@ -22,7 +24,7 @@ function TableButton(title, nameclass, icon, tooltip) {
 				+ '"' + '>' + firstLetterToUpper(title) + '</button>';
 		var $tableButton = $(buttonHtml);
 		$tableButton.button( {
-			text : true,
+			text : _this.showText,
 			icons : {
 				primary : icon
 			}
@@ -39,7 +41,7 @@ function TableButton(title, nameclass, icon, tooltip) {
 				+ '</button>';
 		var $toolbarButton = $(buttonHtml);
 		$toolbarButton.button( {
-			text : true,
+			text : _this.showText,
 			icons : {
 				primary : icon
 			}
@@ -85,3 +87,8 @@ var DefaultTableButtons = {
 	ReloadButton : new TableButton("Nachladen", "btn-reload",
 			TableButtonIcon.Reload, "Lädt den Inhalt der Tabelle neu")
 };
+
+DefaultTableButtons.EditButton.showText = false;
+DefaultTableButtons.DeleteButton.showText = false;
+DefaultTableButtons.RemoveFromRelationButton.showText = false;
+DefaultTableButtons.AddToRelationButton.showText = false;
