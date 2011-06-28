@@ -1,13 +1,15 @@
 {
   "computer" : {
     "name" : "computer",
-    "title" : "Computers",
+    "title" : "Computer",
     "fields" : {
       "asset_tag" : {
-        "title" : "Asset Tag"
+        "title" : "Asset Tag",
+        "short" : "true"
       },
       "type" : {
-        "title" : "Type"
+        "title" : "Type",
+        "short" : "true"
       },
       "brand" : {
         "title" : "Brand"
@@ -19,7 +21,8 @@
         "title" : "Status"
       },
       "name" : {
-        "title" : "Name"
+        "title" : "Name",
+        "short" : "true"
       },
       "serial1" : {
         "title" : "Serial 1"
@@ -39,14 +42,17 @@
     "title" : "Software",
     "fields" : {
       "name" : {
-        "title" : "Name"
+        "title" : "Name",
+        "short" : "true"
       },
       "version" : {
         "title" : "Version",
-        "type" : "version"
+        "type" : "version",
+        "short" : "true"
       },
       "distributor" : {
-        "title" : "Distributor"
+        "title" : "Distributor",
+        "short" : "true"
       },
       "license" : {
         "title" : "License"

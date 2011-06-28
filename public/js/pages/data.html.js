@@ -22,7 +22,10 @@ function DataView() {
 		if (relationsForm) {
 			relationsForm.$divForm.remove();
 		}
-		relationsForm = new RelationsForm(datasource, id, relation);
+
+		var label = firstLetterToUpper(datasource.resource.title) + ' '
+				+ getShortLabel($('#' + id, tableWrapper.$table), datasource);
+		relationsForm = new RelationsForm(datasource, id, relation, label);
 	}
 
 	function editRow(idToUpdate, valuesToUpdate) {

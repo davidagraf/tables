@@ -14,10 +14,16 @@ table.tui td {
 
 table.tui .even {
 	background-color: #ffffff;
+	border-bottom-width: 1px;
+	border-bottom-color: #dddddd;
+	border-bottom-style: dashed;
 }
 
 table.tui .odd {
-	background-color: #f2f2f2;
+	background-color: #f0f0f0;
+	border-bottom-width: 1px;
+  border-bottom-color: #dddddd;
+  border-bottom-style: dashed;
 }
 
 table.tui th {
@@ -55,12 +61,13 @@ table.tui .headerSortDown a {
 
 table.tui tfoot td {
 	border-top: 1px solid #cccccc;
-	background-color: #eeeeee;
+	background-color: #dddddd;
+	border: none;
 }
 
 table.tui thead td {
 	vertical-align: middle;
-	background-color: #eeeeee;
+	background-color: #dddddd;
 	border: none;
 }
 
@@ -75,8 +82,9 @@ table.tui thead .filter {
 }
 
 table.tui tfoot {
-	background-color: #eeeeee;
+	background-color: #dddddd;
 	text-align: center;
+	border-top: 1px solid #cccccc;
 }
 
 table.tui .tablesorterPager {
@@ -101,11 +109,14 @@ table.tui .pagedisplay {
 	font-size: 10pt;
 	width: 30px;
 	border: 0px;
-	background-color: #eeeeee;
+	background-color: #dddddd;
 	text-align: center;
 	vertical-align: top;
 }
 
 .tui-action-column {
-  background-color: #666666;
+  background-color: #dddddd;
+}
+
+.tui-relation-column {
 }

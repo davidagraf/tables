@@ -1,10 +1,10 @@
-function RelationsForm(datasource, id, relation) {
+function RelationsForm(datasource, id, relation, shortlabel) {
 	this.base = FormPrototype;
-	this.base(datasource, "Relation '" + datasource.resource.name + " -> "
-			+ relation + "'");
+	this.base(datasource, firstLetterToUpper(relation) + ' von ' + shortlabel);
 
 	var _this = this;
-
+	var editMode = false;
+	
 	function onRelationRemovedHandler(eventtype, data, action) {
 		if (action == TableAction.DELETE_RELATION) {
 			outRelationDatasource.getRowsByUrl("/" + relation + "/" + data);
@@ -27,29 +27,7 @@ function RelationsForm(datasource, id, relation) {
 				id);
 	}
 
-	// init table that contains the items which are related
-	var inRelationDatasource = new TableDataSource("/" + relation + "/"
-			+ datasource.resource.name + "==" + id, globalResources[relation]);
-	inRelationDatasource.registerOnSuccess(onRelationRemovedHandler);
-	var inRelationTable = new TableWrapper('Zugewiesene '
-			+ firstLetterToUpper(inRelationDatasource.resource.title),
-			inRelationDatasource,
-			[ DefaultTableButtons.RemoveFromRelationButton ]);
-	inRelationTable.skipRelations = true;
-	inRelationTable.onRowButtonClicked = onRemoveRelationClickedHandler;
-	inRelationDatasource.getRows();
-	var $inDiv = $('<div class="tables-table"></div>');
-	$inDiv.append(inRelationTable.$table);
-	_this.$divForm.append($inDiv);
-
-	var editMode = false;
-	inRelationTable.showActions = editMode;
-	$collapseEditBtn = $('<button id="collapseEditBtn">Editieren</button>');
-	$collapseEditBtn.button( {
-		text : true
-	});
-	$collapseEditBtn.css('margin-top', '11px');
-	$collapseEditBtn.click(function() {
+	function toggleEditMode() {
 		editMode = !editMode;
 		$('.ui-button-text', this).text(
 				editMode ? "Editieren beenden" : "Editieren");
@@ -60,15 +38,43 @@ function RelationsForm(datasource, id, relation) {
 
 		if (editMode) {
 			outRelationTable.$table.show();
+			outRelationTable.updateExtensions();
 		} else {
 			outRelationTable.$table.hide();
 		}
-		
+
 		inRelationTable.showActions = editMode;
-		
+
 		// reposition
-		_this.$divForm.dialog({ position: 'center' });
+		_this.$divForm.dialog( {
+			position : 'center'
+		});
+	}
+
+	// init table that contains the items which are related
+	var inRelationDatasource = new TableDataSource("/" + relation + "/"
+			+ datasource.resource.name + "==" + id, globalResources[relation]);
+	inRelationDatasource.registerOnSuccess(onRelationRemovedHandler);
+	var inRelationTable = new TableWrapper('Zugewiesene '
+			+ firstLetterToUpper(inRelationDatasource.resource.title),
+			inRelationDatasource,
+			[ DefaultTableButtons.RemoveFromRelationButton ]);
+	inRelationTable.showRelations = false;
+	inRelationTable.showActions = editMode;
+	inRelationTable.onRowButtonClicked = onRemoveRelationClickedHandler;
+	inRelationDatasource.getRows();
+	var $inDiv = $('<div class="tables-table"></div>');
+	$inDiv.append(inRelationTable.$table);
+	_this.$divForm.append($inDiv);
+
+
+	
+	$collapseEditBtn = $('<button id="collapseEditBtn">Editieren</button>');
+	$collapseEditBtn.button( {
+		text : true
 	});
+	$collapseEditBtn.css('margin-top', '11px');
+	$collapseEditBtn.click(toggleEditMode);
 	$separatorDiv = $('<div class="tui-rel-separator" />');
 	$separatorDiv.append($collapseEditBtn);
 	_this.$divForm.append($separatorDiv);
@@ -80,7 +86,7 @@ function RelationsForm(datasource, id, relation) {
 	var outRelationTable = new TableWrapper('Verfügbare '
 			+ firstLetterToUpper(outRelationDatasource.resource.title),
 			outRelationDatasource, [ DefaultTableButtons.AddToRelationButton ]);
-	outRelationTable.skipRelations = true;
+	outRelationTable.showRelations = false;
 	outRelationTable.onRowButtonClicked = onAddRelationClickedHandler;
 	outRelationDatasource.getRows();
 	outRelationTable.$table.hide();

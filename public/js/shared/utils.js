@@ -71,3 +71,33 @@ function createInstance(type) {
 	eval(initCmd);
 	return obj;
 }
+
+function getShortLabel($row, datasource) {
+	var label = '&lt';
+	$.each(datasource.resource.fields, function(key, field) {
+		if (field.short && field.short == 'true') {
+			label += field.title;
+			label += ': ' + $('.' + key, $row).text();
+			label += ', ';
+		}
+	});
+	
+	if (label != '&lt') {
+		label = label.substring(0, label.length - 2);
+	}
+	return label + '&gt';
+}
+
+function trim(str, chars) {
+	return ltrim(rtrim(str, chars), chars);
+}
+
+function ltrim(str, chars) {
+	chars = chars || "\\s";
+	return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
+}
+
+function rtrim(str, chars) {
+	chars = chars || "\\s";
+	return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+}
