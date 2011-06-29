@@ -1,75 +1,121 @@
 {
-  "computer" : {
-    "name" : "computer",
-    "title" : "Computer",
-    "fields" : {
-      "asset_tag" : {
-        "title" : "Asset Tag",
-        "short" : "true"
-      },
-      "type" : {
-        "title" : "Type",
-        "short" : "true"
-      },
-      "brand" : {
-        "title" : "Brand"
-      },
-      "model" : {
-        "title" : "Model"
-      },
-      "status" : {
-        "title" : "Status"
-      },
-      "name" : {
-        "title" : "Name",
-        "short" : "true"
-      },
-      "serial1" : {
-        "title" : "Serial 1"
-      },
-      "serial2" : {
-        "title" : "Serial 2"
-      }
-    } ,
-    "relations" : {
-      "software" : {
-        "title" : "Software"
-      }
-    }
-  },
-  "software" : {
-    "name" : "software",
-    "title" : "Software",
-    "fields" : {
-      "name" : {
-        "title" : "Name",
-        "short" : "true"
-      },
-      "version" : {
-        "title" : "Version",
-        "type" : "version",
-        "short" : "true"
-      },
-      "distributor" : {
-        "title" : "Distributor",
-        "short" : "true"
-      },
-      "license" : {
-        "title" : "License"
-      },
-      "expiration" : {
-        "title" : "Expiration Date",
-        "type" : "date"
-      },
-      "comments" : {
-        "title" : "Comments",
-        "type" : "textarea"
-      }
+    "computer":{
+        "name":"computer",
+        "title":"Computer",
+        "fields":{
+            "asset_tag":{
+                "title":"Asset TAG",
+                "short":"true"
+            },
+            "type":{
+                "title":"Typ",
+                "short":"true"
+            },
+            "brand":{
+                "title":"Marke"
+            },
+            "model":{
+                "title":"Model"
+            },
+            "status":{
+                "title":"Status"
+            },
+            "name":{
+                "title":"Name",
+                "short":"true"
+            },
+            "serial1":{
+                "title":"Seriennummer 1"
+            },
+            "serial2":{
+                "title":"Seriennummer 2"
+            }
+        }
+        ,
+        "relations":{
+            "software":{
+                "title":"Software"
+            }
+        }
     },
-    "relations" : {
-      "computer" : {
-        "title" : "Computers"
-      }
+    "software":{
+        "name":"software",
+        "title":"Software",
+        "fields":{
+            "name":{
+                "title":"Name",
+                "short":"true"
+            },
+            "version":{
+                "title":"Version",
+                "type":"version",
+                "short":"true"
+            },
+            "distributor":{
+                "title":"Lieferant",
+                "short":"true"
+            },
+            "license":{
+                "title":"Lizenzen"
+            },
+            "expiration":{
+                "title":"Ablauf der Lizenzen",
+                "type":"date"
+            },
+            "comments":{
+                "title":"Bemerkungen",
+                "type":"textarea"
+            }
+        },
+        "relations":{
+            "computer":{
+                "title":"Computer"
+            }
+        }
+    },
+    "internalcontacts":{
+        "name":"internalcontacts",
+        "title":"Interne Kontakte",
+        "fields":{
+            "name":{
+                "title":"Name",
+                "short":"true"
+            },
+            "firstname":{
+                "title":"Vorname",
+                "short":"true"
+            },
+            "title":{
+                "title":"Titel"
+            },
+            "orgunit":{
+                "title":"Organisationseinheit"
+            },
+            "phone1":{
+                "title":"Telefon 1"
+            },
+            "phone2":{
+                "title":"Telefon 2"
+            },
+            "email":{
+                "title":"E-Mail"
+            },
+            "comments":{
+                "title":"Bemerkungen",
+                "type":"textarea"
+            },
+            "userfield1":{
+                "title":"Andere Angaben 1"
+            },
+            "userfield2":{
+                "title":"Andere Angaben 2"
+            },
+            "userfield3":{
+                "title":"Andere Angaben 3"
+            },
+            "userfield4":{
+                "title":"Andere Angaben 4"
+            }
+        }
     }
-  }
 }

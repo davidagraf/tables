@@ -62,6 +62,32 @@ function DataView() {
 	function reloadTable() {
 		tableWrapper.reload();
 	}
+	
+	function initDataTablesMenu(globalResources) {
+		var $menu = $('#data-tables-menu');
+		
+		// create group map
+		var groups = {};
+		$.each(globalResources, function(key, value) {
+			var group = value.group ? value.group : 'Allgemein';
+		    if(!groups[group]) groups[group] = [];
+		    groups[group].push(value);
+		});
+		
+		$.each(globalResources, function(key, value) {
+			var $menuItem = $('<button id="menu_' + key + '">' + value.title + '</button>');
+			$menuItem.button( {
+				text : true
+			});
+			$menuItem.click(function() {
+				window.location.hash = '#/' + key;
+				$(this).addClass('ui-state-active');
+			});
+
+			$menuItem.addClass("tui-button");
+			$menu.append($menuItem);
+		});
+	}
 
 	// public functions
 	/**
@@ -74,6 +100,8 @@ function DataView() {
 			resourceName = uri.pathComps[uri.pathComps.length - 2];
 		}
 
+		initDataTablesMenu(globalResources);
+		
 		var resource = globalResources[resourceName];
 		if (!resource) {
 			return false;
@@ -98,8 +126,7 @@ function DataView() {
 		resourceUri = uri.path;
 
 		// highlight state
-		$("#nav-tabs a[href=#" + newHash.replace(/\//g, "\\/") + "]").addClass(
-				"ui-state-active");
+		$("#data-tables-menu #menu_" + resource.name).css({ 'color' : '#cc0000', 'border-color' : '#ccbbbb' });
 
 		return true;
 	};
@@ -117,7 +144,7 @@ function DataView() {
 		if (relationsForm) {
 			relationsForm.$divForm.remove();
 		}
-		$("#nav-tabs a").removeClass("ui-state-active");
+		$("#data-tables-menu button").remove();
 		if (tableWrapper) {
 			tableWrapper.$table.remove();
 		}
