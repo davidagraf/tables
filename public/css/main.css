@@ -162,3 +162,19 @@ tr.tui-headerrow-filter {
 	border: 1px solid #cccccc;
 	color: #cc0000;
 }
+
+.tui-group-label {
+	border-color: #ccaaaa;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	padding: 5px;
+	margin-right: 5px;
+	text-align: center;
+	color: #cc0000;
+}
+
+table.tui-menu-table {
+	border: 1px dashed #cccccc;
+	margin-bottom: 32px;
+	background-color: #fafafa;
+}

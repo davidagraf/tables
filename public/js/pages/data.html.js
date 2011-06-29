@@ -62,30 +62,49 @@ function DataView() {
 	function reloadTable() {
 		tableWrapper.reload();
 	}
-	
+
 	function initDataTablesMenu(globalResources) {
 		var $menu = $('#data-tables-menu');
-		
+
 		// create group map
 		var groups = {};
 		$.each(globalResources, function(key, value) {
 			var group = value.group ? value.group : 'Allgemein';
-		    if(!groups[group]) groups[group] = [];
-		    groups[group].push(value);
+			if (!groups[group]) {
+				groups[group] = {};
+			}
+			groups[group][key] = value;
 		});
-		
-		$.each(globalResources, function(key, value) {
-			var $menuItem = $('<button id="menu_' + key + '">' + value.title + '</button>');
-			$menuItem.button( {
-				text : true
-			});
-			$menuItem.click(function() {
-				window.location.hash = '#/' + key;
-				$(this).addClass('ui-state-active');
-			});
 
-			$menuItem.addClass("tui-button");
-			$menu.append($menuItem);
+		$menuTable = $('<table class="tui-menu-table" />');
+		$menu.append($menuTable);
+		$trLabel = $('<tr />');
+		$menuTable.append($trLabel);
+		$trMenu = $('<tr />');
+		$menuTable.append($trMenu);
+
+		$.each(groups, function(group, groupButtons) {
+
+			$trLabel
+					.append($('<td class="tui-group-label" colspan="'
+							+ Object.keys(groupButtons).length + '">' + group
+							+ '</td>'));
+			$.each(groupButtons, function(key, value) {
+				var $menuItem = $('<button id="menu_' + key + '">'
+						+ value.title + '</button>');
+				$menuItem.button( {
+					text : true
+				});
+				$menuItem.click(function() {
+					window.location.hash = '#/' + key;
+					$(this).addClass('ui-state-active');
+				});
+
+				$menuItem.addClass("tui-button");
+				$tdMenuItem = $('<td />');
+				$tdMenuItem.append($menuItem);
+				$trMenu.append($tdMenuItem);
+			});
 		});
 	}
 
@@ -94,17 +113,18 @@ function DataView() {
 	 * Initializes this page
 	 */
 	this.init = function(uri) {
-		
+
 		initDataTablesMenu(globalResources);
-		
-		if(!uri) return;
-		
+
+		if (!uri)
+			return;
+
 		// init vars
 		var resourceName = uri.pathComps[uri.pathComps.length - 1];
 		if (uri.pathComps.length % 2 == 0) {
 			resourceName = uri.pathComps[uri.pathComps.length - 2];
 		}
-		
+
 		var resource = globalResources[resourceName];
 		if (!resource) {
 			return false;
@@ -129,7 +149,10 @@ function DataView() {
 		resourceUri = uri.path;
 
 		// highlight state
-		$("#data-tables-menu #menu_" + resource.name).css({ 'color' : '#cc0000', 'border-color' : '#ccbbbb' });
+		$("#data-tables-menu #menu_" + resource.name).css( {
+			'color' : '#cc0000',
+			'border-color' : '#ccbbbb'
+		});
 
 		return true;
 	};
@@ -148,6 +171,8 @@ function DataView() {
 			relationsForm.$divForm.remove();
 		}
 		$("#data-tables-menu button").remove();
+		$("#data-tables-menu .tui-group").remove();
+		$("#data-tables-menu .tui-menu-table").remove();
 		if (tableWrapper) {
 			tableWrapper.$table.remove();
 		}
