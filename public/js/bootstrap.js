@@ -19,8 +19,12 @@ $(function() {
 					if (!view.init(uri)) {
 						// something is wrong, do something
 					}
-				}
+				} 
 			});
 
 	$(window).trigger('hashchange');
+	
+	if(window.location.hash == '') {
+		view.init(); // init without uri
+	}
 });

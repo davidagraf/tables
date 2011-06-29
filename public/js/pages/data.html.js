@@ -94,13 +94,16 @@ function DataView() {
 	 * Initializes this page
 	 */
 	this.init = function(uri) {
+		
+		initDataTablesMenu(globalResources);
+		
+		if(!uri) return;
+		
 		// init vars
 		var resourceName = uri.pathComps[uri.pathComps.length - 1];
 		if (uri.pathComps.length % 2 == 0) {
 			resourceName = uri.pathComps[uri.pathComps.length - 2];
 		}
-
-		initDataTablesMenu(globalResources);
 		
 		var resource = globalResources[resourceName];
 		if (!resource) {
