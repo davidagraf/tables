@@ -123,16 +123,14 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	 * HEADER 3 (table columns)
 	 */
 	var i = 1;
-	var optimalWidth = Math
-			.floor(100 / Object.keys(datasource.resource.fields).length)
-			+ "%";
+	var optimalWidth = Math.floor(100 / numberOfFields) + '%';
 	$.each(datasource.resource.fields, function(key, field) {
-		$th = $('<th style="width:' + optimalWidth + '"><a title="Sortieren">'
+		$th = $('<th style="width:' + (i == numberOfFields ? '100%' : optimalWidth) + '"><a title="Sortieren">'
 				+ field.title + '</a></th>');
 		$(".header3", $table).append($th);
 		i = i + 1;
 	});
-
+	
 	// adding relations
 	$.each(datasource.resource.relations, function(key, relation) {
 		$(".header3", $table)
@@ -140,7 +138,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 						$('<th class="tui-relation-column">' + relation.title
 								+ '</th>'));
 	});
-
+	
 	// init row buttons
 	if (rowButtons) {
 		$(".header3", $table).append($('<th class="tui-action-column"> </th>'));
@@ -150,7 +148,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 				_this.onRowButtonClicked($row, tablebutton);
 			});
 		});
-	}
+	}	
 
 	// register on data source changed handler
 	datasource.registerOnSuccess(onDataSourceChangedHandler);
@@ -267,9 +265,11 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 			$row.append($('<td colspan="' + numberOfRelations
 					+ '" class="tui-relation-column" />'));
 		}
+		
 		if (rowButtons) {
 			$row.append($('<td class="tui-action-column" />'));
 		}
+		
 	}
 
 	/**
@@ -286,7 +286,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		var $row = $('<tr id="' + rowData.id + '"></tr>');
 		$.each(datasource.resource.fields,
 				function(key, field) {
-					$row.append($('<td class="' + key + '">' + rowData[key]
+					$row.append($('<td class="' + key + (field.type != 'textarea' ? " tui-nowrap" : "tui-large-cell" ) + '">' + rowData[key]
 							+ '</td>'));
 				});
 
@@ -324,7 +324,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 			if (!showActions) {
 				$td.hide();
 			}
-		}
+		}	
 
 		$tbody = $('tbody', $table);
 		if (!options) {

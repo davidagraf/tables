@@ -2,6 +2,51 @@
     "computer":{
         "name":"computer",
         "title":"Computer",
+        "group":"Hardware",
+        "fields":{
+            "asset_tag":{
+                "title":"Asset TAG",
+                "short":"true",
+				"isreq":"true"
+            },
+            "type":{
+                "title":"Typ",
+                "short":"true"
+            },
+            "brand":{
+                "title":"Marke"
+            },
+            "model":{
+                "title":"Model"
+            },
+            "status":{
+                "title":"Status"
+            },
+            "name":{
+                "title":"Name",
+                "short":"true"
+            },
+            "serial1":{
+                "title":"Seriennummer 1"
+            },
+            "serial2":{
+                "title":"Seriennummer 2"
+            }
+        },
+        "relations":{
+            "software":{
+                "title":"Software"
+            },
+            "computerconfig":{
+                "title":"Konfiguration",
+                "card":"1"
+            }
+        }
+    },
+    "peripherie":{
+        "name":"peripherie",
+        "title":"Peripherie",
+        "group":"Hardware",
         "fields":{
             "asset_tag":{
                 "title":"Asset TAG",
@@ -30,17 +75,87 @@
             "serial2":{
                 "title":"Seriennummer 2"
             }
-        }
-        ,
+        },
         "relations":{
-            "software":{
-                "title":"Software"
+            "peripherieconfig":{
+                "title":"Konfiguration",
+                "card":"1"
+            }
+        }
+    },
+    "computerconfig":{
+        "name":"computerconfig",
+        "title":"Konfiguration (Computer)",
+        "group":"Hardware",
+        "fields":{
+            "os":{
+                "title":"Betriebssystem",
+                "short":"true"
+            },
+            "cpu":{
+                "title":"CPU",
+                "short":"true"
+            },
+            "nrcpus":{
+                "title":"Anzahl Kerne"
+            },
+            "memory":{
+                "title":"Arbeitsspeicher",
+                "short":"true"
+            },
+            "hdd":{
+                "title":"Harddisk"
+            },
+            "extstor":{
+                "title":"Externer Speicher"
+            },
+            "comments":{
+                "title":"Bemerkungen",
+                "type":"textarea"
+            }
+        },
+        "relations":{
+            "network":{
+                "title":"Network",
+                "card":"1"
+            },
+            "domain":{
+                "title":"Domain",
+                "card":"1"
+            },
+            "ipaddress":{
+                "title":"IP Adressen"
+            }
+        }
+    },
+    "peripherieconfig":{
+        "name":"peripherieconfig",
+        "title":"Konfiguration (Peripherie)",
+        "group":"Hardware",
+        "fields":{
+            "comments":{
+                "title":"Bemerkungen",
+                "type":"textarea"
+            }
+        },
+        "relations":{
+            "network":{
+                "title":"Network",
+                "card":"1"
+            },
+            "domain":{
+                "title":"Domain",
+                "card":"1"
+            },
+            "ipaddress":{
+                "title":"IP Adressen"
             }
         }
     },
     "software":{
         "name":"software",
         "title":"Software",
+        "group":"Software",
         "fields":{
             "name":{
                 "title":"Name",
@@ -76,6 +191,7 @@
     "internalcontacts":{
         "name":"internalcontacts",
         "title":"Interne Kontakte",
+        "group":"Kontakte",
         "fields":{
             "name":{
                 "title":"Name",
@@ -105,16 +221,170 @@
                 "type":"textarea"
             },
             "userfield1":{
-                "title":"Andere Angaben 1"
+                "title":"Andere Angaben 1",
+				"type":"textarea"
             },
             "userfield2":{
-                "title":"Andere Angaben 2"
+                "title":"Andere Angaben 2",
+				"type":"textarea"
             },
             "userfield3":{
-                "title":"Andere Angaben 3"
+                "title":"Andere Angaben 3",
+				"type":"textarea"
             },
             "userfield4":{
-                "title":"Andere Angaben 4"
+                "title":"Andere Angaben 4",
+				"type":"textarea"
+            }
+        }
+    },
+    "externalcontacts":{
+        "name":"externalcontacts",
+        "title":"Externe Kontakte / Lieferanten",
+        "group":"Kontakte",
+        "fields":{
+            "company":{
+                "title":"Firma",
+                "short":"true"
+            },
+            "type":{
+                "title":"Kontakttyp",
+                "short":"true"
+            },
+            "address":{
+                "title":"Adresse"
+            },
+            "phone1":{
+                "title":"Telefon 1"
+            },
+            "phone2":{
+                "title":"Telefon 2"
+            },
+            "www":{
+                "title":"Homepage"
+            },
+            "name":{
+                "title":"Name"
+            },
+            "firstname":{
+                "title":"Vorname"
+            },
+            "title":{
+                "title":"Titel"
+            },
+            "orgunit":{
+                "title":"Organisationseinheit"
+            },
+            "email":{
+                "title":"E-Mail"
+            },
+            "comments":{
+                "title":"Bemerkungen",
+                "type":"textarea"
+            },
+            "userfield1":{
+                "title":"Andere Angaben 1",
+				"type":"textarea"
+            },
+            "userfield2":{
+                "title":"Andere Angaben 2",
+				"type":"textarea"
+            },
+            "userfield3":{
+                "title":"Andere Angaben 3",
+				"type":"textarea"
+            },
+            "userfield4":{
+                "title":"Andere Angaben 4",
+				"type":"textarea"
+            }
+        }
+    },
+    "ipaddress":{
+        "name":"ipaddress",
+        "title":"IP Adresse",
+        "group":"IP / Netzwerk",
+        "fields":{
+            "asset_tag":{
+                "title":"Asset TAG",
+                "short":"true"
+            },
+            "type":{
+                "title":"Typ",
+                "short":"true"
+            },
+            "brand":{
+                "title":"Marke"
+            },
+            "model":{
+                "title":"Model"
+            },
+            "status":{
+                "title":"Status"
+            },
+            "name":{
+                "title":"Name",
+                "short":"true"
+            },
+            "serial1":{
+                "title":"Seriennummer 1"
+            },
+            "serial2":{
+                "title":"Seriennummer 2"
+            }
+        },
+        "relations":{
+            "software":{
+                "title":"Software"
+            },
+            "computerconfig":{
+                "title":"Konfiguration",
+                "card":"1"
+            }
+        }
+    },
+    "network":{
+        "name":"network",
+        "title":"Netzwerk",
+        "group":"IP / Netzwerk",
+        "fields":{
+            "name":{
+                "title":"Name",
+                "short":"true"
+            }
+        },
+        "relations":{
+            "ipaddress":{
+                "title":"IP Adressen"
+            },
+            "computerconfig":{
+                "title":"Konfigurationen (Computer)"
+            },
+            "peripherieconfig":{
+                "title":"Konfigurationen (Peripherie)"
+            }
+        }
+    },
+    "domain":{
+        "name":"domain",
+        "title":"Domain",
+        "group":"IP / Netzwerk",
+        "fields":{
+            "name":{
+                "title":"Name",
+                "short":"true"
+            },
+            "comments":{
+                "title":"Beschreibung",
+                "type":"textarea"
+            }
+        },
+        "relations":{
+            "computerconfig":{
+                "title":"Konfigurationen (Computer)"
+            },
+            "peripherieconfig":{
+                "title":"Konfigurationen (Peripherie)"
             }
         }
     }

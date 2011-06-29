@@ -1,0 +1,13 @@
+In order to generate and create a new db dump according to the given resources.json,
+execute the following steps.
+WARNING: everytime the script is executed on mysql, the entire DB (including ALL data) will be dropped and
+         recreated! In order to prevent data loss, backup the data first (and migrate manually after the schema has
+         been updated).
+
+In <tables>\application\utils\db
+> php sqlgenerator.php ..\..\..\public\data\resources.json tables_empty.sql
+> php sqlgenerator.php ..\..\..\public\data\resources.json tables_fixture10.sql --datafixture 10
+
+Login to MySQL with user 'tables' identified by 'tables' and run the script
+> mysql -u tables -p
+> source <script>

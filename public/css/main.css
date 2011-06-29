@@ -143,6 +143,10 @@ td.tui-nowrap {
 	white-space: nowrap;
 }
 
+td.tui-large-cell {
+	min-widht: 100px;
+}
+
 div.tui-rel-separator {
 	text-align: center;
 	height: 48px;
