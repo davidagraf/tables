@@ -18,6 +18,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	this.enableSorting = true;
 	var showRelations = true;
 	var showActions = true;
+	var countData = 0;
 
 	// initialize
 	var $table = $('<table class="tui"><thead><tr class="header1" /><tr class="header2" /></thead><tbody /></table>');
@@ -178,7 +179,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 					+ '<option value="5">5</option>'
 					+ '<option selected="selected" value="10">10</option>'
 					+ '<option value="20">20</option>'
-					+ '<option  value="40">40</option><option  value="60">60</option><option  value="100">100</option></select><span style="margin-left:32px">Anzahl Einträge : <span id="numberOfEntries">Keine</span></span></td>'
+					+ '<option  value="40">40</option><option  value="60">60</option><option  value="100">100</option></select><span style="margin-left:32px">Total Einträge : <span id="numberOfEntries">Keine</span></span></td>'
 					+ '</tr></tfoot>'));
 
 	addRelationOrActionCells($('#pager', $table));
@@ -216,9 +217,9 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 			}
 		}
 
-		var entriesCount = $('tbody tr', $table).length;
+		// var entriesCount = $('tbody tr', $table).length;
 		$('#numberOfEntries', $table).text(
-				entriesCount == 0 ? "Keine" : entriesCount);
+				countData == 0 ? "Keine" : countData);
 	}
 
 	this.updateExtensions = function() {
@@ -235,6 +236,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		switch (action) {
 		case TableAction.GET:
 			// update all rows
+			countData = data.length;
 			data.forEach(function(rowData) {
 				addTableRow(rowData);
 			});
@@ -243,6 +245,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 			data.forEach(function(rowData) {
 				addTableRow(rowData);
 			});
+			countData += data.length;
 			break;
 		case TableAction.UPDATE:
 			data.forEach(function(rowData) {
@@ -256,6 +259,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		case TableAction.ADD_RELATION:
 			// note: data = rowId
 			$('#' + data, $table).remove();
+			countData--;
 			break;
 		}
 
@@ -359,7 +363,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 
 	function getFieldCellContent(field, data) {
 		if (!data) {
-			return '<span class="tui-undefined">&lt;undefiniert&gt;</span>';
+			return '<span class="tui-undefined">&lt;leer&gt;</span>';
 		}
 		if (field.type == "url" || field.type == "ip") {
 			var url = data;

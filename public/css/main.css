@@ -197,3 +197,13 @@ label.tui-label {
   color: #666666;
   white-space: nowrap;
 }
+
+span.tui-error-instructions {
+	color: #666666;
+}
+
+span.tui-error-title {
+  font-weight: bold;
+  font-size: larger;
+  margin-bottom: 32px;
+}

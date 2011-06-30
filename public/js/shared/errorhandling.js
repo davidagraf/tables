@@ -1,20 +1,21 @@
 var $msgBoxTable = $(".table-msg-box");
 var $msgBoxForm = $(".form-msg-box");
+// see tabledatasource, if this flag is set, the showError function will be called automatically on error
+// for every datasource
+var DATASOURCE_DEFAULT_ERROR_HANDLING = true;
 
-function showTableError(text) {
-    $msgBoxTable
-      .text(text)
-      .addClass("ui-state-error");
-    setTimeout(function() {
-      $msgBoxTable.removeClass("ui-state-error", 1500);
-    }, 500);
-  }
-  
-function showFormError(text) {
-  $msgBoxForm
-    .text(text)
-    .addClass("ui-state-error");
-  setTimeout(function() {
-    $msgBoxForm.removeClass("ui-state-error", 1500);
-  }, 500);
+var errorBox;
+function showError(title, instructions) {
+	if (errorBox) {
+		errorBox.$divForm.remove();
+	}
+	errorBox = new ErrorBox(null, title, instructions);
+}
+
+var confirmBox;
+function showConfirmation(title, instructions, onconfirmyes) {
+	if (confirmBox) {
+		confirmBox.$divForm.remove();
+	}
+	confirmBox = new ConfirmBox(null, title, instructions, onconfirmyes);
 }

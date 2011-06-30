@@ -1,6 +1,7 @@
 function TableDataSource(resourceUrl, resource) {
 	// fields
 	var $this = $(this);
+	var _this = this;
 	var isUpdating = false;
 	this.resource = resource;
 	EVENT_ON_SUCCESS = "onsuccess";
@@ -11,8 +12,8 @@ function TableDataSource(resourceUrl, resource) {
 		ADD : 'ADD',
 		UPDATE : 'UPDATE',
 		DELETE : 'DELETE',
-		ADD_RELATION: 'ADD_RELATION',
-		DELETE_RELATION: 'DELETE_RELATION'
+		ADD_RELATION : 'ADD_RELATION',
+		DELETE_RELATION : 'DELETE_RELATION'
 	};
 
 	// private methods
@@ -30,20 +31,28 @@ function TableDataSource(resourceUrl, resource) {
 	function getRowUrl(rowId) {
 		return '/' + resource.name + (rowId ? '/' + rowId : '');
 	}
-	
+
 	function getRelationUrl(rowId, targetResource, targetRowId) {
-	  return '/' + resource.name + '/' + rowId + '/' + targetResource.name + '/' + targetRowId;
+		return '/' + resource.name + '/' + rowId + '/' + targetResource.name
+				+ '/' + targetRowId;
 	}
-	
+
 	function onSuccess(data, action) {
-		console.log('TableDataSource: data updated for "' + resource.name + '" [action=' + action + ']');
-		$this.trigger(EVENT_ON_SUCCESS, [data, action]);
+		console.log('TableDataSource: data updated for "' + _this.resource.name
+				+ '" [action=' + action + ']');
+		$this.trigger(EVENT_ON_SUCCESS, [ data, action ]);
 	}
 
 	function onError(xhr, textStatus, errorThrown) {
-		console.log('TableDataSource: error on data update for "' + resource.name + '" [action=' + action + ']');
+		console.log('TableDataSource: error on data update for "'
+				+ _this.resource.name + '"');
 		console.log('ERROR: ' + textStatus);
-		$this.trigger(EVENT_ON_ERROR, [xhr, textStatus, errorThrown]);
+		$this.trigger(EVENT_ON_ERROR, [ xhr, textStatus, errorThrown ]);
+		if (DATASOURCE_DEFAULT_ERROR_HANDLING) {
+			showError('Daten-Update fehlgeschlagen',
+					'Fehler beim Daten-Update für "' + _this.resource.name
+							+ '"');
+		}
 	}
 
 	// public methods
@@ -53,16 +62,16 @@ function TableDataSource(resourceUrl, resource) {
 	this.getRows = function() {
 		this.getRowsByUrl(resourceUrl);
 	};
-	
+
 	this.getRowsByUrl = function(passedResourceUrl) {
-	  $.ajax( {
-      url : passedResourceUrl,
-      dataType : 'json',
-      success : function(data, textStatus, xhr) {
-        onSuccess(data, TableAction.GET);
-      },
-      error : onError
-    });
+		$.ajax( {
+			url : passedResourceUrl,
+			dataType : 'json',
+			success : function(data, textStatus, xhr) {
+				onSuccess(data, TableAction.GET);
+			},
+			error : onError
+		});
 	};
 
 	this.deleteRow = function(rowId) {
@@ -92,8 +101,11 @@ function TableDataSource(resourceUrl, resource) {
 
 	/**
 	 * Updates the row with the given id
-	 *  @param rowId : row to be updated
-	 *  @param rowData: data
+	 * 
+	 * @param rowId :
+	 *            row to be updated
+	 * @param rowData:
+	 *            data
 	 */
 	this.updateRow = function(rowId, rowData) {
 		$.ajax( {
@@ -108,39 +120,47 @@ function TableDataSource(resourceUrl, resource) {
 			error : onError
 		});
 	};
-	
+
 	/**
 	 * Adds a relation source->target to a relation table.
-	 * @param sourceId : id of source (resource of the source is saved in this object) 
-	 * @param targetResource : resource of the target
-	 * @param targetId : id of the target
+	 * 
+	 * @param sourceId :
+	 *            id of source (resource of the source is saved in this object)
+	 * @param targetResource :
+	 *            resource of the target
+	 * @param targetId :
+	 *            id of the target
 	 */
 	this.addRelation = function(sourceId, targetResource, targetId) {
-	  $.ajax( {
-	    type : "POST",
-	    url : getRelationUrl(sourceId, targetResource, targetId),
-	    success : function(data, textStatus, xhr) {
-	      onSuccess(sourceId, TableAction.ADD_RELATION);
-	    },
-	    error : onError
-	  });
+		$.ajax( {
+			type : "POST",
+			url : getRelationUrl(sourceId, targetResource, targetId),
+			success : function(data, textStatus, xhr) {
+				onSuccess(sourceId, TableAction.ADD_RELATION);
+			},
+			error : onError
+		});
 	};
-	
+
 	/**
-   * Removes a relation source->target from a relation table.
-   * @param sourceId : id of source (resource of the source is saved in this object) 
-   * @param targetResource : resource of the target
-   * @param targetId : id of the target
-   */
+	 * Removes a relation source->target from a relation table.
+	 * 
+	 * @param sourceId :
+	 *            id of source (resource of the source is saved in this object)
+	 * @param targetResource :
+	 *            resource of the target
+	 * @param targetId :
+	 *            id of the target
+	 */
 	this.removeRelation = function(sourceId, targetResource, targetId) {
-	   $.ajax( {
-	      type : "DELETE",
-	      url : getRelationUrl(sourceId, targetResource, targetId),
-	      success : function(data, textStatus, xhr) {
-	        onSuccess(sourceId, TableAction.DELETE_RELATION);
-	      },
-	      error : onError
-	    });
+		$.ajax( {
+			type : "DELETE",
+			url : getRelationUrl(sourceId, targetResource, targetId),
+			success : function(data, textStatus, xhr) {
+				onSuccess(sourceId, TableAction.DELETE_RELATION);
+			},
+			error : onError
+		});
 	};
 
 	/**
@@ -149,7 +169,7 @@ function TableDataSource(resourceUrl, resource) {
 	this.registerOnSuccess = function(handler) {
 		$(this).bind(EVENT_ON_SUCCESS, handler);
 	};
-	
+
 	/**
 	 * Registers the given handler for the onError event
 	 */

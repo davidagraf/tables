@@ -1,7 +1,7 @@
 -- --------------------------------------------------------------------------------------
 -- Generated SQL script 'tables_empty.sql' for TABLES
 -- JSON Resources 'resources.json'
--- Created on 2011-06-30T11:29:57+02:00
+-- Created on 2011-06-30T15:11:03+02:00
 -- --------------------------------------------------------------------------------------
 
 DROP SCHEMA IF EXISTS `tables`;

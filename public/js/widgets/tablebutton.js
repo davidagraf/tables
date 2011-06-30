@@ -9,6 +9,7 @@
  */
 function TableButton(title, nameclass, icon, tooltip) {
 	var _this = this;
+	var isConfirmed = false;
 	this.nameclass = nameclass;
 	this.doConfirm = false;
 	this.confirmTitle;
@@ -17,6 +18,27 @@ function TableButton(title, nameclass, icon, tooltip) {
 
 	if (!tooltip) {
 		tooltip = title;
+	}
+
+	function addConfirmLogic($button) {
+		if (!_this.doConfirm) {
+			return;
+		}
+
+		$button.click(function() {
+			if (!isConfirmed) {
+				showConfirmation(_this.confirmTitle, _this.confirmInstructions,
+						function() {
+							isConfirmed = true;
+							// trigger click only when confirmation OK
+							$button.click();
+						});
+				return false;
+			} else {
+				isConfirmed = false;
+				return true;
+			}
+		});
 	}
 
 	this.createNew = function() {
@@ -31,7 +53,7 @@ function TableButton(title, nameclass, icon, tooltip) {
 		});
 
 		$tableButton.addClass("tui-table-button");
-
+		addConfirmLogic($tableButton);
 		return $tableButton;
 	};
 
@@ -48,6 +70,7 @@ function TableButton(title, nameclass, icon, tooltip) {
 		});
 
 		$toolbarButton.addClass("tui-button");
+		addConfirmLogic($toolbarButton);
 		return $toolbarButton;
 	};
 
@@ -76,7 +99,8 @@ var DefaultTableButtons = {
 	EditButton : new TableButton("Editieren", "btn-edit-row",
 			TableButtonIcon.Edit, "Eintrag editieren"),
 	DeleteButton : new TableButton("Löschen", "btn-delete-row",
-			TableButtonIcon.Delete, "Eintrag löschen"),
+			TableButtonIcon.Delete, "Eintrag löschen").confirmAction(
+			"Eintrag löschen", "Wollen Sie diesen Eintrage wirklich löschen?"),
 	RemoveFromRelationButton : new TableButton("Entfernen",
 			"btn-remove-from-relation", TableButtonIcon.ArrowDown,
 			"Entfernt die Verbindung zwischen den beiden Einträgen."),
