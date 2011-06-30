@@ -205,7 +205,7 @@ class Generator {
 				return rand(1999,2011) . "-" . str_pad(rand(1,12), 2, "0", STR_PAD_LEFT) . "-" . str_pad(rand(1,28), 2, "0", STR_PAD_LEFT);
 				break;
 			case "url":
-				return "http://www.google.com";
+				return "www.google.com";
 			case "email":
 				return "hansmuster" . $n . "@gmail.com";
 				break;

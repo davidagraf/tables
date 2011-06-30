@@ -285,11 +285,12 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	 */
 	function addTableRow(rowData, options) {
 		var $row = $('<tr id="' + rowData.id + '"></tr>');
+		$row.data('tag', rowData);
 		$.each(datasource.resource.fields, function(key, field) {
 			$row.append($('<td class="'
 					+ key
 					+ (field.type != 'textarea' ? " tui-nowrap"
-							: "tui-large-cell") + '">'
+							: " tui-large-cell") + '">'
 					+ getFieldCellContent(field, rowData[key]) + '</td>'));
 		});
 
@@ -360,11 +361,15 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		if (!data) {
 			return '<span class="tui-undefined">&lt;undefiniert&gt;</span>';
 		}
-		if (field.type == "url") {
-			return '<a href="' + data + '" target="_blank">' + data + '</a>';
+		if (field.type == "url" || field.type == "ip") {
+			var url = data;
+			if(data.indexOf("://") == -1) {
+				url = "http://" + data;
+			}
+			return '<a href="' + url + '" target="_blank" title="Gehe zu ' + url + '">' + data + '</a>';
 		}
 		if (field.type == "email") {
-			return '<a href="mailto:' + data + '">' + data + '</a>';
+			return '<a href="mailto:' + data + '" title="Sende E-Mail an ' + data + '">' + data + '</a>';
 		}
 		return data;
 	}
@@ -426,15 +431,9 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	 * @id Row id
 	 */
 	this.rowValues = function($row) {
-		$values = {};
-		$.each(datasource.resource.fields, function(key, field) {
-			var $cell = $("td." + key, $row);
-			if ($('.tui-undefined', $cell).length != 0) {
-				$values[key] = '';
-			} else {
-				$values[key] = $("td." + key, $row).text();
-			}
-		});
-		return $values;
+		if($row.data('tag')) {
+			return $row.data('tag');
+		}
+		return {};
 	};
 }

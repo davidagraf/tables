@@ -256,7 +256,7 @@
                 "title":"Externer Speicher"
             },
             "infourl":{
-                "title":"Info",
+                "title":"Info URL",
                 "type":"url"
             },
             "comments":{
@@ -276,7 +276,7 @@
         "group":"Hardware",
         "fields":{
             "infourl":{
-                "title":"Info",
+                "title":"Info URL",
                 "type":"url"
             },
             "comments":{
