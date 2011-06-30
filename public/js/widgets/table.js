@@ -168,7 +168,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	$table
 			.append($('<tfoot><tr id="pager"><td colspan="'
 					+ numberOfFields
-					+ '" style="padding-left:16px;">'
+					+ '" style="padding-left:8px;">'
 					+ '<img src="images/first.png" class="first" style="cursor:pointer" valign="bottom" title="Zur ersten Seite"/>'
 					+ '<img src="images/prev.png" class="prev" style="cursor:pointer" valign="bottom" title="Zur vorherigen Seite"/>'
 					+ '<input type="text" class="pagedisplay" style="display:inline; color:#666666" readonly="readonly"/>'

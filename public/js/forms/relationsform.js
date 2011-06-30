@@ -4,7 +4,7 @@ function RelationsForm(datasource, id, relation, shortlabel) {
 
 	var _this = this;
 	var editMode = false;
-	
+
 	function onRelationRemovedHandler(eventtype, data, action) {
 		if (action == TableAction.DELETE_RELATION) {
 			outRelationDatasource.getRowsByUrl("/" + relation + "/" + data);
@@ -55,9 +55,9 @@ function RelationsForm(datasource, id, relation, shortlabel) {
 	var inRelationDatasource = new TableDataSource("/" + relation + "/"
 			+ datasource.resource.name + "==" + id, globalResources[relation]);
 	inRelationDatasource.registerOnSuccess(onRelationRemovedHandler);
-	var inRelationTable = new TableWrapper('Zugewiesene '
-			+ firstLetterToUpper(inRelationDatasource.resource.title),
-			inRelationDatasource,
+	var inRelationTable = new TableWrapper(
+			firstLetterToUpper(inRelationDatasource.resource.title)
+					+ ' (zugewiesen)', inRelationDatasource,
 			[ DefaultTableButtons.RemoveFromRelationButton ]);
 	inRelationTable.showRelations = false;
 	inRelationTable.showActions = editMode;
@@ -67,8 +67,6 @@ function RelationsForm(datasource, id, relation, shortlabel) {
 	$inDiv.append(inRelationTable.$table);
 	_this.$divForm.append($inDiv);
 
-
-	
 	$collapseEditBtn = $('<button id="collapseEditBtn">Editieren</button>');
 	$collapseEditBtn.button( {
 		text : true
@@ -83,9 +81,10 @@ function RelationsForm(datasource, id, relation, shortlabel) {
 	var outRelationDatasource = new TableDataSource("/" + relation + "/"
 			+ datasource.resource.name + "!=" + id, globalResources[relation]);
 	outRelationDatasource.registerOnSuccess(onRelationAddedHandler);
-	var outRelationTable = new TableWrapper('Verfügbare '
-			+ firstLetterToUpper(outRelationDatasource.resource.title),
-			outRelationDatasource, [ DefaultTableButtons.AddToRelationButton ]);
+	var outRelationTable = new TableWrapper(
+			firstLetterToUpper(outRelationDatasource.resource.title)
+					+ ' (verfügbar)', outRelationDatasource,
+			[ DefaultTableButtons.AddToRelationButton ]);
 	outRelationTable.showRelations = false;
 	outRelationTable.onRowButtonClicked = onAddRelationClickedHandler;
 	outRelationDatasource.getRows();
