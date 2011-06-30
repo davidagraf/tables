@@ -368,7 +368,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		}
 		return data;
 	}
-
+	
 	/**
 	 * Creates a table button and appends it as a new cell to the given row
 	 * 

@@ -68,7 +68,8 @@ var TableButtonIcon = {
 	ArrowDown : "ui-icon-arrow-1-s",
 	ArrowUp : "ui-icon-arrow-1-n",
 	AddRow : "ui-icon-plus",
-	Reload : "ui-icon-refresh"
+	Reload : "ui-icon-refresh",
+	ExportCSV : "ui-icon-document"
 };
 
 var DefaultTableButtons = {
@@ -85,7 +86,10 @@ var DefaultTableButtons = {
 	AddButton : new TableButton("Neu", "btn-add", TableButtonIcon.AddRow,
 			"Neuen Eintrag erstellen"),
 	ReloadButton : new TableButton("Nachladen", "btn-reload",
-			TableButtonIcon.Reload, "Lädt den Inhalt der Tabelle neu")
+			TableButtonIcon.Reload, "Lädt den Inhalt der Tabelle neu"),
+	ExportCSVButton : new TableButton("CSV", "btn-csv-export",
+			TableButtonIcon.ExportCSV,
+			"Exportiert den kompletten Inhalt der Tabelle als CSV")
 };
 
 DefaultTableButtons.EditButton.showText = false;

@@ -56,11 +56,24 @@ function DataView() {
 		case DefaultTableButtons.ReloadButton:
 			reloadTable();
 			break;
+		case DefaultTableButtons.ExportCSVButton:
+			exportToCSV();
+			break;
 		}
 	}
 
 	function reloadTable() {
 		tableWrapper.reload();
+	}
+
+	function exportToCSV() {
+		var i = window.location.href.indexOf("/public");
+		if (i < 0)
+			return;
+		var csvUrl = window.location.href.substring(0, i)
+				+ '/application/utils/db/csvexport.php?resource='
+				+ datasource.resource.name;
+		window.location.href = csvUrl;
 	}
 
 	function initDataTablesMenu(globalResources) {
@@ -88,7 +101,7 @@ function DataView() {
 
 			$trLabel.append($('<td class="tui-menu-spacer"/>'));
 			$trMenu.append($('<td class="tui-menu-spacer"/>'));
-			
+
 			$trLabel
 					.append($('<td class="tui-group-label" colspan="'
 							+ Object.keys(groupButtons).length + '">' + group
@@ -109,10 +122,8 @@ function DataView() {
 				$tdMenuItem.append($menuItem);
 				$trMenu.append($tdMenuItem);
 			});
-			
-			
-			
-			if(groupCount == Object.keys(groups).length) {
+
+			if (groupCount == Object.keys(groups).length) {
 				$trLabel.append($('<td class="tui-menu-spacer"/>'));
 				$trMenu.append($('<td class="tui-menu-spacer"/>'));
 			} else {
@@ -151,10 +162,12 @@ function DataView() {
 		var rowButtons = [ DefaultTableButtons.EditButton,
 				DefaultTableButtons.DeleteButton ];
 		var headerButtons = [ DefaultTableButtons.AddButton,
-				DefaultTableButtons.ReloadButton ];
+				DefaultTableButtons.ReloadButton,
+				DefaultTableButtons.ExportCSVButton ];
 		tableWrapper = new TableWrapper(
-				(datasource.resource.group || 'Allgemein') + ' » ' + firstLetterToUpper(datasource.resource.title), datasource,
-				rowButtons, headerButtons);
+				(datasource.resource.group || 'Allgemein') + ' » '
+						+ firstLetterToUpper(datasource.resource.title),
+				datasource, rowButtons, headerButtons);
 		tableWrapper.onShowRelation = onShowRelationHandler;
 		tableWrapper.onRowButtonClicked = onRowButtonClickedHandler;
 		tableWrapper.onHeaderButtonClicked = onHeaderButtonClickedHandler;
