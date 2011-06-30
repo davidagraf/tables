@@ -9,6 +9,7 @@ table.tui {
 
 table.tui td {
 	padding: 2px;
+	padding-left: 4px;
 	border-right: solid 1px #cccccc;
 }
 
@@ -22,8 +23,8 @@ table.tui .even {
 table.tui .odd {
 	background-color: #f0f0f0;
 	border-bottom-width: 1px;
-  border-bottom-color: #dddddd;
-  border-bottom-style: dashed;
+	border-bottom-color: #dddddd;
+	border-bottom-style: dashed;
 }
 
 table.tui th {
@@ -32,6 +33,7 @@ table.tui th {
 	padding: 5px;
 	height: auto;
 	cursor: pointer;
+	white-space: nowrap;
 }
 
 table.tui th a {
@@ -83,7 +85,7 @@ table.tui thead .filter {
 
 table.tui tfoot {
 	background-color: #dddddd;
-	text-align: center;
+	text-align: left;
 	border-top: 1px solid #cccccc;
 }
 
@@ -115,8 +117,17 @@ table.tui .pagedisplay {
 }
 
 .tui-action-column {
-  background-color: #dddddd;
+	background-color: #dddddd;
 }
 
 .tui-relation-column {
+	
+}
+
+span.tui-table-title {
+	color: #cc0000;
+	margin-left: 16px;
+	margin-right: 16px;
+	font-size: larger;
+  font-weight: bold;	
 }

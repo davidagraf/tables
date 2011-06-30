@@ -1,7 +1,7 @@
 -- --------------------------------------------------------------------------------------
 -- Generated SQL script 'tables_empty.sql' for TABLES
 -- JSON Resources 'resources.json'
--- Created on 2011-06-29T16:04:41+02:00
+-- Created on 2011-06-30T11:29:57+02:00
 -- --------------------------------------------------------------------------------------
 
 DROP SCHEMA IF EXISTS `tables`;
@@ -11,6 +11,52 @@ USE `tables`;
 -- --------------------------------------------------------------------------------------
 -- Tables
 -- --------------------------------------------------------------------------------------
+
+-- Table internalcontact
+
+DROP TABLE IF EXISTS `internalcontact`;
+
+CREATE TABLE `internalcontact` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(140) DEFAULT NULL,
+  `firstname` varchar(140) DEFAULT NULL,
+  `salutation` varchar(140) DEFAULT NULL,
+  `orgunit` varchar(140) DEFAULT NULL,
+  `phone1` varchar(140) DEFAULT NULL,
+  `phone2` varchar(140) DEFAULT NULL,
+  `email` varchar(140) DEFAULT NULL,
+  `comments` varchar(1200) DEFAULT NULL,
+  `user1` varchar(1200) DEFAULT NULL,
+  `user2` varchar(1200) DEFAULT NULL,
+  `user3` varchar(1200) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- Table externalcontact
+
+DROP TABLE IF EXISTS `externalcontact`;
+
+CREATE TABLE `externalcontact` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `company` varchar(140) DEFAULT NULL,
+  `type` varchar(140) DEFAULT NULL,
+  `address` varchar(140) DEFAULT NULL,
+  `phone1` varchar(140) DEFAULT NULL,
+  `phone2` varchar(140) DEFAULT NULL,
+  `www` varchar(140) DEFAULT NULL,
+  `name` varchar(140) DEFAULT NULL,
+  `firstname` varchar(140) DEFAULT NULL,
+  `salutation` varchar(140) DEFAULT NULL,
+  `orgunit` varchar(140) DEFAULT NULL,
+  `email` varchar(140) DEFAULT NULL,
+  `comments` varchar(1200) DEFAULT NULL,
+  `user1` varchar(1200) DEFAULT NULL,
+  `user2` varchar(1200) DEFAULT NULL,
+  `user3` varchar(1200) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 -- Table computer
 
@@ -30,13 +76,13 @@ CREATE TABLE `computer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Table peripherie
+-- Table peripheral
 
-DROP TABLE IF EXISTS `peripherie`;
+DROP TABLE IF EXISTS `peripheral`;
 
-CREATE TABLE `peripherie` (
+CREATE TABLE `peripheral` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `asset_tag` varchar(140) DEFAULT NULL,
+  `asset_tag` varchar(140) NOT NULL,
   `type` varchar(140) DEFAULT NULL,
   `brand` varchar(140) DEFAULT NULL,
   `model` varchar(140) DEFAULT NULL,
@@ -60,17 +106,19 @@ CREATE TABLE `computerconfig` (
   `memory` varchar(140) DEFAULT NULL,
   `hdd` varchar(140) DEFAULT NULL,
   `extstor` varchar(140) DEFAULT NULL,
+  `infourl` varchar(140) DEFAULT NULL,
   `comments` varchar(1200) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Table peripherieconfig
+-- Table peripheralconfig
 
-DROP TABLE IF EXISTS `peripherieconfig`;
+DROP TABLE IF EXISTS `peripheralconfig`;
 
-CREATE TABLE `peripherieconfig` (
+CREATE TABLE `peripheralconfig` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `infourl` varchar(140) DEFAULT NULL,
   `comments` varchar(1200) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -92,68 +140,15 @@ CREATE TABLE `software` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Table internalcontacts
-
-DROP TABLE IF EXISTS `internalcontacts`;
-
-CREATE TABLE `internalcontacts` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(140) DEFAULT NULL,
-  `firstname` varchar(140) DEFAULT NULL,
-  `title` varchar(140) DEFAULT NULL,
-  `orgunit` varchar(140) DEFAULT NULL,
-  `phone1` varchar(140) DEFAULT NULL,
-  `phone2` varchar(140) DEFAULT NULL,
-  `email` varchar(140) DEFAULT NULL,
-  `comments` varchar(1200) DEFAULT NULL,
-  `userfield1` varchar(1200) DEFAULT NULL,
-  `userfield2` varchar(1200) DEFAULT NULL,
-  `userfield3` varchar(1200) DEFAULT NULL,
-  `userfield4` varchar(1200) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- Table externalcontacts
-
-DROP TABLE IF EXISTS `externalcontacts`;
-
-CREATE TABLE `externalcontacts` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `company` varchar(140) DEFAULT NULL,
-  `type` varchar(140) DEFAULT NULL,
-  `address` varchar(140) DEFAULT NULL,
-  `phone1` varchar(140) DEFAULT NULL,
-  `phone2` varchar(140) DEFAULT NULL,
-  `www` varchar(140) DEFAULT NULL,
-  `name` varchar(140) DEFAULT NULL,
-  `firstname` varchar(140) DEFAULT NULL,
-  `title` varchar(140) DEFAULT NULL,
-  `orgunit` varchar(140) DEFAULT NULL,
-  `email` varchar(140) DEFAULT NULL,
-  `comments` varchar(1200) DEFAULT NULL,
-  `userfield1` varchar(1200) DEFAULT NULL,
-  `userfield2` varchar(1200) DEFAULT NULL,
-  `userfield3` varchar(1200) DEFAULT NULL,
-  `userfield4` varchar(1200) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
 -- Table ipaddress
 
 DROP TABLE IF EXISTS `ipaddress`;
 
 CREATE TABLE `ipaddress` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `asset_tag` varchar(140) DEFAULT NULL,
+  `address` varchar(140) DEFAULT NULL,
   `type` varchar(140) DEFAULT NULL,
-  `brand` varchar(140) DEFAULT NULL,
-  `model` varchar(140) DEFAULT NULL,
-  `status` varchar(140) DEFAULT NULL,
-  `name` varchar(140) DEFAULT NULL,
-  `serial1` varchar(140) DEFAULT NULL,
-  `serial2` varchar(140) DEFAULT NULL,
+  `comments` varchar(1200) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -165,6 +160,10 @@ DROP TABLE IF EXISTS `network`;
 CREATE TABLE `network` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(140) DEFAULT NULL,
+  `comments` varchar(1200) DEFAULT NULL,
+  `user1` varchar(1200) DEFAULT NULL,
+  `user2` varchar(1200) DEFAULT NULL,
+  `user3` varchar(1200) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -184,6 +183,38 @@ CREATE TABLE `domain` (
 -- --------------------------------------------------------------------------------------
 -- Relation Tables
 -- --------------------------------------------------------------------------------------
+
+-- Relation Table computer_externalcontact
+
+DROP TABLE IF EXISTS `computer_externalcontact`;
+
+CREATE TABLE `computer_externalcontact` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `computer` int(11) unsigned NOT NULL,
+  `externalcontact` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `computer` (`computer`),
+  KEY `externalcontact` (`externalcontact`),
+  CONSTRAINT `computer_externalcontact_ibfk_2` FOREIGN KEY (`computer`) REFERENCES `computer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `computer_externalcontact_ibfk_3` FOREIGN KEY (`externalcontact`) REFERENCES `externalcontact` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- Relation Table externalcontact_peripheral
+
+DROP TABLE IF EXISTS `externalcontact_peripheral`;
+
+CREATE TABLE `externalcontact_peripheral` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `externalcontact` int(11) unsigned NOT NULL,
+  `peripheral` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `externalcontact` (`externalcontact`),
+  KEY `peripheral` (`peripheral`),
+  CONSTRAINT `externalcontact_peripheral_ibfk_2` FOREIGN KEY (`externalcontact`) REFERENCES `externalcontact` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `externalcontact_peripheral_ibfk_3` FOREIGN KEY (`peripheral`) REFERENCES `peripheral` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 -- Relation Table computer_software
 
@@ -217,131 +248,115 @@ CREATE TABLE `computer_computerconfig` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Relation Table peripherie_peripherieconfig
+-- Relation Table computer_network
 
-DROP TABLE IF EXISTS `peripherie_peripherieconfig`;
+DROP TABLE IF EXISTS `computer_network`;
 
-CREATE TABLE `peripherie_peripherieconfig` (
+CREATE TABLE `computer_network` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `peripherie` int(11) unsigned NOT NULL,
-  `peripherieconfig` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `peripherie` (`peripherie`),
-  KEY `peripherieconfig` (`peripherieconfig`),
-  CONSTRAINT `peripherie_peripherieconfig_ibfk_2` FOREIGN KEY (`peripherie`) REFERENCES `peripherie` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `peripherie_peripherieconfig_ibfk_3` FOREIGN KEY (`peripherieconfig`) REFERENCES `peripherieconfig` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- Relation Table computerconfig_network
-
-DROP TABLE IF EXISTS `computerconfig_network`;
-
-CREATE TABLE `computerconfig_network` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `computerconfig` int(11) unsigned NOT NULL,
+  `computer` int(11) unsigned NOT NULL,
   `network` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `computerconfig` (`computerconfig`),
+  KEY `computer` (`computer`),
   KEY `network` (`network`),
-  CONSTRAINT `computerconfig_network_ibfk_2` FOREIGN KEY (`computerconfig`) REFERENCES `computerconfig` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `computerconfig_network_ibfk_3` FOREIGN KEY (`network`) REFERENCES `network` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `computer_network_ibfk_2` FOREIGN KEY (`computer`) REFERENCES `computer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `computer_network_ibfk_3` FOREIGN KEY (`network`) REFERENCES `network` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Relation Table computerconfig_domain
+-- Relation Table computer_domain
 
-DROP TABLE IF EXISTS `computerconfig_domain`;
+DROP TABLE IF EXISTS `computer_domain`;
 
-CREATE TABLE `computerconfig_domain` (
+CREATE TABLE `computer_domain` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `computerconfig` int(11) unsigned NOT NULL,
+  `computer` int(11) unsigned NOT NULL,
   `domain` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `computerconfig` (`computerconfig`),
+  KEY `computer` (`computer`),
   KEY `domain` (`domain`),
-  CONSTRAINT `computerconfig_domain_ibfk_2` FOREIGN KEY (`computerconfig`) REFERENCES `computerconfig` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `computerconfig_domain_ibfk_3` FOREIGN KEY (`domain`) REFERENCES `domain` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `computer_domain_ibfk_2` FOREIGN KEY (`computer`) REFERENCES `computer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `computer_domain_ibfk_3` FOREIGN KEY (`domain`) REFERENCES `domain` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Relation Table computerconfig_ipaddress
+-- Relation Table computer_ipaddress
 
-DROP TABLE IF EXISTS `computerconfig_ipaddress`;
+DROP TABLE IF EXISTS `computer_ipaddress`;
 
-CREATE TABLE `computerconfig_ipaddress` (
+CREATE TABLE `computer_ipaddress` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `computerconfig` int(11) unsigned NOT NULL,
+  `computer` int(11) unsigned NOT NULL,
   `ipaddress` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `computerconfig` (`computerconfig`),
+  KEY `computer` (`computer`),
   KEY `ipaddress` (`ipaddress`),
-  CONSTRAINT `computerconfig_ipaddress_ibfk_2` FOREIGN KEY (`computerconfig`) REFERENCES `computerconfig` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `computerconfig_ipaddress_ibfk_3` FOREIGN KEY (`ipaddress`) REFERENCES `ipaddress` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `computer_ipaddress_ibfk_2` FOREIGN KEY (`computer`) REFERENCES `computer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `computer_ipaddress_ibfk_3` FOREIGN KEY (`ipaddress`) REFERENCES `ipaddress` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Relation Table network_peripherieconfig
+-- Relation Table peripheral_peripheralconfig
 
-DROP TABLE IF EXISTS `network_peripherieconfig`;
+DROP TABLE IF EXISTS `peripheral_peripheralconfig`;
 
-CREATE TABLE `network_peripherieconfig` (
+CREATE TABLE `peripheral_peripheralconfig` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `peripheral` int(11) unsigned NOT NULL,
+  `peripheralconfig` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `peripheral` (`peripheral`),
+  KEY `peripheralconfig` (`peripheralconfig`),
+  CONSTRAINT `peripheral_peripheralconfig_ibfk_2` FOREIGN KEY (`peripheral`) REFERENCES `peripheral` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `peripheral_peripheralconfig_ibfk_3` FOREIGN KEY (`peripheralconfig`) REFERENCES `peripheralconfig` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- Relation Table network_peripheral
+
+DROP TABLE IF EXISTS `network_peripheral`;
+
+CREATE TABLE `network_peripheral` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `network` int(11) unsigned NOT NULL,
-  `peripherieconfig` int(11) unsigned NOT NULL,
+  `peripheral` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `network` (`network`),
-  KEY `peripherieconfig` (`peripherieconfig`),
-  CONSTRAINT `network_peripherieconfig_ibfk_2` FOREIGN KEY (`network`) REFERENCES `network` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `network_peripherieconfig_ibfk_3` FOREIGN KEY (`peripherieconfig`) REFERENCES `peripherieconfig` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `peripheral` (`peripheral`),
+  CONSTRAINT `network_peripheral_ibfk_2` FOREIGN KEY (`network`) REFERENCES `network` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `network_peripheral_ibfk_3` FOREIGN KEY (`peripheral`) REFERENCES `peripheral` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Relation Table domain_peripherieconfig
+-- Relation Table domain_peripheral
 
-DROP TABLE IF EXISTS `domain_peripherieconfig`;
+DROP TABLE IF EXISTS `domain_peripheral`;
 
-CREATE TABLE `domain_peripherieconfig` (
+CREATE TABLE `domain_peripheral` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `domain` int(11) unsigned NOT NULL,
-  `peripherieconfig` int(11) unsigned NOT NULL,
+  `peripheral` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `domain` (`domain`),
-  KEY `peripherieconfig` (`peripherieconfig`),
-  CONSTRAINT `domain_peripherieconfig_ibfk_2` FOREIGN KEY (`domain`) REFERENCES `domain` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `domain_peripherieconfig_ibfk_3` FOREIGN KEY (`peripherieconfig`) REFERENCES `peripherieconfig` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `peripheral` (`peripheral`),
+  CONSTRAINT `domain_peripheral_ibfk_2` FOREIGN KEY (`domain`) REFERENCES `domain` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `domain_peripheral_ibfk_3` FOREIGN KEY (`peripheral`) REFERENCES `peripheral` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Relation Table ipaddress_peripherieconfig
+-- Relation Table ipaddress_peripheral
 
-DROP TABLE IF EXISTS `ipaddress_peripherieconfig`;
+DROP TABLE IF EXISTS `ipaddress_peripheral`;
 
-CREATE TABLE `ipaddress_peripherieconfig` (
+CREATE TABLE `ipaddress_peripheral` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ipaddress` int(11) unsigned NOT NULL,
-  `peripherieconfig` int(11) unsigned NOT NULL,
+  `peripheral` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ipaddress` (`ipaddress`),
-  KEY `peripherieconfig` (`peripherieconfig`),
-  CONSTRAINT `ipaddress_peripherieconfig_ibfk_2` FOREIGN KEY (`ipaddress`) REFERENCES `ipaddress` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `ipaddress_peripherieconfig_ibfk_3` FOREIGN KEY (`peripherieconfig`) REFERENCES `peripherieconfig` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- Relation Table ipaddress_software
-
-DROP TABLE IF EXISTS `ipaddress_software`;
-
-CREATE TABLE `ipaddress_software` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `ipaddress` int(11) unsigned NOT NULL,
-  `software` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ipaddress` (`ipaddress`),
-  KEY `software` (`software`),
-  CONSTRAINT `ipaddress_software_ibfk_2` FOREIGN KEY (`ipaddress`) REFERENCES `ipaddress` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `ipaddress_software_ibfk_3` FOREIGN KEY (`software`) REFERENCES `software` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `peripheral` (`peripheral`),
+  CONSTRAINT `ipaddress_peripheral_ibfk_2` FOREIGN KEY (`ipaddress`) REFERENCES `ipaddress` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ipaddress_peripheral_ibfk_3` FOREIGN KEY (`peripheral`) REFERENCES `peripheral` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -358,6 +373,22 @@ CREATE TABLE `ipaddress_network` (
   KEY `network` (`network`),
   CONSTRAINT `ipaddress_network_ibfk_2` FOREIGN KEY (`ipaddress`) REFERENCES `ipaddress` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ipaddress_network_ibfk_3` FOREIGN KEY (`network`) REFERENCES `network` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- Relation Table domain_network
+
+DROP TABLE IF EXISTS `domain_network`;
+
+CREATE TABLE `domain_network` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `domain` int(11) unsigned NOT NULL,
+  `network` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `domain` (`domain`),
+  KEY `network` (`network`),
+  CONSTRAINT `domain_network_ibfk_2` FOREIGN KEY (`domain`) REFERENCES `domain` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `domain_network_ibfk_3` FOREIGN KEY (`network`) REFERENCES `network` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

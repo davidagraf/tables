@@ -52,7 +52,7 @@ function EditForm(datasource, idToUpdate, inputValues, add) {
   }
 
   $.each(datasource.resource.fields, function(key, value) {
-    var $label = $('<label for="' + key + '">' 
+    var $label = $('<label for="' + key + '" class="tui-label">' 
                  +   value.title
                  + '</label>');
     var $input;

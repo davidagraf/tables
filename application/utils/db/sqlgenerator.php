@@ -204,6 +204,14 @@ class Generator {
 			case "date":
 				return rand(1999,2011) . "-" . str_pad(rand(1,12), 2, "0", STR_PAD_LEFT) . "-" . str_pad(rand(1,28), 2, "0", STR_PAD_LEFT);
 				break;
+			case "url":
+				return "http://www.google.com";
+			case "email":
+				return "hansmuster" . $n . "@gmail.com";
+				break;
+			case "ip":
+				return "192.168." . rand(0,255) . "." . $n;
+				break;
 			default:
 				return $title . " (" . $n . ")";
 				break;
@@ -258,6 +266,7 @@ class Generator {
 			$this->writeLine("-- Table " . $name);
 			$this->writeLine();
 			$this->writeLine("LOCK TABLES `" . $name . "` WRITE;");
+			$this->writeLine();
 			$this->writeLine($tableInserts);
 			$this->writeLine("UNLOCK TABLES;");
 			$this->writeLine();
@@ -273,6 +282,7 @@ class Generator {
 			$this->writeLine("-- Relation Table " . $name);
 			$this->writeLine();
 			$this->writeLine("LOCK TABLES `" . $name . "` WRITE;");
+			$this->writeLine();
 			$this->writeLine($tableInserts);
 			$this->writeLine("UNLOCK TABLES;");
 			$this->writeLine();

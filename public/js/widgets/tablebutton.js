@@ -92,3 +92,4 @@ DefaultTableButtons.EditButton.showText = false;
 DefaultTableButtons.DeleteButton.showText = false;
 DefaultTableButtons.RemoveFromRelationButton.showText = false;
 DefaultTableButtons.AddToRelationButton.showText = false;
+DefaultTableButtons.ReloadButton.showText = false;

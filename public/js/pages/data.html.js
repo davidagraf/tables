@@ -69,7 +69,7 @@ function DataView() {
 		// create group map
 		var groups = {};
 		$.each(globalResources, function(key, value) {
-			var group = value.group ? value.group : 'Allgemein';
+			var group = value.group || 'Allgemein';
 			if (!groups[group]) {
 				groups[group] = {};
 			}
@@ -83,8 +83,12 @@ function DataView() {
 		$trMenu = $('<tr />');
 		$menuTable.append($trMenu);
 
+		var groupCount = 1;
 		$.each(groups, function(group, groupButtons) {
 
+			$trLabel.append($('<td class="tui-menu-spacer"/>'));
+			$trMenu.append($('<td class="tui-menu-spacer"/>'));
+			
 			$trLabel
 					.append($('<td class="tui-group-label" colspan="'
 							+ Object.keys(groupButtons).length + '">' + group
@@ -105,6 +109,17 @@ function DataView() {
 				$tdMenuItem.append($menuItem);
 				$trMenu.append($tdMenuItem);
 			});
+			
+			
+			
+			if(groupCount == Object.keys(groups).length) {
+				$trLabel.append($('<td class="tui-menu-spacer"/>'));
+				$trMenu.append($('<td class="tui-menu-spacer"/>'));
+			} else {
+				$trLabel.append($('<td class="tui-menu-spacer-border"/>'));
+				$trMenu.append($('<td class="tui-menu-spacer-border"/>'));
+			}
+			groupCount++;
 		});
 	}
 
@@ -138,7 +153,7 @@ function DataView() {
 		var headerButtons = [ DefaultTableButtons.AddButton,
 				DefaultTableButtons.ReloadButton ];
 		tableWrapper = new TableWrapper(
-				firstLetterToUpper(datasource.resource.title), datasource,
+				(datasource.resource.group || 'Allgemein') + ' » ' + firstLetterToUpper(datasource.resource.title), datasource,
 				rowButtons, headerButtons);
 		tableWrapper.onShowRelation = onShowRelationHandler;
 		tableWrapper.onRowButtonClicked = onRowButtonClickedHandler;

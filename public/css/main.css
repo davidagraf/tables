@@ -135,8 +135,8 @@ button.tui-table-button {
 }
 
 button.tui-relation-button {
-	margin-right: 10px;
-	margin-left: 10px;
+	margin-right: 3px;
+	margin-left: 3px;
 }
 
 td.tui-nowrap {
@@ -177,4 +177,23 @@ table.tui-menu-table {
 	border: 1px dashed #cccccc;
 	margin-bottom: 32px;
 	background-color: #fafafa;
+}
+
+td.tui-menu-spacer {
+	width: 5px;
+}
+
+td.tui-menu-spacer-border {
+	width: 5px;
+	border-right: 1px dashed #cccccc;
+}
+
+span.tui-undefined {
+	color: #cccccc;
+	font-style: italic;
+}
+
+label.tui-label {
+  color: #666666;
+  white-space: nowrap;
 }
