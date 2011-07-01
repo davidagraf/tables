@@ -101,4 +101,36 @@ TODO
 
 CLIENT
 ======
-TODO
+The client is entirely written in JavaScript, based on very simple HTML pages which are used as container.
+There are:
+- index.html ("Home")
+- data.html ("Datenverwaltung")
+- reporting.html ("Berichte")
+which corresponds to the tab structure of the entire page.
+
+Each of these files has a matching "code-behind" JS type whose naming is NameView for name.html.
+This mapping is done in bootstrap.js, where the pages are initialized.
+
+data.html.js:
+-------------
+The current implementation focuses on data manipulation. Therefore the DataView is the only page with real functionality.
+The resources.json contains generic information about the existing tables (entities). The main menu of the DataView is
+built accordingly; with respect to the grouping information, for each resource type, a menu item is provided.
+The content of the DataView mainly consists of a big table displaying the entries of the selected resource type.
+
+table.js / tabledatasource.js:
+------------------------------
+The TableDataSource provides CRUD functionality for a bound resource type (AJAX REST calls, see above).
+ -> see onSuccess / onError events
+The TableWrapper relies on its TableDataSource, visualizes the data and provides functionality to manipulate it.
+ -> see datasource binding (above mentioned events)
+ -> see row buttons / header buttons (tablebutton.js)
+ -> see tablesorter (sorting, paging, filtering)
+
+forms:
+------
+The popup forms are all handled the same, use the FormPrototype.
+- EditForm : used to add/edit an entry according to the given resource. Includes validation. (editform.js)
+- RelationsForm : relation editor (relationsform.js)
+- Error/ConfirmationBox : simple views for errors and user confirmation ((error|confirm)box.js)
+

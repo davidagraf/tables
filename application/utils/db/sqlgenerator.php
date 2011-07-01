@@ -209,7 +209,7 @@ class Generator {
 			case "email":
 				return "hansmuster" . $n . "@gmail.com";
 				break;
-			case "ip":
+			case "ipv4":
 				return "192.168." . rand(0,255) . "." . $n;
 				break;
 			default:
