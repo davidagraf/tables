@@ -1,7 +1,7 @@
 -- --------------------------------------------------------------------------------------
 -- Generated SQL script 'tables_empty.sql' for TABLES
 -- JSON Resources 'resources.json'
--- Created on 2011-06-30T15:11:03+02:00
+-- Created on 2011-07-01T14:39:16+02:00
 -- --------------------------------------------------------------------------------------
 
 DROP SCHEMA IF EXISTS `tables`;
@@ -18,7 +18,7 @@ DROP TABLE IF EXISTS `internalcontact`;
 
 CREATE TABLE `internalcontact` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(140) DEFAULT NULL,
+  `name` varchar(140) NOT NULL,
   `firstname` varchar(140) DEFAULT NULL,
   `salutation` varchar(140) DEFAULT NULL,
   `orgunit` varchar(140) DEFAULT NULL,
@@ -39,8 +39,8 @@ DROP TABLE IF EXISTS `externalcontact`;
 
 CREATE TABLE `externalcontact` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `company` varchar(140) DEFAULT NULL,
-  `type` varchar(140) DEFAULT NULL,
+  `company` varchar(140) NOT NULL,
+  `type` varchar(140) NOT NULL,
   `address` varchar(140) DEFAULT NULL,
   `phone1` varchar(140) DEFAULT NULL,
   `phone2` varchar(140) DEFAULT NULL,
@@ -130,7 +130,7 @@ DROP TABLE IF EXISTS `software`;
 
 CREATE TABLE `software` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(140) DEFAULT NULL,
+  `name` varchar(140) NOT NULL,
   `version` varchar(140) DEFAULT NULL,
   `distributor` varchar(140) DEFAULT NULL,
   `license` varchar(140) DEFAULT NULL,
@@ -146,7 +146,7 @@ DROP TABLE IF EXISTS `ipaddress`;
 
 CREATE TABLE `ipaddress` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `address` varchar(140) DEFAULT NULL,
+  `address` varchar(140) NOT NULL,
   `type` varchar(140) DEFAULT NULL,
   `comments` varchar(1200) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -159,7 +159,7 @@ DROP TABLE IF EXISTS `network`;
 
 CREATE TABLE `network` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(140) DEFAULT NULL,
+  `name` varchar(140) NOT NULL,
   `comments` varchar(1200) DEFAULT NULL,
   `user1` varchar(1200) DEFAULT NULL,
   `user2` varchar(1200) DEFAULT NULL,
@@ -174,7 +174,7 @@ DROP TABLE IF EXISTS `domain`;
 
 CREATE TABLE `domain` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(140) DEFAULT NULL,
+  `name` varchar(140) NOT NULL,
   `comments` varchar(1200) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

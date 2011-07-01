@@ -10,6 +10,7 @@ Database (MYSQL) <-- SQL --> Application Server (PHP) <-- RESTfull (JSON) --> Cl
 CONFIGURATION
 =============
 - Database: Configuration is done hardcoded. Tables need to be created/deleted/extended by hand.
+            --> tables/application/utils/db/mysql_connect.php
 - Application Server / Client: Both parts load the conigration from the file '/public/data/resources.json'. It contains the 
   description of the charts (chart columns, naming, datatypes, etc) and the relations between each other.
   
@@ -55,6 +56,7 @@ CONFIGURATION
   
 
 IMPORTANT: Database and resources.json needs to be in sync!
+In order to generate the DB creation SQL script, use sqlgenerator.php (see howto_generate_db_sql.txt). 
 
 DATA BASE
 =========
@@ -88,6 +90,7 @@ The database has two kind of tables
                    ------------------------------
 
 
+
 Application Server
 ==================
 The application provides a REST interface for the client (see http://en.wikipedia.org/wiki/Representational_State_Transfer).
@@ -97,7 +100,23 @@ the request URI, and executes the correct SQL statements and generates the corre
 (/application/handler.php).
 
 The following REST API is provided:
-TODO
+GET <host>/resource
+   gets all entries of the given resource (e.g. computer)
+GET <host>/resource/ID
+   gets the entry of the given resource with this ID
+GET <host>/resource/field=='test'
+   gets the entries of the given resource with field value 'test'
+GET <host>/resource/field!='test'
+   gets the entries of the given resource with with field value other than 'test'
+GET <host>/resource/ID/resource2
+   gets the entries of resource2 connected with resource with given ID (see relations)
+POST <host>/resource {jsonrowdata}
+   adds a new entry for the given resource  (url with ID is sent back in response)
+POST <host>/resource/ID {jsonrowdata}
+   updates the entry with ID for the given resource
+DELETE <host>/resource/ID
+   deletes the given entry
+
 
 CLIENT
 ======
