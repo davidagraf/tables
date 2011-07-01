@@ -40,10 +40,13 @@ h1 {
 }
 
 label.validation-error {
+	display:block;
 	margin-bottom: 10px;
-	border: 1px solid #cd0a0a;
-	background: #b81900;
+	background: #cc0000;
 	color: #ffffff;
+	padding: 1px;
+	padding-left: 16px;
+  margin-right: 18px;
 }
 
 .hidden {

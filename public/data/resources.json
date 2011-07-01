@@ -6,7 +6,8 @@
         "fields":{
             "name":{
                 "title":"Name",
-                "short":"true"
+                "short":"true",
+                "isreq":"true"
             },
             "firstname":{
                 "title":"Vorname",
@@ -53,11 +54,13 @@
         "fields":{
             "company":{
                 "title":"Firma",
-                "short":"true"
+                "short":"true",
+                "isreq":"true"
             },
             "type":{
                 "title":"Kontakttyp",
-                "short":"true"
+                "short":"true",
+                "isreq":"true"
             },
             "address":{
                 "title":"Adresse"
@@ -297,7 +300,8 @@
         "fields":{
             "name":{
                 "title":"Name",
-                "short":"true"
+                "short":"true",
+                "isreq":"true"
             },
             "version":{
                 "title":"Version",
@@ -333,7 +337,8 @@
             "address":{
                 "title":"Adresse",
                 "short":"true",
-                "type":"ip"
+                "type":"ipv4",
+                "isreq":"true"
             },
             "type":{
                 "title":"Typ",
@@ -365,7 +370,8 @@
         "fields":{
             "name":{
                 "title":"Name",
-                "short":"true"
+                "short":"true",
+                "isreq":"true"
             },
             "comments":{
                 "title":"Beschreibung",
@@ -407,7 +413,8 @@
         "fields":{
             "name":{
                 "title":"Name",
-                "short":"true"
+                "short":"true",
+                "isreq":"true"
             },
             "comments":{
                 "title":"Beschreibung",

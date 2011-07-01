@@ -52,62 +52,69 @@ function EditForm(datasource, idToUpdate, inputValues, add) {
 		}
 	}
 
-	$.each(
-			datasource.resource.fields,
-			function(key, value) {
-				var $label = $('<label for="' + key
-						+ '" class="tui-label">' + value.title
-						+ '</label>');
-				var $input;
+	$
+			.each(
+					datasource.resource.fields,
+					function(key, value) {
+						var $label = $('<label for="'
+								+ key
+								+ '" class="tui-label">'
+								+ (value.isreq == 'true' ? '<span style="color:#cc0000; font-weight:bold;">*</span> '
+										: '') + value.title + '</label>');
+						var $input;
 
-				switch (value.type) {
-				case undefined:
-				case "text":
-					$input = $('<input type="text" class="text tui-input" />');
-					break;
-				case "date":
-					$input = $('<input type="text" class="text dateISO8601 tui-input" />');
-					$input.mask("9999-99-99");
-					break;
-				case "textarea":
-					$input = $('<textarea class="textarea tui-input" />');
-					break;
-				default:
-					$input = $('<input type="text" class="text tui-input '
-							+ value.type + '" />');
-					break;
-				}
-
-				if (idToUpdate >= 0) {
-					$input.val(inputValues[key]);
-				}
-
-				$input.addClass("ui-widget-content ui-corner-all");
-				$input.attr("id", key);
-				$input.attr("name", key);
-
-				switch (value.type) {
-				case "date":
-					$input.datepicker( {
-						// hack to disable validation when datepicker is
-						// open
-						beforeShow : function() {
-							$(this).removeClass("dateISO8601");
-						},
-						onClose : function() {
-							$(this).addClass("dateISO8601");
-							$(this).valid();
+						switch (value.type) {
+						case undefined:
+						case "text":
+							$input = $('<input type="text" class="text tui-input" />');
+							break;
+						case "date":
+							$input = $('<input type="text" class="text dateISO8601 tui-input" />');
+							$input.mask("9999-99-99");
+							break;
+						case "textarea":
+							$input = $('<textarea class="textarea tui-input" />');
+							break;
+						default:
+							$input = $('<input type="text" class="text tui-input '
+									+ value.type + '" />');
+							break;
 						}
-					});
-					$input.datepicker("option", "dateFormat",
-							"yy-mm-dd");
-					break;
-				}
 
-				$formInputs[key] = $input;
-				$fieldset.append($label);
-				$fieldset.append($input);
-			});
+						if (value.isreq == 'true') {
+							$input.addClass("required");
+						}
+
+						if (idToUpdate >= 0) {
+							$input.val(inputValues[key]);
+						}
+
+						$input.addClass("ui-widget-content ui-corner-all");
+						$input.attr("id", key);
+						$input.attr("name", key);
+
+						switch (value.type) {
+						case "date":
+							$input.datepicker( {
+								// hack to disable validation when datepicker is
+								// open
+								beforeShow : function() {
+									$(this).removeClass("dateISO8601");
+								},
+								onClose : function() {
+									$(this).addClass("dateISO8601");
+									$(this).valid();
+								}
+							});
+							$input.datepicker("option", "dateFormat",
+									"yy-mm-dd");
+							break;
+						}
+
+						$formInputs[key] = $input;
+						$fieldset.append($label);
+						$fieldset.append($input);
+					});
 	validator = $form.validate( {
 		errorClass : "validation-error"
 	});
