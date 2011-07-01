@@ -218,8 +218,8 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		}
 
 		// var entriesCount = $('tbody tr', $table).length;
-		$('#numberOfEntries', $table).text(
-				countData == 0 ? "Keine" : countData);
+		$('#numberOfEntries', $table)
+				.text(countData == 0 ? "Keine" : countData);
 	}
 
 	this.updateExtensions = function() {
@@ -236,7 +236,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		switch (action) {
 		case TableAction.GET:
 			// update all rows
-			countData = data.length;
+			countData += data.length;
 			data.forEach(function(rowData) {
 				addTableRow(rowData);
 			});
@@ -312,6 +312,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 									+ " an"));
 					$button.data("relation", key);
 					$button.addClass("tui-relation-button");
+					$button.css("font-weight", "normal");
 				} else {
 					$tdRelation.text(relation.title);
 				}
@@ -367,17 +368,21 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 		}
 		if (field.type == "url" || field.type == "ip") {
 			var url = data;
-			if(data.indexOf("://") == -1) {
+			if (data.indexOf("://") == -1) {
 				url = "http://" + data;
 			}
-			return '<a href="' + url + '" target="_blank" title="Gehe zu ' + url + '">' + data + '</a>';
+			return data + ' <a href="' + url
+					+ '" target="_blank" title="Gehe zu ' + url
+					+ '"><img src="images/url.png" class="tui-cell-action-image" /></a>';
 		}
 		if (field.type == "email") {
-			return '<a href="mailto:' + data + '" title="Sende E-Mail an ' + data + '">' + data + '</a>';
+			return data + ' <a href="mailto:' + data
+					+ '" title="Sende E-Mail an ' + data
+					+ '"><img src="images/mail.png" class="tui-cell-action-image" /></a>';
 		}
 		return data;
 	}
-	
+
 	/**
 	 * Creates a table button and appends it as a new cell to the given row
 	 * 
@@ -427,6 +432,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	 */
 	this.cleanRows = function() {
 		$('tbody', $table).empty();
+		countData = 0;
 	};
 
 	/**
@@ -435,7 +441,7 @@ function TableWrapper(tableTitle, datasource, rowButtons, tableHeaderButtons) {
 	 * @id Row id
 	 */
 	this.rowValues = function($row) {
-		if($row.data('tag')) {
+		if ($row.data('tag')) {
 			return $row.data('tag');
 		}
 		return {};

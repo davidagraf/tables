@@ -207,3 +207,8 @@ span.tui-error-title {
   font-size: larger;
   margin-bottom: 32px;
 }
+
+img.tui-cell-action-image {
+	margin-left: 2px;
+	margin-right: 2px;
+}
