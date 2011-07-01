@@ -215,3 +215,8 @@ img.tui-cell-action-image {
 	margin-left: 2px;
 	margin-right: 2px;
 }
+
+div.tui-welcome {
+font-size: medium;
+color:#666666;
+}
