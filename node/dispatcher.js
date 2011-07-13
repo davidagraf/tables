@@ -13,22 +13,8 @@ function pathComponents(requestUrl) {
   return comps.splice(1, comps.length-1);
 }
 
-function checkResource(name, response) {
-  if (!resources[name]) {
-    response.writeHead(400, {});
-    response.write('Resource "' + name + '" not available.\n');
-    return false;
-  }
-  else {
-    return true;
-  }
-}
-
 function doGet(request, response, db) {
   var pathComps = pathComponents(request.url);
-  if (!checkResource(pathComps[0], response)) {
-    return;
-  }
   switch(pathComps.length) {
   case 1:
     db.collection(pathComps[0], function(err, collection) {
@@ -86,6 +72,12 @@ function parseJSON(response, requestData) {
   return parsed;
 }
 
+function createRelationCollName(resource1, resource2) {
+  return ( resource1 < resource2 
+         ? resource1 + "_" + resource2
+         : resource2 + "_" + resource1 );
+}
+
 function doPost(request, response, requestData, db) {
   var pathComps = pathComponents(request.url);
   switch(pathComps.length) {
@@ -118,9 +110,7 @@ function doPost(request, response, requestData, db) {
     });
     break;
   case 4:
-    var lCollName = ( pathComps[0] < pathComps[2] 
-                    ? pathComps[0] + "_" + pathComps[2]
-                    : pathComps[2] + "_" + pathComps[0] );
+    var lCollName = createRelationCollName(pathComps[0], pathComps[2]);
     // TODO
     // check if resources exist and check if entry in relation db already exists
     db.collection(lCollName, function(err, collection) {
@@ -141,10 +131,46 @@ function doPost(request, response, requestData, db) {
 }
 
 function doDelete(request, response, db) {
+  var pathComps = pathComponents(request.url);
   switch(pathComps.length) {
   case 2:
+    var resource = resources[pathComps[0]];
+    var relations = Object.keys(resource);
+    var length = relations.length;
+    var index = 0;
+    var query = {};
+    query[pathComps[0]] = pathComps[1];
+    var func = function(relations, length, index) {
+      if (index < length) {
+        var lCollName = createRelationCollName(pathComps[0], relations[length]);
+        db.collection(lCollName,  function(err, collection) {
+          collection.remove(query, function(err) {
+            func(relations, length, index+1);
+          });
+        });
+      }
+      else {
+        db.collection(pathComps[0], function(err, collection) {
+          collection.remove({_id : ObjectID(pathComps[1])}, function(err) {
+            response.end();
+          });
+        });
+      }
+    };
+
+    func(relations, length, index);
+
     break;
   case 4:
+    var lCollName = createRelationCollName(pathComps[0], pathComps[2]);
+    var query = {};
+    query[pathComps[0]] = pathComps[1];
+    query[pathComps[2]] = pathComps[3];
+    db.collection(lCollName,  function(err, collection) {
+      collection.remove(query, function(err) {
+        response.end();
+      });
+    });
     break;
   default:
     response.writeHead(501, {});
@@ -163,7 +189,6 @@ function dispatch(request, response, requestData, db) {
     break;
   case "DELETE":
     doDelete(request, response, db);
-    break;
     break;
   default:
     response.writeHead(501, {});
