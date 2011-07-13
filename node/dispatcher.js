@@ -85,10 +85,12 @@ function doPost(request, response, requestData, db) {
     var json = parseJSON(response, requestData);
     if (json == null)
       return;
+    var host = request.headers.host;
     db.collection(pathComps[0], function(err, collection) {
       collection.insert(
         json,
-        function(err, docs) {
+        function(err, doc) {
+          response.setHeader("Location", "http://" + host + "/" + pathComps[0] + "/" + doc[0]['_id']);
           response.end();
         }
       );
